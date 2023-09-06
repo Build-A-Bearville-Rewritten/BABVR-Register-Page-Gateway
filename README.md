@@ -22,6 +22,14 @@ Gateway for the registration page of Build-A-Bearville Rewritten.
 
 - **[Node.js](https://nodejs.org/en/) -** Version 18
 - **[PNPM](https://pnpm.io/) -** Version 8
+- **Environment variables**
+
+    - **Backend**
+
+        | Variable   | Type   | Description                                    | Required | Default       | Example      |
+        | ---------- | ------ | ---------------------------------------------- | -------- | ------------- | ------------ |
+        | `NODE_ENV` | String | The environment in which the server is running | No       | `development` | `production` |
+        | `PORT`     | String | The port where the server will run on          | No       | `3000`        | `3001`       |
 
 ### Plugins for development
 
