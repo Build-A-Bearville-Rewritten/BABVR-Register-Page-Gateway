@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "moduleResolution": "node",
+
+    "allowSyntheticDefaultImports": true,
+
+    "noUnusedParameters": false,
+
+    "outDir": "./dist"
+  },
+  "extends": [
+    "../tsconfig.json"
+  ]
+}

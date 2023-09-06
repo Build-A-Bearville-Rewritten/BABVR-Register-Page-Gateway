@@ -1,0 +1,40 @@
+{
+  "name": "babvr-registration-page-gateway",
+  "version": "1.0.0",
+  "description": "Gateway for the registration page of Build-A-Bearville Rewritten",
+  "private": true,
+  "author": "Juansecu",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "pnpm run --filter babvr-registration-page-backend build && pnpm run --filter babvr-registration-page-frontend build && exit 0",
+    "format": "prettier --write \"**/**.ts\"",
+    "lint": "eslint --ext .ts .",
+    "lint:fix": "eslint --fix --ext .ts .",
+    "start": "pnpm run build && pnpm run --filter babvr-registration-page-backend start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juansecu/BABVR-Registration-Page-Gateway.git"
+  },
+  "keywords": [
+    "babvr",
+    "build-a-bearville",
+    "bearville",
+    "register",
+    "register-page",
+    "gateway"
+  ],
+  "bugs": {
+    "url": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway/issues"
+  },
+  "homepage": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "^8.48.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.0.2"
+  }
+}

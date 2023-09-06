@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "noEmit": true
+  },
+  "extends": [
+    "../tsconfig.json"
+  ],
+  "include": ["src"]
+}

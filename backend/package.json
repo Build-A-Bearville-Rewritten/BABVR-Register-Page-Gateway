@@ -1,0 +1,37 @@
+{
+  "name": "babvr-registration-page-backend",
+  "version": "1.0.0",
+  "description": "Backend for the registration page of Build-A-Bearville Rewritten",
+  "private": true,
+  "author": "Juansecu",
+  "license": "UNLICENSED",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juansecu/BABVR-Registration-Page-Gateway.git"
+  },
+  "keywords": [
+    "babvr",
+    "build-a-bearville",
+    "bearville",
+    "register",
+    "register-page",
+    "backend"
+  ],
+  "bugs": {
+    "url": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway/issues"
+  },
+  "homepage": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.5.9"
+  }
+}
