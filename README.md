@@ -50,3 +50,11 @@ in this guide from the root directory of the repository.
       to start the client
     - `pnpm run --filter babvr-registration-page-backend dev`
       to start the server
+
+If you prefer, you can start the backend and frontend separately.
+To do so, you can run the following commands:
+
+- `pnpm run --filter babvr-registration-page-frontend dev`
+  to start the client
+- `pnpm run --filter babvr-registration-page-backend start`
+  to start the server
