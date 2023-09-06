@@ -3,7 +3,7 @@ import { URL } from 'node:url';
 
 import express, { Express, NextFunction, Request, Response } from 'express';
 
-import { IConfiguration } from "./typings/config";
+import { IConfiguration } from './typings/config';
 
 let config: IConfiguration;
 
@@ -13,7 +13,7 @@ const port: number = parseInt(process.env.PORT || '3000');
 
 if (environment !== 'development')
   import('./config/config.prod')
-    .then((module) => config = module.config)
+    .then(module => (config = module.config))
     .catch(console.error);
 
 app.use((request: Request, response: Response, next: NextFunction): void => {

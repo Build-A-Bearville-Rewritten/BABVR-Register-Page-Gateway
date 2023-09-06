@@ -5,4 +5,4 @@ export const config: IConfiguration = {
     allowedHosts: ['babvrewritten.com'],
     shouldEnforceHttps: true
   }
-}
+};
