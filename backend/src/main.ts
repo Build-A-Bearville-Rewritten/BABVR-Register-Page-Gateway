@@ -8,13 +8,21 @@ import { IConfiguration } from './typings/config';
 let config: IConfiguration;
 
 const app: Express = express();
-const environment: string = process.env.NODE_ENV || 'development';
-const port: number = parseInt(process.env.PORT || '3000');
+const environment: Readonly<string> = process.env.NODE_ENV || 'development';
+const port: Readonly<number> = parseInt(process.env.PORT || '3000');
 
 if (environment !== 'development')
-  import('./config/config.prod')
+  import('./config/config.prod.js')
     .then(module => (config = module.config))
-    .catch(console.error);
+    .catch((error: Error) => {
+      throw error;
+    });
+else
+  import('./config/config.dev.js')
+    .then(module => (config = module.config))
+    .catch((error: Error) => {
+      throw error;
+    });
 
 app.use((request: Request, response: Response, next: NextFunction): void => {
   console.log(`Request: ${request.method} ${request.path} from ${request.ip}`);
@@ -27,7 +35,8 @@ app.use((request: Request, response: Response, next: NextFunction): void => {
   }
 
   const queryParameters = request.query;
-  const redirectUrl: string | undefined = queryParameters.redirectUrl as string;
+  const redirectUrl: Readonly<string | undefined> =
+    queryParameters.redirectUrl as string;
 
   console.log(queryParameters);
 
@@ -41,8 +50,8 @@ app.use((request: Request, response: Response, next: NextFunction): void => {
 
   try {
     const urlObject: URL = new URL(redirectUrl);
-    const host: string = urlObject.host;
-    const protocol: string = urlObject.protocol;
+    const host: Readonly<string> = urlObject.host;
+    const protocol: Readonly<string> = urlObject.protocol;
 
     if (
       config.redirectUrlQueryParameter.shouldEnforceHttps &&
@@ -73,7 +82,7 @@ app.use((request: Request, response: Response, next: NextFunction): void => {
 app.use('/', express.static(resolve('public')));
 
 app.get('/redirect', (request: Request, response: Response) => {
-  const redirectUrl: string = request.query.redirectUrl as string;
+  const redirectUrl: Readonly<string> = request.query.redirectUrl as string;
   console.log(`Redirecting to ${redirectUrl}...`);
   response.redirect(redirectUrl);
 });
