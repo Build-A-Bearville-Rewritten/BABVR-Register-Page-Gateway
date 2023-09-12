@@ -44,7 +44,7 @@ export default class Sprite {
     this._currentFrame = 0;
     this._elapsedFrames = 0;
     this._spriteLoader = spriteModule.getSpriteLoader(this.canvas);
-
+    this._isFolderAnimation = false
     this.id = this._spriteLoader.ids;
     
     if (imageSrc || animationFolder) {
@@ -54,6 +54,7 @@ export default class Sprite {
         this.setImage(imageSrc);
       } else if (animationFolder) {
         this.preloadFrames(animationFolder);
+        this._isFolderAnimation = true
       }
     }
   }
@@ -143,19 +144,23 @@ export default class Sprite {
     animationFolder = animationFolder.endsWith("/")
       ? animationFolder
       : animationFolder + "/";
+    
     let numLoaded = 0;
     this._animationFrames = [];
 
     for (let i = 0; i < this.numFrames; i++) {
       const imageSrc = animationFolder + (i + 1) + ".png";
-      const cachedImage = this._spriteLoader.getCachedImage(imageSrc);
+      let cachedImage = this._spriteLoader.getCachedImage(imageSrc);
 
       if (!cachedImage) {
         cachedImage = this._spriteLoader.cacheImage(imageSrc);
 
         cachedImage.onload = () => {
           numLoaded++;
-          if (numLoaded >= this.numFrames) this._spriteLoader.onSpriteLoaded();
+          if (numLoaded >= this.numFrames) {
+            this.image = this._animationFrames[10];
+            this._spriteLoader.onSpriteLoaded();
+          }
         };
       }
 
@@ -338,11 +343,17 @@ export default class Sprite {
 
   // if the sprite is animated, moves forward to the next animation frame
   updateFrames() {
+    if (this._isFolderAnimation) {
+      this.image = this._animationFrames[this._currentFrame];
+    }
+    
     this._elapsedFrames++;
     if (this._elapsedFrames % this.frameBuffer === 0) {
       const hasFinishedAnimation = this._currentFrame < this.numFrames - 1;
       this._currentFrame = hasFinishedAnimation ? this._currentFrame + 1 : 0;
     }
+
+   
   }
 
   drawImage() {

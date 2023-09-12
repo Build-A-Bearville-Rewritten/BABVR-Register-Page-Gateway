@@ -85,15 +85,15 @@ import SpriteLoader from "./classes/sprite-loader.js";
     });
   }
 
-  // let chloeAnimation = new Sprite({
-  //   canvas: canvas,
-  //   parent: canvas,
-  //   sizeScale: { x: 1, y: 1 },
-  //   numFrames: 337,
-  //   frameBuffer: 2,
-  //   animationFolder: "assets/Register/chloe/talk1/frames/",
-  //   zIndex: 999999,
-  // });
+  let chloeAnimation = new Sprite({
+    canvas: canvas,
+    parent: canvas,
+    sizeScale: { x: 1, y: 1 },
+    numFrames: 337,
+    frameBuffer: 3,
+    animationFolder: "assets/Register/chloe/talk1/frames/",
+    zIndex: 999999,
+  });
 
   // let imgOfScreen = new Sprite({
   //   canvas: canvas,

@@ -66,8 +66,8 @@ export default class SpriteLoader {
     for (const callback of this._preRedrawCBs) callback();
 
     for (const spritesAtZIndex in this._sprites)
-      for (const spriteKey in this._sprites[spritesAtZIndex])
-        this._sprites[spritesAtZIndex][spriteKey].update();
+      for (const spriteKey in this._sprites[spritesAtZIndex]) 
+        this._sprites[spritesAtZIndex][spriteKey].update();   
   }
 
   // Method that gets called when a sprite finishes loading
