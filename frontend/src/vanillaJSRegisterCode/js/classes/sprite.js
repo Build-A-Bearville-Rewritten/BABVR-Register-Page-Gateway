@@ -148,7 +148,6 @@ export default class Sprite {
   // If an animation folder is specified, caches all the images in memory
   // Assumes there are `this.numFrames` images inside of the animation folder named 1.png, 2.png, ... (numberOfFrames).png
   preloadFrames(animationFolder) {
-    // TODO: server could tell us how many frames are in the animation when we recieve the animation frames from the server
     animationFolder = animationFolder.endsWith("/")
       ? animationFolder
       : animationFolder + "/";
@@ -178,7 +177,6 @@ export default class Sprite {
 
   // draws the sprite onto the screen
   draw() {
-    // TODO: get rotation, hue, and flip to work together
     let offset = null;
 
     const ctx = this.canvas.getContext("2d");
@@ -405,10 +403,6 @@ export default class Sprite {
   }
 
   isMouseOnImage(event) {
-    // TODO: make it work with rotated objects
-    // ExAMPLE: 90 deg rotated really long object
-    // 45 degree rotated square
-
     let isInBounds = null;
 
     const rect = this.canvas.getBoundingClientRect();
@@ -448,7 +442,6 @@ export default class Sprite {
   }
 
   // Destroys the sprite class, cleaning up for garbage collection
-  // TODO: finish cleaning class
   clean() {
     this.canvas.removeEventListener("click", this._clickHandler);
     this.canvas.removeEventListener("mousedown", this._mouseDownHandler);
