@@ -32,7 +32,7 @@ import SpriteLoader from "./classes/sprite-loader.js";
 
   const colorWheel = new ColorWheel(canvas);
   const characterCreator = new CharacterCreator(canvas);
-  // const character = new Character(canvas, canvas);
+  const character = new Character(canvas, characterCreator.characterContainer);
 
   let loginHUD = new Sprite({
     canvas: canvas,

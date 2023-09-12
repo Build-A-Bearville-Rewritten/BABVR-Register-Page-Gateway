@@ -30,43 +30,45 @@ export default class Character {
   // splits _svgs where each layer of the svg is turned into a new svg
   // and saves the _svgs in the _svgs array
   async splitSvgs() {
-    // let urls = await svgHandler.splitLayers("../assets/Character/hair/maleHair5.svg");
+    const assetsFolder = "./assets/"
+
     let urls = await svgHandler.splitLayers(
-      "../assets/Character/hair/womenHair5.svg"
+      assetsFolder + "Character/hair/womenHair5.svg"
     );
+
     this._svgs["hairNoColor"] = urls[1];
     this._svgs["hairColored"] = urls[2];
 
     urls = await svgHandler.splitLayers(
-      "../assets/Character/head/testHead.svg"
+      assetsFolder + "Character/head/testHead.svg"
     );
     this._svgs["headNoColor"] = urls[0];
     this._svgs["headColored"] = urls[1];
 
     urls = await svgHandler.splitLayers(
-      "../assets/Character/torso/testWomenTorso.svg"
+      assetsFolder + "Character/torso/testWomenTorso.svg"
     );
     this._svgs["torsoWomen"] = urls[0];
 
     urls = await svgHandler.splitLayers(
-      "../assets/Character/arms/upArmTemp.svg"
+      assetsFolder +  "Character/arms/upArmTemp.svg"
     );
     this._svgs["upArmTemp"] = urls[0];
 
     urls = await svgHandler.splitLayers(
-      "../assets/Character/arms/lowArmTemp.svg"
+      assetsFolder +  "Character/arms/lowArmTemp.svg"
     );
     this._svgs["lowArmTemp"] = urls[0];
 
     urls = await svgHandler.splitLayers(
-      "../assets/Character/hips/testHips.svg"
+      assetsFolder + "/Character/hips/testHips.svg"
     );
     this._svgs["hips"] = urls[0];
 
-    urls = await svgHandler.splitLayers("../assets/Character/legs/upLeg.svg");
+    urls = await svgHandler.splitLayers(assetsFolder + "Character/legs/upLeg.svg");
     this._svgs["upLeg"] = urls[0];
 
-    urls = await svgHandler.splitLayers("../assets/Character/legs/lowLeg.svg");
+    urls = await svgHandler.splitLayers(assetsFolder + "Character/legs/lowLeg.svg");
     this._svgs["lowLeg"] = urls[0];
   }
 
@@ -82,7 +84,7 @@ export default class Character {
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.5, y: 0.05 },
       hsl: { h: 30, s: 100, l: 93 },
-      // zIndex: 15,
+      zIndex: 15,
     });
 
     // this.headColored = new Sprite({
@@ -125,7 +127,7 @@ export default class Character {
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.5, y: 0.85 },
       hsl: this.headNoColor.hsl,
-      // zIndex: this.headNoColor.zIndex - 1,
+      zIndex: this.headNoColor.zIndex - 1,
     });
 
     this.rightUpperArm = new Sprite({
@@ -156,7 +158,7 @@ export default class Character {
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 1, y: 0.2 },
       hsl: { h: 0, s: 100, l: 50 },
-      // zIndex: this.torso.zIndex,
+      zIndex: this.torso.zIndex,
     });
 
     this.leftLowerArm = new Sprite({
@@ -167,7 +169,7 @@ export default class Character {
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.5, y: 0.9 },
       hsl: { h: 200, s: 100, l: 50 },
-      // zIndex: this.torso.zIndex,
+      zIndex: this.torso.zIndex,
     });
 
     this.hips = new Sprite({
@@ -178,6 +180,7 @@ export default class Character {
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.5, y: 0.9 },
       hsl: { h: 170, s: 100, l: 50 },
+      zIndex: this.torso.zIndex-1,
     });
 
     this.rightUpLeg = new Sprite({
