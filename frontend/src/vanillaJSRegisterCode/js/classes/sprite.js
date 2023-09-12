@@ -22,6 +22,7 @@ export default class Sprite {
     animationFolder, // (WIP) location of the sprite images for bigger animated sprites
     isFixedSize = false, // Setting to true allows for positioning based off set pixels instead of percents
     canvas, // canvas the sprite should be rendered on
+    isLooped = false, // whether the sprite's animation should repeat
   }) {
     // public properties
     this.canvas = canvas;
@@ -45,8 +46,13 @@ export default class Sprite {
     this._elapsedFrames = 0;
     this._spriteLoader = spriteModule.getSpriteLoader(this.canvas);
     this._isFolderAnimation = false
-    this.id = this._spriteLoader.ids;
+    this._isPlaying = false;
+    this._isLooped = isLooped;
+    this.__animationEndedCB = null;
     
+    // Initalizing 
+    this.id = this._spriteLoader.ids;
+
     if (imageSrc || animationFolder) {
       this._spriteLoader.addSpriteToQueue(this);
 
@@ -85,11 +91,13 @@ export default class Sprite {
   // draws the sprite on the canvas
   // and updates it's animation, size, and position
   update() {
+    if (this._currentFrame == -1) return;
+
     this.updateSize();
     this.updatePosition();
 
     this.draw();
-    this.updateFrames();
+    if(this._isPlaying) this.updateFrames();
   }
 
   // calls dragCb, dragStartCb, and dragEndCb methods when the mouse is dragging the image, starts dragging, or ends dragging respectfully
@@ -140,7 +148,6 @@ export default class Sprite {
   // If an animation folder is specified, caches all the images in memory
   // Assumes there are `this.numFrames` images inside of the animation folder named 1.png, 2.png, ... (numberOfFrames).png
   preloadFrames(animationFolder) {
-    // TODO: server could tell us how many frames are in the animation when we recieve the animation frames from the server
     animationFolder = animationFolder.endsWith("/")
       ? animationFolder
       : animationFolder + "/";
@@ -170,7 +177,6 @@ export default class Sprite {
 
   // draws the sprite onto the screen
   draw() {
-    // TODO: get rotation, hue, and flip to work together
     let offset = null;
 
     const ctx = this.canvas.getContext("2d");
@@ -188,6 +194,10 @@ export default class Sprite {
     }
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  play() {
+    this._isPlaying = true;
   }
 
   // Gets the size of the sprite's parent
@@ -341,19 +351,32 @@ export default class Sprite {
     innerCtx.globalCompositeOperation = "source-over";
   }
 
-  // if the sprite is animated, moves forward to the next animation frame
+  // if the sprite is animated, and the animation hasn't ended, moves forward to the next animation frame
   updateFrames() {
-    if (this._isFolderAnimation) {
-      this.image = this._animationFrames[this._currentFrame];
-    }
-    
+    const isOnLastFrame = this._currentFrame == this.numFrames - 1;
+
     this._elapsedFrames++;
-    if (this._elapsedFrames % this.frameBuffer === 0) {
-      const hasFinishedAnimation = this._currentFrame < this.numFrames - 1;
-      this._currentFrame = hasFinishedAnimation ? this._currentFrame + 1 : 0;
+
+    if (isOnLastFrame && !this._isLooped) {
+      if (this._animationEndedCB) this._animationEndedCB();
+      this._currentFrame = -1;
     }
 
-   
+    if (this._elapsedFrames % this.frameBuffer === 0) {
+      const isRunningAnimation = this._currentFrame < this.numFrames - 1;
+      
+      if (isRunningAnimation || this._isLooped) {
+        if (this._isFolderAnimation) this.image = this._animationFrames[this._currentFrame];
+        
+        this._currentFrame = isRunningAnimation ? this._currentFrame + 1 : 0;
+      }
+    }
+  }
+
+  // Calls `callback` when the animation is ended 
+  // Only runs when the animation is not looped
+  onAnimationEnded(callback) {
+    this._animationEndedCB = callback;
   }
 
   drawImage() {
@@ -380,10 +403,6 @@ export default class Sprite {
   }
 
   isMouseOnImage(event) {
-    // TODO: make it work with rotated objects
-    // ExAMPLE: 90 deg rotated really long object
-    // 45 degree rotated square
-
     let isInBounds = null;
 
     const rect = this.canvas.getBoundingClientRect();
@@ -423,7 +442,6 @@ export default class Sprite {
   }
 
   // Destroys the sprite class, cleaning up for garbage collection
-  // TODO: finish cleaning class
   clean() {
     this.canvas.removeEventListener("click", this._clickHandler);
     this.canvas.removeEventListener("mousedown", this._mouseDownHandler);
