@@ -1,7 +1,7 @@
-import svgHandler from "../modules/svg-handler.js";
-import spriteModule from "../modules/sprite-loader-module.js";
+import svgHandler from '../modules/svg-handler.js';
+import spriteModule from '../modules/sprite-loader-module.js';
 
-import Sprite from "./sprite.js";
+import Sprite from './sprite.js';
 
 // Character instance
 export default class Character {
@@ -30,262 +30,281 @@ export default class Character {
   // splits _svgs where each layer of the svg is turned into a new svg
   // and saves the _svgs in the _svgs array
   async splitSvgs() {
-    const assetsFolder = "./assets/"
+    const assetsFolder = './assets/';
 
     let urls = await svgHandler.splitLayers(
-      assetsFolder + "Character/hair/womenHair5.svg"
+      assetsFolder + 'Character/shirt/torso/4.svg'
     );
 
-    this._svgs["hairNoColor"] = urls[1];
-    this._svgs["hairColored"] = urls[2];
+    this._svgs.shirt = [];
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder + "Character/head/testHead.svg"
-    );
-    this._svgs["headNoColor"] = urls[0];
-    this._svgs["headColored"] = urls[1];
+    for (let i = 0; i < urls.length; i++) this._svgs.shirt.push(urls[i]);
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder + "Character/torso/testWomenTorso.svg"
-    );
-    this._svgs["torsoWomen"] = urls[0];
+    // let urls = await svgHandler.splitLayers(
+    //   assetsFolder + "Character/hair/womenHair5.svg"
+    // );
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder +  "Character/arms/upArmTemp.svg"
-    );
-    this._svgs["upArmTemp"] = urls[0];
+    // this._svgs["hairNoColor"] = urls[1];
+    // this._svgs["hairColored"] = urls[2];
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder +  "Character/arms/lowArmTemp.svg"
-    );
-    this._svgs["lowArmTemp"] = urls[0];
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder + "Character/head/testHead.svg"
+    // );
+    // this._svgs["headNoColor"] = urls[0];
+    // this._svgs["headColored"] = urls[1];
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder +  "Character/hands/right/rightHand.svg"
-    );
-    this._svgs["rightHand"] = urls[0];
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder + "Character/torso/testWomenTorso.svg"
+    // );
+    // this._svgs["torsoWomen"] = urls[0];
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder +  "Character/hands/left/leftHand.svg"
-    );
-    this._svgs["leftHand"] = urls[0];
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder +  "Character/arms/upArmTemp.svg"
+    // );
+    // this._svgs["upArmTemp"] = urls[0];
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder +  "Character/shoes/1.svg"
-    );
-    this._svgs["rightShoe"] = urls[0];
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder +  "Character/arms/lowArmTemp.svg"
+    // );
+    // this._svgs["lowArmTemp"] = urls[0];
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder +  "Character/shoes/1.svg"
-    );
-    this._svgs["leftShoe"] = urls[0];
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder +  "Character/hands/right/rightHand.svg"
+    // );
+    // this._svgs["rightHand"] = urls[0];
 
-    urls = await svgHandler.splitLayers(
-      assetsFolder + "/Character/hips/testHips.svg"
-    );
-    this._svgs["hips"] = urls[0];
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder +  "Character/hands/left/leftHand.svg"
+    // );
+    // this._svgs["leftHand"] = urls[0];
 
-    urls = await svgHandler.splitLayers(assetsFolder + "Character/legs/upLeg.svg");
-    this._svgs["upLeg"] = urls[0];
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder +  "Character/shoes/1.svg"
+    // );
+    // this._svgs["rightShoe"] = urls[0];
 
-    urls = await svgHandler.splitLayers(assetsFolder + "Character/legs/lowLeg.svg");
-    this._svgs["lowLeg"] = urls[0];
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder +  "Character/shoes/1.svg"
+    // );
+    // this._svgs["leftShoe"] = urls[0];
 
+    // urls = await svgHandler.splitLayers(
+    //   assetsFolder + "/Character/hips/testHips.svg"
+    // );
+    // this._svgs["hips"] = urls[0];
 
+    // urls = await svgHandler.splitLayers(assetsFolder + "Character/legs/upLeg.svg");
+    // this._svgs["upLeg"] = urls[0];
+
+    // urls = await svgHandler.splitLayers(assetsFolder + "Character/legs/lowLeg.svg");
+    // this._svgs["lowLeg"] = urls[0];
   }
 
   // Draws the sprites for the characterw
   createSprites() {
-    const characterFolder = "assets/Character";
+    const characterFolder = 'assets/Character';
 
-    this.headNoColor = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.headNoColor,
-      parent: this.parent,
-      sizeScale: 0.22,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0.05 },
-      hsl: { h: 30, s: 100, l: 93 },
-      zIndex: 15,
-    });
+    for (let i = 0; i < this._svgs.shirt.length; i++) {
+      this["shirtPiece" + i] = new Sprite({
+        canvas: this.canvas,
+        imageSrc: this._svgs.shirt[i],
+        parent: this.parent,
+        sizeScale: 0.22,
+        anchorPoint: { x: 0.5, y: 0 },
+        positionScale: { x: 0.5, y: 0.05 },
+        hsl: { h: 30, s: 100, l: 93 },
+        zIndex: 15
+      });
+    }
 
-    // this.headColored = new Sprite({
+    // this.headNoColor = new Sprite({
     //   canvas: this.canvas,
-    //   imageSrc: this._svgs.headColored,
+    //   imageSrc: this._svgs.headNoColor,
+    //   parent: this.parent,
+    //   sizeScale: 0.22,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: 0.5, y: 0.05 },
+    //   hsl: { h: 30, s: 100, l: 93 },
+    //   zIndex: 15,
+    // });
+
+    // // this.headColored = new Sprite({
+    // //   canvas: this.canvas,
+    // //   imageSrc: this._svgs.headColored,
+    // //   parent: this.headNoColor,
+    // //   sizeScale: 1,
+    // //   anchorPoint: { x: 0.5, y: 0 },
+    // //   positionScale: { x: 0.5, y: 0 },
+    // //   zIndex: this.headNoColor.zIndex,
+    // // });
+
+    // // this.hairNoColor = new Sprite({
+    // //   canvas: this.canvas,
+    // //   imageSrc: this._svgs.hairNoColor,
+    // //   parent: this.headNoColor,
+    // //   sizeScale: 1.15,
+    // //   anchorPoint: { x: 0.5, y: 0 },
+    // //   positionScale: { x: 0.575, y: -.175 },
+    // //   hsl: { h: 38, s: 91, l: 78 },
+    // //   zIndex: this.headNoColor.zIndex,
+    // // });
+
+    // // if (this._svgs.hairColored)
+    // //   this.hairColored = new Sprite({
+    // //     canvas: this.canvas,
+    // //     imageSrc: this._svgs.hairColored,
+    // //     parent: this.hairNoColor,
+    // //     sizeScale: 1,
+    // //     anchorPoint: { x: 0.5, y: 0 },
+    // //     positionScale: { x: 0.5, y: 0 },
+    // //     zIndex: ret.hairNoColor.zIndex,
+    // //   });
+
+    // this.torso = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.torsoWomen,
     //   parent: this.headNoColor,
+    //   sizeScale: 1.4,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: 0.5, y: 0.85 },
+    //   hsl: this.headNoColor.hsl,
+    //   zIndex: this.headNoColor.zIndex - 1,
+    // });
+
+    // this.rightUpperArm = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.upArmTemp,
+    //   parent: this.torso,
+    //   sizeScale: 0.5,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: 0.2, y: 0.1 },
+    //   hsl: { h: 0, s: 100, l: 50 },
+    // });
+
+    // this.rightLowerArm = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.upArmTemp,
+    //   parent: this.rightUpperArm,
     //   sizeScale: 1,
     //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.5, y: 0 },
-    //   zIndex: this.headNoColor.zIndex,
+    //   positionScale: { x: 0.5, y: 0.9 },
+    //   hsl: { h: 200, s: 100, l: 50 },
     // });
-
-    // this.hairNoColor = new Sprite({
+    // this.rightHand = new Sprite({
     //   canvas: this.canvas,
-    //   imageSrc: this._svgs.hairNoColor,
-    //   parent: this.headNoColor,
-    //   sizeScale: 1.15,
+    //   imageSrc: this._svgs.rightHand,
+    //   parent: this.rightLowerArm,
+    //   sizeScale: 1,
     //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.575, y: -.175 },
-    //   hsl: { h: 38, s: 91, l: 78 },
-    //   zIndex: this.headNoColor.zIndex,
+    //   positionScale: { x: 2.82, y: 1 },
+    //   hsl: { h: 200, s: 100, l: 50 },
+    //   zIndex: this.torso.zIndex,
     // });
 
-    // if (this._svgs.hairColored)
-    //   this.hairColored = new Sprite({
-    //     canvas: this.canvas,
-    //     imageSrc: this._svgs.hairColored,
-    //     parent: this.hairNoColor,
-    //     sizeScale: 1,
-    //     anchorPoint: { x: 0.5, y: 0 },
-    //     positionScale: { x: 0.5, y: 0 },
-    //     zIndex: ret.hairNoColor.zIndex,
-    //   });
+    // this.leftUpperArm = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.upArmTemp,
+    //   parent: this.torso,
+    //   sizeScale: 0.5,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: 1, y: 0.2 },
+    //   hsl: { h: 0, s: 100, l: 50 },
+    //   zIndex: this.torso.zIndex,
+    // });
 
-    this.torso = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.torsoWomen,
-      parent: this.headNoColor,
-      sizeScale: 1.4,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0.85 },
-      hsl: this.headNoColor.hsl,
-      zIndex: this.headNoColor.zIndex - 1,
-    });
+    // this.leftLowerArm = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.upArmTemp,
+    //   parent: this.leftUpperArm,
+    //   sizeScale: 1,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: 0.5, y: 0.9 },
+    //   hsl: { h: 200, s: 100, l: 50 },
+    //   zIndex: this.torso.zIndex,
+    // });
 
-    this.rightUpperArm = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.upArmTemp,
-      parent: this.torso,
-      sizeScale: 0.5,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.2, y: 0.1 },
-      hsl: { h: 0, s: 100, l: 50 },
-    });
+    // this.leftHand = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.leftHand,
+    //   parent: this.leftLowerArm,
+    //   sizeScale: 1,
+    //   anchorPoint: { x: 1, y: 0 },
+    //   positionScale: { x: 0.5, y: 0.5 },
+    //   hsl: { h: 200, s: 100, l: 50 },
+    //   zIndex: this.torso.zIndex,
+    // });
 
-    this.rightLowerArm = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.upArmTemp,
-      parent: this.rightUpperArm,
-      sizeScale: 1,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0.9 },
-      hsl: { h: 200, s: 100, l: 50 },
-    });
-    this.rightHand = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.rightHand,
-      parent: this.rightLowerArm,
-      sizeScale: 1,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 2.82, y: 1 },
-      hsl: { h: 200, s: 100, l: 50 },
-      zIndex: this.torso.zIndex,
-    });
+    // this.hips = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.hips,
+    //   parent: this.torso,
+    //   sizeScale: 0.45,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: 0.5, y: 0.9 },
+    //   hsl: { h: 170, s: 100, l: 50 },
+    //   zIndex: this.torso.zIndex-1,
+    // });
 
-    this.leftUpperArm = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.upArmTemp,
-      parent: this.torso,
-      sizeScale: 0.5,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 1, y: 0.2 },
-      hsl: { h: 0, s: 100, l: 50 },
-      zIndex: this.torso.zIndex,
-    });
+    // this.rightUpLeg = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.upLeg,
+    //   parent: this.hips,
+    //   sizeScale: 1.1,
+    //   anchorPoint: { x: 0, y: 0 },
+    //   positionScale: { x: 0.1, y: 0.7 },
+    //   hsl: { h: 150, s: 100, l: 50 },
+    // });
 
-    this.leftLowerArm = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.upArmTemp,
-      parent: this.leftUpperArm,
-      sizeScale: 1,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0.9 },
-      hsl: { h: 200, s: 100, l: 50 },
-      zIndex: this.torso.zIndex,
-    });
+    // this.rightLowLeg = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.lowLeg,
+    //   parent: this.rightUpLeg,
+    //   sizeScale: 1,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: 0.5, y: 0.7 },
+    //   hsl: this.rightUpLeg.hsl,
+    // });
 
-    this.leftHand = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.leftHand,
-      parent: this.leftLowerArm,
-      sizeScale: 1,
-      anchorPoint: { x: 1, y: 0 },
-      positionScale: { x: 0.5, y: 0.5 },
-      hsl: { h: 200, s: 100, l: 50 },
-      zIndex: this.torso.zIndex,
-    });
+    // this.rightShoe = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.rightShoe,
+    //   parent: this.rightLowLeg,
+    //   sizeScale: .6,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: .89, y: 1 },
+    //   hsl: this.rightLowLeg.hsl,
+    // });
 
-    this.hips = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.hips,
-      parent: this.torso,
-      sizeScale: 0.45,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0.9 },
-      hsl: { h: 170, s: 100, l: 50 },
-      zIndex: this.torso.zIndex-1,
-    });
+    // this.leftUpLeg = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.upLeg,
+    //   parent: this.hips,
+    //   sizeScale: this.rightUpLeg.sizeScale,
+    //   anchorPoint: { x: 1, y: 0 },
+    //   positionScale: { x: 1, y: 0.7 },
+    //   hsl: { h: 140, s: 100, l: 50 },
+    // });
 
-    this.rightUpLeg = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.upLeg,
-      parent: this.hips,
-      sizeScale: 1.1,
-      anchorPoint: { x: 0, y: 0 },
-      positionScale: { x: 0.1, y: 0.7 },
-      hsl: { h: 150, s: 100, l: 50 },
-    });
+    // this.leftLowLeg = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.lowLeg,
+    //   parent: this.leftUpLeg,
+    //   sizeScale: this.rightLowLeg.sizeScale,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: 0.5, y: 0.7 },
+    //   hsl: this.leftUpLeg.hsl,
+    // });
 
-    this.rightLowLeg = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.lowLeg,
-      parent: this.rightUpLeg,
-      sizeScale: 1,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0.7 },
-      hsl: this.rightUpLeg.hsl,
-    });
+    // this.leftShoe = new Sprite({
+    //   canvas: this.canvas,
+    //   imageSrc: this._svgs.leftShoe,
+    //   parent: this.leftLowLeg,
+    //   sizeScale: .6,
+    //   anchorPoint: { x: 0.5, y: 0 },
+    //   positionScale: { x: -.6, y: 0.85},
+    //   hsl: this.leftLowLeg.hsl,
+    // });
 
-    this.rightShoe = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.rightShoe,
-      parent: this.rightLowLeg,
-      sizeScale: .6,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: .89, y: 1 },
-      hsl: this.rightLowLeg.hsl,
-    });
-    
-    this.leftUpLeg = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.upLeg,
-      parent: this.hips,
-      sizeScale: this.rightUpLeg.sizeScale,
-      anchorPoint: { x: 1, y: 0 },
-      positionScale: { x: 1, y: 0.7 },
-      hsl: { h: 140, s: 100, l: 50 },
-    });
-
-    this.leftLowLeg = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.lowLeg,
-      parent: this.leftUpLeg,
-      sizeScale: this.rightLowLeg.sizeScale,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0.7 },
-      hsl: this.leftUpLeg.hsl,
-    });
-
-    this.leftShoe = new Sprite({
-      canvas: this.canvas,
-      imageSrc: this._svgs.leftShoe,
-      parent: this.leftLowLeg,
-      sizeScale: .6,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: -.6, y: 0.85},
-      hsl: this.leftLowLeg.hsl,
-    });
-
-    this._isCharacterLoaded = true
+    this._isCharacterLoaded = true;
   }
 }

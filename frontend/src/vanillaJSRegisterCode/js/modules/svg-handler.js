@@ -18,7 +18,7 @@ const SVGHandler = (() => {
   function createUrl(svg) {
     const svgString = new XMLSerializer().serializeToString(svg);
     const svgBlob = new Blob([svgString], {
-      type: "image/svg+xml;charset=utf-8",
+      type: 'image/svg+xml;charset=utf-8'
     });
 
     const DOMURL = window.URL || window.webkitURL || window;
@@ -29,15 +29,15 @@ const SVGHandler = (() => {
 
   // get the style, width, and height of an svg
   function getAttributes(doc) {
-    const style = doc.querySelector("style");
-    const svg = doc.querySelector("svg");
-    const viewBox = svg.getAttribute("viewBox");
+    const style = doc.querySelector('style');
+    const svg = doc.querySelector('svg');
+    const viewBox = svg.getAttribute('viewBox');
 
     let x, y, vWidth, vHeight;
-    if (viewBox) [x, y, vWidth, vHeight] = viewBox.split(" ");
+    if (viewBox) [x, y, vWidth, vHeight] = viewBox.split(' ');
 
-    const width = svg.getAttribute("width") || vWidth;
-    const height = svg.getAttribute("height") || vHeight;
+    const width = svg.getAttribute('width') || vWidth;
+    const height = svg.getAttribute('height') || vHeight;
 
     return [style, width, height];
   }
@@ -46,24 +46,26 @@ const SVGHandler = (() => {
   function createSVG(doc) {
     let [style, width, height] = getAttributes(doc);
 
-    const newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const newSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    );
     if (style) newSvg.appendChild(style.cloneNode(true));
-    newSvg.setAttribute("width", width);
-    newSvg.setAttribute("height", height);
+    newSvg.setAttribute('width', width);
+    newSvg.setAttribute('height', height);
 
     return newSvg;
   }
-
 
   // Splits each layer of an SVG into it's own SVGs
   // Returns a list of all layers as seperate svgs
   async function splitLayers(sourceSvg) {
     let svgString = await getSVGString(sourceSvg);
-  
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(svgString, "image/svg+xml");
 
-    const layerList = doc.querySelectorAll("svg > g");
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgString, 'image/svg+xml');
+
+    const layerList = doc.querySelectorAll('svg > defs > g');
     let svgURLS = [];
 
     layerList.forEach(layer => {
@@ -77,7 +79,7 @@ const SVGHandler = (() => {
   }
 
   return {
-    splitLayers,
+    splitLayers
   };
 })();
 
