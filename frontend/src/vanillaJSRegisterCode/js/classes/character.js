@@ -61,6 +61,26 @@ export default class Character {
     this._svgs["lowArmTemp"] = urls[0];
 
     urls = await svgHandler.splitLayers(
+      assetsFolder +  "Character/hands/right/rightHand.svg"
+    );
+    this._svgs["rightHand"] = urls[0];
+
+    urls = await svgHandler.splitLayers(
+      assetsFolder +  "Character/hands/left/leftHand.svg"
+    );
+    this._svgs["leftHand"] = urls[0];
+
+    urls = await svgHandler.splitLayers(
+      assetsFolder +  "Character/shoes/1.svg"
+    );
+    this._svgs["rightShoe"] = urls[0];
+
+    urls = await svgHandler.splitLayers(
+      assetsFolder +  "Character/shoes/1.svg"
+    );
+    this._svgs["leftShoe"] = urls[0];
+
+    urls = await svgHandler.splitLayers(
       assetsFolder + "/Character/hips/testHips.svg"
     );
     this._svgs["hips"] = urls[0];
@@ -70,6 +90,8 @@ export default class Character {
 
     urls = await svgHandler.splitLayers(assetsFolder + "Character/legs/lowLeg.svg");
     this._svgs["lowLeg"] = urls[0];
+
+
   }
 
   // Draws the sprites for the characterw
@@ -149,6 +171,16 @@ export default class Character {
       positionScale: { x: 0.5, y: 0.9 },
       hsl: { h: 200, s: 100, l: 50 },
     });
+    this.rightHand = new Sprite({
+      canvas: this.canvas,
+      imageSrc: this._svgs.rightHand,
+      parent: this.rightLowerArm,
+      sizeScale: 1,
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: 2.82, y: 1 },
+      hsl: { h: 200, s: 100, l: 50 },
+      zIndex: this.torso.zIndex,
+    });
 
     this.leftUpperArm = new Sprite({
       canvas: this.canvas,
@@ -168,6 +200,17 @@ export default class Character {
       sizeScale: 1,
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.5, y: 0.9 },
+      hsl: { h: 200, s: 100, l: 50 },
+      zIndex: this.torso.zIndex,
+    });
+
+    this.leftHand = new Sprite({
+      canvas: this.canvas,
+      imageSrc: this._svgs.leftHand,
+      parent: this.leftLowerArm,
+      sizeScale: 1,
+      anchorPoint: { x: 1, y: 0 },
+      positionScale: { x: 0.5, y: 0.5 },
       hsl: { h: 200, s: 100, l: 50 },
       zIndex: this.torso.zIndex,
     });
@@ -203,6 +246,16 @@ export default class Character {
       hsl: this.rightUpLeg.hsl,
     });
 
+    this.rightShoe = new Sprite({
+      canvas: this.canvas,
+      imageSrc: this._svgs.rightShoe,
+      parent: this.rightLowLeg,
+      sizeScale: .6,
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: .89, y: 1 },
+      hsl: this.rightLowLeg.hsl,
+    });
+    
     this.leftUpLeg = new Sprite({
       canvas: this.canvas,
       imageSrc: this._svgs.upLeg,
@@ -221,6 +274,16 @@ export default class Character {
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.5, y: 0.7 },
       hsl: this.leftUpLeg.hsl,
+    });
+
+    this.leftShoe = new Sprite({
+      canvas: this.canvas,
+      imageSrc: this._svgs.leftShoe,
+      parent: this.leftLowLeg,
+      sizeScale: .6,
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: -.6, y: 0.85},
+      hsl: this.leftLowLeg.hsl,
     });
 
     this._isCharacterLoaded = true
