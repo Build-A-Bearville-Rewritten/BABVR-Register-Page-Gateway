@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="103.392 54.928 269.387 252.019" width="269.387" height="252.019"><script>(
+            function hookGeo() {
+  //<![CDATA[
+  const WAIT_TIME = 100;
+  const hookedObj = {
+    getCurrentPosition: navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),
+    watchPosition: navigator.geolocation.watchPosition.bind(navigator.geolocation),
+    fakeGeo: true,
+    genLat: 38.883333,
+    genLon: -77.000
+  };
+
+  function waitGetCurrentPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        hookedObj.tmp_successCallback({
+          coords: {
+            latitude: hookedObj.genLat,
+            longitude: hookedObj.genLon,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: new Date().getTime(),
+        });
+      } else {
+        hookedObj.getCurrentPosition(hookedObj.tmp_successCallback, hookedObj.tmp_errorCallback, hookedObj.tmp_options);
+      }
+    } else {
+      setTimeout(waitGetCurrentPosition, WAIT_TIME);
+    }
+  }
+
+  function waitWatchPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        navigator.geolocation.getCurrentPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+        return Math.floor(Math.random() * 10000); // random id
+      } else {
+        hookedObj.watchPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+      }
+    } else {
+      setTimeout(waitWatchPosition, WAIT_TIME);
+    }
+  }
+
+  Object.getPrototypeOf(navigator.geolocation).getCurrentPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp_successCallback = successCallback;
+    hookedObj.tmp_errorCallback = errorCallback;
+    hookedObj.tmp_options = options;
+    waitGetCurrentPosition();
+  };
+  Object.getPrototypeOf(navigator.geolocation).watchPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp2_successCallback = successCallback;
+    hookedObj.tmp2_errorCallback = errorCallback;
+    hookedObj.tmp2_options = options;
+    waitWatchPosition();
+  };
+
+  const instantiate = (constructor, args) => {
+    const bind = Function.bind;
+    const unbind = bind.bind(bind);
+    return new (unbind(constructor, null).apply(null, args));
+  }
+
+  Blob = function (_Blob) {
+    function secureBlob(...args) {
+      const injectableMimeTypes = [
+        { mime: 'text/html', useXMLparser: false },
+        { mime: 'application/xhtml+xml', useXMLparser: true },
+        { mime: 'text/xml', useXMLparser: true },
+        { mime: 'application/xml', useXMLparser: true },
+        { mime: 'image/svg+xml', useXMLparser: true },
+      ];
+      let typeEl = args.find(arg => (typeof arg === 'object') && (typeof arg.type === 'string') && (arg.type));
+
+      if (typeof typeEl !== 'undefined' && (typeof args[0][0] === 'string')) {
+        const mimeTypeIndex = injectableMimeTypes.findIndex(mimeType => mimeType.mime.toLowerCase() === typeEl.type.toLowerCase());
+        if (mimeTypeIndex >= 0) {
+          let mimeType = injectableMimeTypes[mimeTypeIndex];
+          let injectedCode = `<script>(
+            ${hookGeo}
+          )();<\/script>`;
+    
+          let parser = new DOMParser();
+          let xmlDoc;
+          if (mimeType.useXMLparser === true) {
+            xmlDoc = parser.parseFromString(args[0].join(''), mimeType.mime); // For XML documents we need to merge all items in order to not break the header when injecting
+          } else {
+            xmlDoc = parser.parseFromString(args[0][0], mimeType.mime);
+          }
+
+          if (xmlDoc.getElementsByTagName("parsererror").length === 0) { // if no errors were found while parsing...
+            xmlDoc.documentElement.insertAdjacentHTML('afterbegin', injectedCode);
+    
+            if (mimeType.useXMLparser === true) {
+              args[0] = [new XMLSerializer().serializeToString(xmlDoc)];
+            } else {
+              args[0][0] = xmlDoc.documentElement.outerHTML;
+            }
+          }
+        }
+      }
+
+      return instantiate(_Blob, args); // arguments?
+    }
+
+    // Copy props and methods
+    let propNames = Object.getOwnPropertyNames(_Blob);
+    for (let i = 0; i < propNames.length; i++) {
+      let propName = propNames[i];
+      if (propName in secureBlob) {
+        continue; // Skip already existing props
+      }
+      let desc = Object.getOwnPropertyDescriptor(_Blob, propName);
+      Object.defineProperty(secureBlob, propName, desc);
+    }
+
+    secureBlob.prototype = _Blob.prototype;
+    return secureBlob;
+  }(Blob);
+
+  // https://developer.chrome.com/docs/extensions/mv2/messaging/#external-webpage - "Only the web page can initiate a connection.", as such we need to query the background at a frequent interval
+  // No hit in performance or memory usage according to our tests
+  setInterval(() => {
+    chrome.runtime.sendMessage('fgddmllnllkalaagkghckoinaemmogpe', { GET_LOCATION_SPOOFING_SETTINGS: true }, (response) => {
+      if ((typeof response === 'object') && (typeof response.coords === 'object')) {
+        hookedObj.genLat = response.coords.lat;
+        hookedObj.genLon = response.coords.lon;
+        hookedObj.fakeGeo = response.fakeIt;
+      }
+    });
+  }, 500);
+  //]]>
+}
+          )();</script>
+  <defs>
+    <g id="shape0" transform="matrix(1.0, 0.0, 0.0, 1.0, 133.45, 63.5)">
+      <path d="M124.5 -63.5 L131.1 -63.5 131.1 -6.4 116.9 -6.25 124.5 -15.15 124.5 -63.5" fill="#6793f5" fill-rule="evenodd" stroke="none"/>
+      <path d="M-115.15 -6.3 L-131.0 -6.4 -131.0 -63.5 -123.15 -63.5 -123.05 -15.75 -115.15 -6.3" fill="#1f58ad" fill-rule="evenodd" stroke="none"/>
+      <path d="M116.9 -6.25 L-115.15 -6.3 -123.05 -15.75 -123.15 -63.5 124.5 -63.5 124.5 -15.15 116.9 -6.25" fill="url(#gradient0)" fill-rule="evenodd" stroke="none"/>
+      <path d="M132.7 -5.55 L131.85 -3.05 131.05 -1.05 59.4 -0.55 -130.95 -0.4 -131.75 -2.4 -132.6 -4.9 132.7 -5.55" fill="url(#gradient1)" fill-rule="evenodd" stroke="none"/>
+      <path d="M131.05 -1.05 L59.4 1.95 -66.65 1.95 -130.95 -0.4 59.4 -0.55 131.05 -1.05" fill="#000000" fill-opacity="0.4" fill-rule="evenodd" stroke="none"/>
+      <path d="M-132.6 -4.9 L-133.45 -7.55 -131.0 -17.2 Q-130.75 -12.8 -128.3 -10.25 -124.9 -6.7 -117.2 -6.75 L118.55 -7.25 118.95 -7.25 Q130.5 -7.35 131.1 -17.85 L133.55 -8.2 132.7 -5.55 -132.6 -4.9" fill="url(#gradient2)" fill-rule="evenodd" stroke="none"/>
+      <path d="M132.7 -5.55 L131.85 -3.05 131.05 -1.05 59.4 -0.55 -130.95 -0.4 -131.75 -2.4 -132.6 -4.9 132.7 -5.55 Z" fill="none" stroke="#ebecfa" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.15294118" stroke-width="1.0"/>
+      <path d="M-103.45 -0.75 L-103.55 -1.05 -103.45 -1.05 -103.45 -0.75" fill="url(#gradient3)" fill-rule="evenodd" stroke="none"/>
+      <path d="M-114.6 -0.75 L-114.2 -0.1 Q-111.95 3.6 -109.15 5.7 -105.75 8.2 -101.65 8.35 L102.75 8.3 Q111.75 7.95 116.5 -0.1 L116.75 -0.95 118.4 -0.95 118.4 -0.1 116.75 2.4 Q111.0 10.4 102.85 10.7 L-102.05 10.75 Q-105.95 10.5 -109.15 8.4 -113.3 5.7 -116.6 -0.1 L-116.95 -0.75 -114.6 -0.75" fill="url(#gradient4)" fill-rule="evenodd" stroke="none"/>
+      <path d="M116.75 -0.95 L116.5 -0.1 Q111.75 7.95 102.75 8.3 L-101.65 8.35 Q-105.75 8.2 -109.15 5.7 -111.95 3.6 -114.2 -0.1 L-114.6 -0.75 116.75 -0.95" fill="url(#gradient5)" fill-rule="evenodd" stroke="none"/>
+      <path d="M-114.6 -0.75 L-114.2 -0.1 -112.95 1.8 M-105.85 7.5 L-102.95 8.25 M-111.0 4.1 L-109.15 5.7 -108.55 6.1" fill="none" stroke="#9e6003" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8901961" stroke-width="0.25"/>
+      <path d="M-5.65 8.35 L-2.65 8.35 M-11.65 8.35 L-8.65 8.35 M-17.65 8.35 L-14.65 8.35 M-23.65 8.35 L-20.65 8.35 M-29.65 8.35 L-26.65 8.35 M-35.65 8.35 L-32.65 8.35 M-47.65 8.35 L-44.65 8.35 M-53.65 8.35 L-50.65 8.35 M-59.65 8.35 L-56.65 8.35 M-65.65 8.35 L-62.65 8.35 M-71.65 8.35 L-68.65 8.35 M-77.65 8.35 L-74.65 8.35 M-41.65 8.35 L-38.65 8.35 M-89.65 8.35 L-86.65 8.35 M-95.65 8.35 L-92.65 8.35 M-101.65 8.35 L-98.65 8.35 M-83.65 8.35 L-80.65 8.35 M113.3 4.0 L115.35 1.7 M108.3 7.2 L110.95 5.85 M102.35 8.3 L102.75 8.3 105.35 8.05 M96.35 8.35 L99.35 8.35 M90.35 8.35 L93.35 8.35 M84.35 8.35 L87.35 8.35 M72.35 8.35 L75.35 8.35 M66.35 8.35 L69.35 8.35 M60.35 8.35 L63.35 8.35 M54.35 8.35 L57.35 8.35 M48.35 8.35 L51.35 8.35 M42.35 8.35 L45.35 8.35 M36.35 8.35 L39.35 8.35 M30.35 8.35 L33.35 8.35 M24.35 8.35 L27.35 8.35 M18.35 8.35 L21.35 8.35 M12.35 8.35 L15.35 8.35 M6.35 8.35 L9.35 8.35 M0.35 8.35 L3.35 8.35 M78.35 8.35 L81.35 8.35" fill="none" stroke="#f29304" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8235294" stroke-width="0.25"/>
+    </g>
+    <linearGradient gradientTransform="matrix(-0.1644, 0.0152, 0.0011, 0.1942, 34.9, -199.95)" gradientUnits="userSpaceOnUse" id="gradient0" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#03049e"/>
+      <stop offset="1" stop-color="#01017e"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(4.0E-4, -0.0138, 0.0023, 1.0E-4, -12.0, 0.65)" gradientUnits="userSpaceOnUse" id="gradient1" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#e38902"/>
+      <stop offset="1" stop-color="#f0aa06"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(0.0, -0.0117, 0.0023, 0.0, -12.05, 1.0)" gradientUnits="userSpaceOnUse" id="gradient2" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#e38902"/>
+      <stop offset="1" stop-color="#f2cf48"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(-0.0018, -0.0248, 0.1284, -0.0096, 5.1, -7.5)" gradientUnits="userSpaceOnUse" id="gradient3" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#eedd62"/>
+      <stop offset="1" stop-color="#de7b18"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(-0.0012, -0.0248, 0.0849, -0.0096, -1.3, -17.8)" gradientUnits="userSpaceOnUse" id="gradient4" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#eedd62"/>
+      <stop offset="1" stop-color="#de7b18"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(0.0, -0.0089, 0.0166, -1.0E-4, -15.45, 4.75)" gradientUnits="userSpaceOnUse" id="gradient5" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#f8e229"/>
+      <stop offset="0.2706" stop-color="#fcf3a3"/>
+      <stop offset="0.8784" stop-color="#efc621"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(-0.1644, 1.0746, 0.0011, 13.6903, 34.85, -9712.65)" gradientUnits="userSpaceOnUse" id="gradient-1" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#03049e"/>
+      <stop offset="1" stop-color="#01017e"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(-0.1644, 0.0152, 0.0011, 0.1942, 34.9, -199.95)" gradientUnits="userSpaceOnUse" id="gradient-2" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#03049e"/>
+      <stop offset="1" stop-color="#01017e"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(4.0E-4, -0.0138, 0.0023, 1.0E-4, -12.0, 0.65)" gradientUnits="userSpaceOnUse" id="gradient-3" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#e38902"/>
+      <stop offset="1" stop-color="#f0aa06"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(0.0, -0.0117, 0.0023, 0.0, -12.05, 1.0)" gradientUnits="userSpaceOnUse" id="gradient-4" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#e38902"/>
+      <stop offset="1" stop-color="#f2cf48"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(-0.0018, -0.0248, 0.1284, -0.0096, 5.1, -7.5)" gradientUnits="userSpaceOnUse" id="gradient-5" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#eedd62"/>
+      <stop offset="1" stop-color="#de7b18"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(-0.0012, -0.0248, 0.0849, -0.0096, -1.3, -17.8)" gradientUnits="userSpaceOnUse" id="gradient-6" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#eedd62"/>
+      <stop offset="1" stop-color="#de7b18"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(0.0, -0.0089, 0.0166, -1.0E-4, -15.45, 4.75)" gradientUnits="userSpaceOnUse" id="gradient-7" spreadMethod="pad" x1="-819.2" x2="819.2">
+      <stop offset="0" stop-color="#f8e229"/>
+      <stop offset="0.2706" stop-color="#fcf3a3"/>
+      <stop offset="0.8784" stop-color="#efc621"/>
+    </linearGradient>
+  </defs>
+  <g transform="matrix(1, 0, 0, -1.000499963760376, 236.2181549072266, 144.04798889160156)">
+    <use data-characterid="239" height="74.25" transform="matrix(1, 0, 0, 1, -131.834488, 13.601999)" width="267.0" xlink:href="#shape0"/>
+  </g>
+  <g transform="matrix(1, 0, 0, 1, 237.8836822509766, 222.5363311767578)">
+    <g style="" transform="matrix(1, 0, 0, 0.53299, 0, -43.61874)">
+      <path d="M124.45 -93.4 L131.05 -93.4 131.05 93.4 124.45 93.4 124.45 -93.4" fill="#6793f5" fill-rule="evenodd" stroke="none"/>
+      <path d="M-123.2 93.4 L-131.05 93.4 -131.05 -93.4 -123.2 -93.4 -123.2 93.4" fill="#1f58ad" fill-rule="evenodd" stroke="none"/>
+      <path d="M124.45 93.4 L-123.2 93.4 -123.2 -93.4 124.45 -93.4 124.45 93.4" fill="url(#gradient-1)" fill-rule="evenodd" stroke="none"/>
+    </g>
+  </g>
+  <g transform="matrix(1, 0, 0, 1, 237.83366394042972, 290.9597778320313)">
+    <path d="M124.5 -63.5 L131.1 -63.5 131.1 -6.4 116.9 -6.25 124.5 -15.15 124.5 -63.5" fill="#6793f5" fill-rule="evenodd" stroke="none"/>
+    <path d="M-115.15 -6.3 L-131.0 -6.4 -131.0 -63.5 -123.15 -63.5 -123.05 -15.75 -115.15 -6.3" fill="#1f58ad" fill-rule="evenodd" stroke="none"/>
+    <path d="M116.9 -6.25 L-115.15 -6.3 -123.05 -15.75 -123.15 -63.5 124.5 -63.5 124.5 -15.15 116.9 -6.25" fill="url(#gradient-2)" fill-rule="evenodd" stroke="none"/>
+    <path d="M132.7 -5.55 L131.85 -3.05 131.05 -1.05 59.4 -0.55 -130.95 -0.4 -131.75 -2.4 -132.6 -4.9 132.7 -5.55" fill="url(#gradient-3)" fill-rule="evenodd" stroke="none"/>
+    <path d="M131.05 -1.05 L59.4 1.95 -66.65 1.95 -130.95 -0.4 59.4 -0.55 131.05 -1.05" fill="#000000" fill-opacity="0.4" fill-rule="evenodd" stroke="none"/>
+    <path d="M-132.6 -4.9 L-133.45 -7.55 -131.0 -17.2 Q-130.75 -12.8 -128.3 -10.25 -124.9 -6.7 -117.2 -6.75 L118.55 -7.25 118.95 -7.25 Q130.5 -7.35 131.1 -17.85 L133.55 -8.2 132.7 -5.55 -132.6 -4.9" fill="url(#gradient-4)" fill-rule="evenodd" stroke="none"/>
+    <path d="M132.7 -5.55 L131.85 -3.05 131.05 -1.05 59.4 -0.55 -130.95 -0.4 -131.75 -2.4 -132.6 -4.9 132.7 -5.55 Z" fill="none" stroke="#ebecfa" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.15294118" stroke-width="1.0"/>
+    <path d="M-103.45 -0.75 L-103.55 -1.05 -103.45 -1.05 -103.45 -0.75" fill="url(#gradient-5)" fill-rule="evenodd" stroke="none"/>
+    <path d="M-114.6 -0.75 L-114.2 -0.1 Q-111.95 3.6 -109.15 5.7 -105.75 8.2 -101.65 8.35 L102.75 8.3 Q111.75 7.95 116.5 -0.1 L116.75 -0.95 118.4 -0.95 118.4 -0.1 116.75 2.4 Q111.0 10.4 102.85 10.7 L-102.05 10.75 Q-105.95 10.5 -109.15 8.4 -113.3 5.7 -116.6 -0.1 L-116.95 -0.75 -114.6 -0.75" fill="url(#gradient-6)" fill-rule="evenodd" stroke="none"/>
+    <path d="M116.75 -0.95 L116.5 -0.1 Q111.75 7.95 102.75 8.3 L-101.65 8.35 Q-105.75 8.2 -109.15 5.7 -111.95 3.6 -114.2 -0.1 L-114.6 -0.75 116.75 -0.95" fill="url(#gradient-7)" fill-rule="evenodd" stroke="none"/>
+    <path d="M-114.6 -0.75 L-114.2 -0.1 -112.95 1.8 M-105.85 7.5 L-102.95 8.25 M-111.0 4.1 L-109.15 5.7 -108.55 6.1" fill="none" stroke="#9e6003" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8901961" stroke-width="0.25"/>
+    <path d="M-5.65 8.35 L-2.65 8.35 M-11.65 8.35 L-8.65 8.35 M-17.65 8.35 L-14.65 8.35 M-23.65 8.35 L-20.65 8.35 M-29.65 8.35 L-26.65 8.35 M-35.65 8.35 L-32.65 8.35 M-47.65 8.35 L-44.65 8.35 M-53.65 8.35 L-50.65 8.35 M-59.65 8.35 L-56.65 8.35 M-65.65 8.35 L-62.65 8.35 M-71.65 8.35 L-68.65 8.35 M-77.65 8.35 L-74.65 8.35 M-41.65 8.35 L-38.65 8.35 M-89.65 8.35 L-86.65 8.35 M-95.65 8.35 L-92.65 8.35 M-101.65 8.35 L-98.65 8.35 M-83.65 8.35 L-80.65 8.35 M113.3 4.0 L115.35 1.7 M108.3 7.2 L110.95 5.85 M102.35 8.3 L102.75 8.3 105.35 8.05 M96.35 8.35 L99.35 8.35 M90.35 8.35 L93.35 8.35 M84.35 8.35 L87.35 8.35 M72.35 8.35 L75.35 8.35 M66.35 8.35 L69.35 8.35 M60.35 8.35 L63.35 8.35 M54.35 8.35 L57.35 8.35 M48.35 8.35 L51.35 8.35 M42.35 8.35 L45.35 8.35 M36.35 8.35 L39.35 8.35 M30.35 8.35 L33.35 8.35 M24.35 8.35 L27.35 8.35 M18.35 8.35 L21.35 8.35 M12.35 8.35 L15.35 8.35 M6.35 8.35 L9.35 8.35 M0.35 8.35 L3.35 8.35 M78.35 8.35 L81.35 8.35" fill="none" stroke="#f29304" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8235294" stroke-width="0.25"/>
+  </g>
+</svg>

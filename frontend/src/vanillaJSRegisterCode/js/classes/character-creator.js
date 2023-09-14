@@ -52,13 +52,23 @@ export default class CharacterCreator {
         positionScale: { x: 0.734, y: 0.89 },
       }));
 
+      this.registerBG = new Sprite({
+        canvas: this.canvas,
+        imageSrc: "assets/Register/sprites/register.svg",
+        parent: this.registerScreen,
+        sizeScale: 1.15, //too lazy to hide
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: .486, y: 0.509},
+      });
+
+
     this.eyeColorSquare = new Sprite({
       canvas: this.canvas,
       imageSrc: "assets/Register/sprites/colorSquare.png",
       parent: this.registerScreen,
       sizeScale: 0.05,
       anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.645, y: 0.62 },
+      positionScale: { x: 0.648, y: 0.63 },
     });
 
     this.skinColorSquare = new Sprite({
@@ -67,7 +77,7 @@ export default class CharacterCreator {
       parent: this.registerScreen,
       sizeScale: this.eyeColorSquare.sizeScale,
       anchorPoint: this.eyeColorSquare.anchorPoint,
-      positionScale: { x: 0.645, y: 0.77 },
+      positionScale: { x: 0.648, y: 0.785 },
     });
 
     this.characterContainer = new Sprite({
@@ -79,7 +89,7 @@ export default class CharacterCreator {
       positionScale: { x: 0.83, y: 0.475 },
     });
 
-    this.hairArrows = this.createArrows(0.275, 0.057);
+    this.hairArrows = this.createArrows(0.27, 0.050);
     this.headArrows = this.createArrows(0.418, 0.057);
     this.eyeArrows = this.createArrows(0.62, 0.095);
     this.skinArrows = this.createArrows(0.77, 0.095);
