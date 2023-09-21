@@ -1,6 +1,8 @@
 import CharacterCreator from "./classes/character-creator.js";
+import ChloeTalk from "./classes/chloeTalk.js";
 import Character from "./classes/character.js";
 import ColorWheel from "./classes/color-wheel.js";
+import NamingScreen from "./classes/naming.js";
 
 import spriteModule from "./modules/sprite-loader-module.js";
 import Sprite from "./classes/sprite.js";
@@ -16,6 +18,8 @@ import SpriteLoader from "./classes/sprite-loader.js";
   canvas.style.display = "block";
 
   let ctx = canvas.getContext("2d");
+  const screens = ["talk", "charactercreator", "naming", "tos"];
+  let currentScreen = 0; 
 
   let isResizing = false;
 
@@ -30,10 +34,36 @@ import SpriteLoader from "./classes/sprite-loader.js";
     sizeScale: { x: 1, y: 1 },
   });
 
-  const colorWheel = new ColorWheel(canvas);
-  const characterCreator = new CharacterCreator(canvas);
-  const character = new Character(canvas, characterCreator.characterContainer);
+  let nextButton = new Sprite({ //Change screen button
+    canvas: canvas,
+    imageSrc: "./assets/Register/sprites/emptyButton.png", 
+    sizeScale: 0.05,
+    parent: canvas, 
+    anchorPoint: { x: 0.5, y: -1 }, 
+    positionScale: { x: 0.83, y: 0.85 }, 
+  });
+  
+  let backButton = new Sprite({ //Change screen button
+    canvas: canvas,
+    imageSrc: "./assets/Register/sprites/emptyButton.png", 
+    sizeScale: 0.05,
+    parent: canvas, 
+    anchorPoint: { x: 5.5, y: -1 }, 
+    positionScale: { x: 0.83, y: 0.85 }, 
+  });
 
+  const chloeTalk = new ChloeTalk(canvas); //chloe's talk, which is the default screen/ cant be accessed with buttons
+
+  function characterCreator(){
+    const colorWheel = new ColorWheel(canvas);
+    const characterCreator = new CharacterCreator(canvas);
+    const character = new Character(canvas, characterCreator.characterContainer);
+  }
+
+  function namingScreen(){
+    const namingScreen = new NamingScreen(canvas);
+  }
+  
   let loginHUD = new Sprite({
     canvas: canvas,
     parent: canvas,
@@ -84,6 +114,54 @@ import SpriteLoader from "./classes/sprite-loader.js";
       isResizing = false;
     });
   }
+
+    nextButton.onClick(() => { 
+      screenChange("f");
+    });
+
+    //Parameters: 
+    // f (Forward)
+    // b (Backward)
+    function screenChange(dir){
+      if (dir = "f"){
+          if (currentScreen != 3){
+            currentScreen++;
+            screenLoader(screens[currentScreen])
+          }
+        }
+      }
+      //Just loads the screens. screenChange handles the switching/clearing
+      function screenLoader(screen){
+        if (screen.localeCompare(screens[1]) == 0) {
+          characterCreator()
+          console.log("Character Creator");
+        }
+        if (screen.localeCompare(screens[2]) == 0) {
+          namingScreen();
+          console.log("Naming Screen");
+          //call character to move over!
+        }
+        if (screen.localeCompare(screens[3]) == 0) {
+          //tosScreen();
+          console.log("TOS Screen");
+        }
+      }
+
+
+
+
+  //Dummyed out for now
+  //let chloeAnimation = new Sprite({
+  //  canvas: canvas,
+ //   parent: canvas,
+ //   sizeScale: { x: 1, y: 1 },
+  //  numFrames: 337,
+  //  frameBuffer: 3,
+ //   animationFolder: "assets/Register/chloe/talk1/frames/",
+ //   zIndex: 999999,
+ // });
+
+
 
   // let imgOfScreen = new Sprite({
   //   canvas: canvas,

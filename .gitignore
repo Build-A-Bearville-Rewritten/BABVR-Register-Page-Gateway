@@ -49,3 +49,4 @@ pids
 
 # TypeScript cache
 *.tsbuildinfo
+start.bat

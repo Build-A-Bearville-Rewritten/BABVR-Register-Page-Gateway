@@ -7,7 +7,7 @@ export default class CharacterCreator {
     this.createSprites();
   }
 
-  // Draw arrow sprites at heightScale, and leaves spaceBetweenScale space between the arrows
+  // Draw arrow prites at heightScale, and leaves spaceBetweenScale space between the arrows
   createArrows(heightScale, spaceBetweenScale) {
     let leftArrow = new Sprite({
       canvas: this.canvas,
@@ -83,5 +83,10 @@ export default class CharacterCreator {
     this.headArrows = this.createArrows(0.418, 0.057);
     this.eyeArrows = this.createArrows(0.62, 0.095);
     this.skinArrows = this.createArrows(0.77, 0.095);
+  }
+
+  showScreen(){
+    this.createArrows();
+    this.createSprites();
   }
 }
