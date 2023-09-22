@@ -1,4 +1,4 @@
-import spriteModule from "../modules/sprite-loader-module.js";
+import spriteRendererModule from '../../modules/sprite-renderer-module.js';
 
 /*
 Class for drawing a Sprite onto the screen
@@ -22,7 +22,7 @@ export default class Sprite {
     animationFolder, // (WIP) location of the sprite images for bigger animated sprites
     isFixedSize = false, // Setting to true allows for positioning based off set pixels instead of percents
     canvas, // canvas the sprite should be rendered on
-    isLooped = false, // whether the sprite's animation should repeat
+    isLooped = false // whether the sprite's animation should repeat
   }) {
     // public properties
     this.canvas = canvas;
@@ -39,54 +39,22 @@ export default class Sprite {
     this.numFrames = numFrames;
     this.isFixedSize = isFixedSize;
     this.zIndex = zIndex;
+    this.imageSrc = imageSrc;
     this.id = null;
 
     // private properties
     this._currentFrame = 0;
     this._elapsedFrames = 0;
-    this._spriteLoader = spriteModule.getSpriteLoader(this.canvas);
-    this._isFolderAnimation = false
+    this._isFolderAnimation = false;
     this._isPlaying = false;
     this._isLooped = isLooped;
-    this.__animationEndedCB = null;
-    
-    // Initalizing 
-    this.id = this._spriteLoader.ids;
-
-    if (imageSrc || animationFolder) {
-      this._spriteLoader.addSpriteToQueue(this);
-
-      if (imageSrc) {
-        this.setImage(imageSrc);
-      } else if (animationFolder) {
-        this.preloadFrames(animationFolder);
-        this._isFolderAnimation = true
-      }
-    }
+    this._animationEndedCB = null;
+    this._animationFolder = animationFolder;
   }
 
   // -------------------------------------------------------------------------
   //  public methods (temporarily keeping this comment here until it's converted to ts)
   // -------------------------------------------------------------------------
-
-  setImage(imageSrc) {
-    this.imageSrc = imageSrc;
-
-    if (!this._spriteLoader.isSpriteInQueue(this))
-      this._spriteLoader.addSpriteToQueue(this);
-
-    const cachedImage = this._spriteLoader.getCachedImage(imageSrc);
-
-    if (cachedImage) {
-      this.image = cachedImage;
-      this._spriteLoader.onSpriteLoaded();
-    } else {
-      this.image = this._spriteLoader.cacheImage(imageSrc);
-      this.image.onload = () => {
-        this._spriteLoader.onSpriteLoaded();
-      };
-    }
-  }
 
   // draws the sprite on the canvas
   // and updates it's animation, size, and position
@@ -97,7 +65,7 @@ export default class Sprite {
     this.updatePosition();
 
     this.draw();
-    if(this._isPlaying) this.updateFrames();
+    if (this._isPlaying) this.updateFrames();
   }
 
   // calls dragCb, dragStartCb, and dragEndCb methods when the mouse is dragging the image, starts dragging, or ends dragging respectfully
@@ -130,7 +98,7 @@ export default class Sprite {
       }
     };
 
-    document.addEventListener("mousemove", this._mouseMoveHandler);
+    document.addEventListener('mousemove', this._mouseMoveHandler);
   }
 
   onClick(callback) {
@@ -138,40 +106,56 @@ export default class Sprite {
       if (this.isMouseOnImage(event) && callback) callback();
     };
 
-    this.canvas.addEventListener("click", this._clickHandler);
+    this.canvas.addEventListener('click', this._clickHandler);
   }
 
   // -------------------------------------------------------------------------
   //  private methods (temporarily keeping this comment here until it's converted to ts)
   // -------------------------------------------------------------------------
 
-  // If an animation folder is specified, caches all the images in memory
+  async loadImages() {
+    if (this.imageSrc && this._animationFolder) {
+      throw Error(
+        'Should only have either a single image (spritesheet or normal image), or animation folder, not both'
+      );
+    }
+    if (this.imageSrc) {
+      this.image = await this.loadImage(this.imageSrc);
+    }
+
+    if (this._animationFolder) {
+      await this.preloadFrames(this._animationFolder);
+      this.image = this._animationFrames[0];
+      this._isFolderAnimation = true;
+    }
+  }
+
+  async loadImage(url) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => {
+        resolve(image);
+      };
+      image.onerror = () => {
+        reject(new Error('Failed to load image.'));
+      };
+      image.src = url;
+    });
+  }
+
+  // If an animation folder is specified, creates images and stores them in this._animationFrames
   // Assumes there are `this.numFrames` images inside of the animation folder named 1.png, 2.png, ... (numberOfFrames).png
-  preloadFrames(animationFolder) {
-    animationFolder = animationFolder.endsWith("/")
+  async preloadFrames(animationFolder) {
+    animationFolder = animationFolder.endsWith('/')
       ? animationFolder
-      : animationFolder + "/";
-    
-    let numLoaded = 0;
+      : animationFolder + '/';
+
     this._animationFrames = [];
 
     for (let i = 0; i < this.numFrames; i++) {
-      const imageSrc = animationFolder + (i + 1) + ".png";
-      let cachedImage = this._spriteLoader.getCachedImage(imageSrc);
-
-      if (!cachedImage) {
-        cachedImage = this._spriteLoader.cacheImage(imageSrc);
-
-        cachedImage.onload = () => {
-          numLoaded++;
-          if (numLoaded >= this.numFrames) {
-            this.image = this._animationFrames[10];
-            this._spriteLoader.onSpriteLoaded();
-          }
-        };
-      }
-
-      this._animationFrames.push(cachedImage);
+      const url = animationFolder + (i + 1) + '.png';
+      const image = await this.loadImage(url);
+      this._animationFrames.push(image);
     }
   }
 
@@ -179,11 +163,11 @@ export default class Sprite {
   draw() {
     let offset = null;
 
-    const ctx = this.canvas.getContext("2d");
+    const ctx = this.canvas.getContext('2d');
     const centerx = this.position.x + this.size.x / 2;
     const centery = this.position.y + this.size.y / 2;
 
-    if (this.flip === "horizontal") offset = this.flipHorizontally();
+    if (this.flip === 'horizontal') offset = this.flipHorizontally();
     else if (this.rotation) offset = this.rotate();
 
     if (this.hsl != null) this.drawHSL();
@@ -250,7 +234,7 @@ export default class Sprite {
 
     if (this.isFixedSize) return;
 
-    if (typeof this.sizeScale === "number") {
+    if (typeof this.sizeScale === 'number') {
       let imgAspectRatio = this.image.width / this.image.height;
       let desiredHeight = parentSize.y * this.sizeScale;
       let desiredWidth = desiredHeight * imgAspectRatio;
@@ -265,32 +249,32 @@ export default class Sprite {
 
   // changes the image's color
   updateHSL(innerCtx) {
-    innerCtx.globalCompositeOperation = "source-over";
+    innerCtx.globalCompositeOperation = 'source-over';
     innerCtx.drawImage(this.image, 0, 0, this.size.x, this.size.y);
 
     // add in hue, sat, and lightness
-    innerCtx.globalCompositeOperation = "multiply";
+    innerCtx.globalCompositeOperation = 'multiply';
     innerCtx.fillStyle =
-      "hsl(" +
+      'hsl(' +
       this.hsl.h +
-      "," +
+      ',' +
       (this.hsl.s || 100) +
-      "%, " +
+      '%, ' +
       (this.hsl.l || 50) +
-      "%," +
+      '%,' +
       (this.hsl.a || 1) +
-      ")";
+      ')';
 
     innerCtx.fillRect(0, 0, this.size.x, this.size.y);
 
     // mask image onto canvas
-    innerCtx.globalCompositeOperation = "destination-in";
+    innerCtx.globalCompositeOperation = 'destination-in';
     innerCtx.drawImage(this.image, 0, 0, this.size.x, this.size.y);
   }
 
   // rotates the image based on it's rotation property
   rotate() {
-    const ctx = this.canvas.getContext("2d");
+    const ctx = this.canvas.getContext('2d');
     const centerx = this.position.x + this.size.x / 2;
     const centery = this.position.y + this.size.y / 2;
 
@@ -302,7 +286,7 @@ export default class Sprite {
 
   // flips the image horizontally if the flip: "horizontal" property is set
   flipHorizontally() {
-    const ctx = this.canvas.getContext("2d");
+    const ctx = this.canvas.getContext('2d');
     const centerx = this.position.x + this.size.x / 2;
     const centery = this.position.y + this.size.y / 2;
 
@@ -319,10 +303,10 @@ export default class Sprite {
     let imgCanvas = this.imgCanvas;
 
     if (!imgCanvas)
-      imgCanvas = this.imgCanvas = document.createElement("canvas");
+      imgCanvas = this.imgCanvas = document.createElement('canvas');
 
-    const outerCtx = this.canvas.getContext("2d");
-    const innerCtx = imgCanvas.getContext("2d");
+    const outerCtx = this.canvas.getContext('2d');
+    const innerCtx = imgCanvas.getContext('2d');
 
     const hasSpriteSizeChanged =
       this.prevSize == null ||
@@ -348,7 +332,7 @@ export default class Sprite {
     this.prevSize = { x: this.size.x, y: this.size.y };
 
     outerCtx.drawImage(imgCanvas, this.position.x, this.position.y);
-    innerCtx.globalCompositeOperation = "source-over";
+    innerCtx.globalCompositeOperation = 'source-over';
   }
 
   // if the sprite is animated, and the animation hasn't ended, moves forward to the next animation frame
@@ -364,23 +348,24 @@ export default class Sprite {
 
     if (this._elapsedFrames % this.frameBuffer === 0) {
       const isRunningAnimation = this._currentFrame < this.numFrames - 1;
-      
+
       if (isRunningAnimation || this._isLooped) {
-        if (this._isFolderAnimation) this.image = this._animationFrames[this._currentFrame];
-        
+        if (this._isFolderAnimation)
+          this.image = this._animationFrames[this._currentFrame];
+
         this._currentFrame = isRunningAnimation ? this._currentFrame + 1 : 0;
       }
     }
   }
 
-  // Calls `callback` when the animation is ended 
+  // Calls `callback` when the animation is ended
   // Only runs when the animation is not looped
   onAnimationEnded(callback) {
     this._animationEndedCB = callback;
   }
 
   drawImage() {
-    const ctx = this.canvas.getContext("2d");
+    const ctx = this.canvas.getContext('2d');
     const croppedX =
       (!this._animationFrames &&
         this._currentFrame * (this.image.width / this.numFrames)) ||
@@ -427,7 +412,7 @@ export default class Sprite {
       }
     };
 
-    this.canvas.addEventListener("mousedown", this._mouseDownHandler);
+    this.canvas.addEventListener('mousedown', this._mouseDownHandler);
   }
 
   // check if the mouse has stopped dragging the image
@@ -438,14 +423,16 @@ export default class Sprite {
       if (dragEndCb) dragEndCb(event);
     };
 
-    document.addEventListener("mouseup", this._mouseUpHandler);
+    document.addEventListener('mouseup', this._mouseUpHandler);
   }
 
   // Destroys the sprite class, cleaning up for garbage collection
-  clean() {
-    this.canvas.removeEventListener("click", this._clickHandler);
-    this.canvas.removeEventListener("mousedown", this._mouseDownHandler);
-    document.removeEventListener("mouseup", this._mouseUpHandler);
-    this.canvas.removeEventListener("mousemove", this._mouseMoveHandler);
+  // TODO: Needs to be tested, clear out all the hard references etc
+  destroy() {
+    console.log('destroying sprite');
+    this.canvas.removeEventListener('click', this._clickHandler);
+    this.canvas.removeEventListener('mousedown', this._mouseDownHandler);
+    document.removeEventListener('mouseup', this._mouseUpHandler);
+    this.canvas.removeEventListener('mousemove', this._mouseMoveHandler);
   }
 }

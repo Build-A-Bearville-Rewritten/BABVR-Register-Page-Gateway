@@ -1,4 +1,4 @@
-import Sprite from "./sprite.js";
+import Sprite from "../sprite.js";
 
 // Creates the character creator creator frame
 export default class chloeTalk {
@@ -16,7 +16,7 @@ export default class chloeTalk {
       positionScale: { x: 0.42, y: 0.5 },
     }))
   }
-  showScreen(){
+  showScreen() {
     this.createSprites();
   }
   clearScreen(ctx){
