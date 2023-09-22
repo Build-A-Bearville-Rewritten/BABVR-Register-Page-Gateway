@@ -1,31 +1,28 @@
 {
     "env": {
+        "browser": true,
         "es2021": true
     },
     "extends": [
-        "plugin:@typescript-eslint/recommended",
-        "plugin:prettier/recommended"
-    ],
-    "overrides": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest",
-        "project": "tsconfig.json",
         "sourceType": "module"
     },
     "plugins": [
         "@typescript-eslint"
     ],
-    "root": true,
     "rules": {
         "indent": [
             "error",
-            2
+            4
         ],
         "linebreak-style": [
             "error",
-            "unix"
+            "windows"
         ],
         "quotes": [
             "error",

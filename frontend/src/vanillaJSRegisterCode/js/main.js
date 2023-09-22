@@ -40,6 +40,20 @@ import SpriteLoader from "./classes/sprite-loader.js";
     imageSrc: "assets/Register/sprites/loginHUD.png",
     sizeScale: { x: 1, y: 1 },
   });
+  
+  let testTiger = new Sprite({
+    canvas: canvas,
+    parent: canvas,
+    imageSrc: "assets/Register/testTiger.png",
+    sizeScale: { x: 0.5, y: 0.5 },
+	positionScale: { x: 0, y: 0 },
+	//rotation: 45,
+	flip: 'horizontal',
+  });
+  
+  testTiger.onClick(() => {
+	  console.log('testTiger clicked!!!');
+  });
 
   function resizeCanvas4by3() {
     let currentWidth = window.innerWidth;

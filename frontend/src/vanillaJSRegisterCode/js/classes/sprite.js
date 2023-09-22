@@ -291,11 +291,16 @@ export default class Sprite {
   // rotates the image based on it's rotation property
   rotate() {
     const ctx = this.canvas.getContext("2d");
-    const centerx = this.position.x + this.size.x / 2;
-    const centery = this.position.y + this.size.y / 2;
+	const angle = (this.rotation * Math.PI) / 180;
+    const xax = Math.cos(angle);
+	const xay = Math.sin(angle);
+	ctx.setTransform(xax, xay, -xay, xax, (this.position.x + this.size.x / 2), (this.position.y + this.size.y / 2));
+	
+	//const centerx = this.position.x + this.size.x / 2;
+    //const centery = this.position.y + this.size.y / 2;
 
-    ctx.translate(centerx, centery);
-    ctx.rotate((this.rotation * Math.PI) / 180);
+    //ctx.translate(centerx, centery);
+    //ctx.rotate((this.rotation * Math.PI) / 180);
 
     return { x: -this.size.x / 2, y: -this.size.y / 2 };
   }
@@ -405,19 +410,47 @@ export default class Sprite {
   isMouseOnImage(event) {
     let isInBounds = null;
 
+	const ctx = this.canvas.getContext("2d");
     const rect = this.canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    isInBounds =
-      x >= this.position.x &&
-      x < this.position.x + this.size.x &&
-      y >= this.position.y &&
-      y < this.position.y + this.size.y;
-
+	const cursor = {x: event.clientX - rect.left, y: event.clientY - rect.top};
+	let cursorRelative = {x: cursor.x, y: cursor.y};
+    console.log('checkpoint 1: ', this.rotation, ", cursorR: ", cursorRelative, "position: ", this.position);
+	if (this.rotation) {
+	  const angle = (this.rotation * Math.PI) / 180;
+	  const xax = Math.cos(-angle);
+	  const xay = Math.sin(-angle);
+	  const x = cursor.x - (this.position.x + this.size.x / 2);
+	  const y = cursor.y - (this.position.y + this.size.y / 2);
+	  const rx = (xax * x - xay * y);
+	  const ry = (xax * x - xay * y);
+	  cursorRelative = {x: rx, y: ry};
+	}
+	if (this.flip == "horizontal") {
+	  cursorRelative.x = this.size.x - cursorRelative.x;
+	}
+	console.log('cursor rel: ', cursorRelative);
+	if (
+	  cursorRelative.x < 0 ||
+	  cursorRelative.x >= this.size.x ||
+	  cursorRelative.y < 0 ||
+	  cursorRelative.y >= this.size.y ) {
+		console.log('result: false');
+		return false;
+	  }
+	
+	const img = ctx.getImageData(0,0,this.size.x, this.size.y);
+	//ctx.putImageData(img, 200, 200);
+	//console.log(img.data);
+	const pixel = ctx.getImageData(cursorRelative.x, cursorRelative.y, 1, 1);
+	//console.log('checkpoint 2: ', pixel.data[3]);
+	isInBounds = pixel.data[3] == 0 ? false : true;
+	//console.log('result: ', isInBounds);
+	console.log('iMOI called at <', x, ',', y, '> - ', this.id);
+	console.log('isInBounds:', isInBounds);
+	
     return isInBounds;
   }
-
+  
   // check if the mouse started dragging
   dragStarted(dragStartCb) {
     this._mouseDownHandler = event => {
