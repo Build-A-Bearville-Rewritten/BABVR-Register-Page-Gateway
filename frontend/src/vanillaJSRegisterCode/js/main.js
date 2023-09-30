@@ -47,8 +47,8 @@ import SpriteLoader from "./classes/sprite-loader.js";
     imageSrc: "assets/Register/testTiger.png",
     sizeScale: { x: 0.5, y: 0.5 },
 	positionScale: { x: 0, y: 0 },
-	//rotation: 45,
-	flip: 'horizontal',
+	rotation: 45,
+	//flip: 'horizontal',
   });
   
   testTiger.onClick(() => {

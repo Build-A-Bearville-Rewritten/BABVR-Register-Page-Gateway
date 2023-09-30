@@ -414,21 +414,24 @@ export default class Sprite {
     const rect = this.canvas.getBoundingClientRect();
 	const cursor = {x: event.clientX - rect.left, y: event.clientY - rect.top};
 	let cursorRelative = {x: cursor.x, y: cursor.y};
-    console.log('checkpoint 1: ', this.rotation, ", cursorR: ", cursorRelative, "position: ", this.position);
+    console.log('Image: ', this.rotation, 'position: ', this.position, 'size: ', this.size);
+	console.log('Cursor:', cursorRelative);
 	if (this.rotation) {
 	  const angle = (this.rotation * Math.PI) / 180;
 	  const xax = Math.cos(-angle);
 	  const xay = Math.sin(-angle);
+	  //const x = cursor.x - this.position.x;
+	  //const y = cursor.y - this.position.y;
 	  const x = cursor.x - (this.position.x + this.size.x / 2);
 	  const y = cursor.y - (this.position.y + this.size.y / 2);
-	  const rx = (xax * x - xay * y);
-	  const ry = (xax * x - xay * y);
+	  const rx = (xax * x - xay * y) / this.size.x + 0.5;
+	  const ry = (xax * x + xay * y) / this.size.y + 0.5;
 	  cursorRelative = {x: rx, y: ry};
 	}
-	if (this.flip == "horizontal") {
+	else if (this.flip == "horizontal") {
 	  cursorRelative.x = this.size.x - cursorRelative.x;
 	}
-	console.log('cursor rel: ', cursorRelative);
+	console.log('Cursor:', cursorRelative);
 	if (
 	  cursorRelative.x < 0 ||
 	  cursorRelative.x >= this.size.x ||
@@ -444,8 +447,7 @@ export default class Sprite {
 	const pixel = ctx.getImageData(cursorRelative.x, cursorRelative.y, 1, 1);
 	//console.log('checkpoint 2: ', pixel.data[3]);
 	isInBounds = pixel.data[3] == 0 ? false : true;
-	//console.log('result: ', isInBounds);
-	console.log('iMOI called at <', x, ',', y, '> - ', this.id);
+	//console.log('iMOI called at <', cursor.x, ',', cursor.y, '> - ');
 	console.log('isInBounds:', isInBounds);
 	
     return isInBounds;
