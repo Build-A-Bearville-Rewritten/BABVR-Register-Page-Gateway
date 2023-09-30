@@ -14,8 +14,6 @@ export default class CharacterCreatorScreen {
   constructor(canvas) {
     this.canvas = canvas;
 
-    this.sprites = [];
-    this.objects = [];
     this.createSprites();
     this.bindEvents();
   }
@@ -30,53 +28,46 @@ export default class CharacterCreatorScreen {
 
   bindEvents() {
     this._backButton.onClick(() => {
-      const chloeIntro = new ChloeIntro(this.canvas);
-      screenHandler.setScreen(this.canvas, chloeIntro);
+      screenHandler.setScreen(this.canvas, ChloeIntro);
     });
-    this._nextButton.onClick(() => {
-      console.log('clicked next button in character creator');
-    });
+    this._nextButton.onClick(() => {});
   }
 
   async createSprites() {
-    this.sprites.push(
-      (this._backgroundImage = new Sprite({
-        canvas: this.canvas,
-        parent: this.canvas,
-        imageSrc: 'assets/Register/sprites/BABW_Register_Background.png',
-        sizeScale: { x: 1, y: 1 }
-      })),
-      (this._nextButton = new Sprite({
-        canvas: this.canvas,
-        imageSrc: './assets/Register/sprites/emptyButton.png',
-        sizeScale: 0.05,
-        parent: this.canvas,
-        anchorPoint: { x: 0.5, y: -1 },
-        positionScale: { x: 0.83, y: 0.85 }
-      })),
-      (this._backButton = new Sprite({
-        canvas: this.canvas,
-        imageSrc: './assets/Register/sprites/emptyButton.png',
-        sizeScale: 0.05,
-        parent: this.canvas,
-        anchorPoint: { x: 5.5, y: -1 },
-        positionScale: { x: 0.83, y: 0.85 }
-      }))
-    );
+    this._backgroundImage = new Sprite({
+      canvas: this.canvas,
+      parent: this.canvas,
+      imageSrc: 'assets/Register/sprites/BABW_Register_Background.png',
+      sizeScale: { x: 1, y: 1 }
+    });
 
-    this.objects.push(
-      new ColorWheel(this.canvas)
-      // (this.characterCreator = new CharacterCreator(this.canvas))
-      // new Character(this.canvas, this.characterCreator.characterContainer)
-    );
+    this._nextButton = new Sprite({
+      canvas: this.canvas,
+      imageSrc: './assets/Register/sprites/emptyButton.png',
+      sizeScale: 0.05,
+      parent: this.canvas,
+      anchorPoint: { x: 0.5, y: -1 },
+      positionScale: { x: 0.83, y: 0.85 }
+    });
 
-    this.sprites.push(
-      (this.loginHUD = new Sprite({
-        canvas: this.canvas,
-        parent: this.canvas,
-        imageSrc: 'assets/Register/sprites/loginHUD.png',
-        sizeScale: { x: 1, y: 1 }
-      }))
-    );
+    this._backButton = new Sprite({
+      canvas: this.canvas,
+      imageSrc: './assets/Register/sprites/emptyButton.png',
+      sizeScale: 0.05,
+      parent: this.canvas,
+      anchorPoint: { x: 5.5, y: -1 },
+      positionScale: { x: 0.83, y: 0.85 }
+    });
+
+    this.characterCreator = new CharacterCreator(this.canvas);
+    new Character(this.canvas, this.characterCreator.characterContainer);
+    new ColorWheel(this.canvas);
+
+    this.loginHUD = new Sprite({
+      canvas: this.canvas,
+      parent: this.canvas,
+      imageSrc: 'assets/Register/sprites/loginHUD.png',
+      sizeScale: { x: 1, y: 1 }
+    });
   }
 }

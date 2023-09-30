@@ -17,7 +17,7 @@
 //   }
 // });
 
-import spriteRendererModule from '../../modules/sprite-renderer-module.js';
+import screenHandler from '../../modules/screen-handler.js';
 
 export default class CanvasRenderer {
   static get CANVAS_PERCENT_OF_SCREEN() {
@@ -34,13 +34,13 @@ export default class CanvasRenderer {
 
   startRender() {
     this.resizeCanvas4by3();
-    this.refreshCanvas();
 
     window.addEventListener(
       'resize',
       function () {
         this._isResizing = true;
         this.resizeCanvas4by3();
+        window.requestAnimationFrame(screenHandler.drawScreen);
         this._isResizing = false;
       }.bind(this)
     );
@@ -57,26 +57,11 @@ export default class CanvasRenderer {
 
     let currentRatio = currentWidth / currentHeight;
 
-    if (currentRatio > CanvasRenderer.TARGET_RATIO) {
+    if (currentRatio > CanvasRenderer.TARGET_RATIO)
       newWidth = currentHeight * CanvasRenderer.TARGET_RATIO;
-    } else {
-      newHeight = currentWidth / CanvasRenderer.TARGET_RATIO;
-    }
+    else newHeight = currentWidth / CanvasRenderer.TARGET_RATIO;
 
     this.canvas.height = newHeight * CanvasRenderer.CANVAS_PERCENT_OF_SCREEN;
     this.canvas.width = newWidth * CanvasRenderer.CANVAS_PERCENT_OF_SCREEN;
-  }
-
-  refreshCanvas() {
-    if (!this._isResizing) {
-      let ctx = this.canvas.getContext('2d');
-      const spriteRenderer = spriteRendererModule.getSpriteRenderer();
-      if (spriteRenderer.numSprites > 3) {
-        ctx.fillStyle = 'red';
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        spriteRenderer.drawSprites();
-      }
-      window.requestAnimationFrame(this.refreshCanvas.bind(this));
-    }
   }
 }

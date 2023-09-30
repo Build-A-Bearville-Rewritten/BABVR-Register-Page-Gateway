@@ -4,56 +4,40 @@ const ScreenHandler = (() => {
   let _currentScreens = [];
 
   // Sets canvas's screen to be newScreen, clearing out the old screen
-  function setScreen(canvas, newScreen) {
+  // canvas: canvas to be drawn on
+  // screenToDraw: the screen to draw
+  // screenArgs: any args the screen constructor should have (except canvas)
+  async function setScreen(canvas, screenToDraw, screenArgs) {
     const spriteRenderer = spriteRendererModule.getSpriteRenderer();
-    spriteRenderer.removeAllSprites();
-    
+    const previousScreen = _currentScreens[canvas];
 
-    addAllSpritesIn(newScreen);
+    screenArgs = screenArgs || [];
 
-    const prevScreen = _currentScreens[canvas];
+    if (previousScreen) spriteRenderer.removeAllSprites();
+
+    // const ctx = canvas.getContext('2d');
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const newScreen = new screenToDraw(canvas, ...screenArgs);
     _currentScreens[canvas] = newScreen;
 
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    destroyPreviousScreen(prevScreen);
+    spriteRenderer.updateAnimations();
   }
 
+  async function drawScreen() {
+    const spriteRenderer = spriteRendererModule.getSpriteRenderer();
+
+    if (spriteRenderer.numSprites > 0) {
+      spriteRenderer.drawSprites();
+    }
+  }
   // -----------------------------
   // Private functions:
   // -----------------------------
 
-  async function addAllSpritesIn(object) {
-    const spriteRenderer = spriteRendererModule.getSpriteRenderer();
-    await spriteRenderer.addSpritesToScreen(object.sprites);
-
-    // See if current object has any objects to search for sprites in
-    // prettier-ignore
-    for (const index in object.objects) {
-      const childObject = object.objects[index];
-      
-      if(childObject.sprites)
-        await spriteRenderer.addSpritesToScreen(childObject.sprites);
-      
-      // // TODO: needs testing
-      // if (childObject.objects) 
-      //   for (const grandChildObj in childObject.objects) 
-      //     addAllSpritesIn(grandChildObj);
-    }
-  }
-
-  // Destroys all the sprites in the previous screen
-  function destroyPreviousScreen(prevScreen) {
-    if (prevScreen) {
-      prevScreen.sprites.forEach(sprite => {
-        sprite.destroy();
-      });
-    }
-  }
-
   return {
-    setScreen
+    setScreen,
+    drawScreen
   };
 })();
 

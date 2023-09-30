@@ -9,7 +9,6 @@ export default class ColorWheel {
   constructor(canvas) {
     this.canvas = canvas;
 
-    this.sprites = [];
     this.createSprites();
     this.bindEvents();
   }
@@ -18,59 +17,58 @@ export default class ColorWheel {
   // PUBLIC METHODS (remove when we add ts)
   // -------------------------------------------
 
-  // -------------------------------------------
+  // ------------------w-------------------------
   // PRIVATE METHODS (remove when we add ts)
   // -------------------------------------------
 
   bindEvents() {
     this._nextButton.onClick(() => {
-      screenHandler.setScreen(
-        this.canvas,
-        new CharacterCreatorScreen(this.canvas)
-      );
+      screenHandler.setScreen(this.canvas, CharacterCreatorScreen);
     });
   }
 
   async createSprites() {
-    this.sprites.push(
-      (this._backgroundImage = new Sprite({
-        canvas: this.canvas,
-        parent: this.canvas,
-        imageSrc: 'assets/Register/sprites/BABW_Register_Background.png',
-        sizeScale: { x: 1, y: 1 }
-      })),
-      (this.testSprite = new Sprite({
-        canvas: this.canvas,
-        imageSrc: 'assets/Register/sprites/chloeTest.png',
-        parent: this.canvas,
-        sizeScale: 0.6,
-        anchorPoint: { x: 0.5, y: 0.5 },
-        positionScale: { x: 0.42, y: 0.5 }
-      })),
-      (this._nextButton = new Sprite({
-        canvas: this.canvas,
-        imageSrc: './assets/Register/sprites/emptyButton.png',
-        sizeScale: 0.05,
-        parent: this.canvas,
-        anchorPoint: { x: 0.5, y: -1 },
-        positionScale: { x: 0.83, y: 0.85 }
-      })),
-      (this.loginHUD = new Sprite({
-        canvas: this.canvas,
-        parent: this.canvas,
-        imageSrc: 'assets/Register/sprites/loginHUD.png',
-        sizeScale: { x: 1, y: 1 }
-      }))
-      // // TODO: these ~300 images taking a while to load in from file.
-      // // Ask Juan how he plans on giving us the images so I can have a better idea how to optimise this.
-      // (this.chloeAnimation = new Sprite({
-      //   canvas: this.canvas,
-      //   parent: this.canvas,
-      //   sizeScale: { x: 1, y: 1 },
-      //   numFrames: 337, // the number of frames in the animation
-      //   frameBuffer: 5, // the amount of times the canvas should draw before loading the next frames
-      //   animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations
-      // }))
-    );
+    this._backgroundImage = new Sprite({
+      canvas: this.canvas,
+      parent: this.canvas,
+      imageSrc: 'assets/Register/sprites/BABW_Register_Background.png',
+      sizeScale: { x: 1, y: 1 }
+    });
+
+    this._testSprite = new Sprite({
+      canvas: this.canvas,
+      imageSrc: 'assets/Register/sprites/chloeTest.png',
+      parent: this.canvas,
+      sizeScale: 0.6,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.42, y: 0.5 }
+    });
+
+    this._nextButton = new Sprite({
+      canvas: this.canvas,
+      imageSrc: './assets/Register/sprites/emptyButton.png',
+      sizeScale: 0.05,
+      parent: this.canvas,
+      anchorPoint: { x: 0.5, y: -1 },
+      positionScale: { x: 0.83, y: 0.85 }
+    });
+
+    this._loginHUD = new Sprite({
+      canvas: this.canvas,
+      parent: this.canvas,
+      imageSrc: 'assets/Register/sprites/loginHUD.png',
+      sizeScale: { x: 1, y: 1 }
+    });
+
+    this._chloeAnimation = new Sprite({
+      canvas: this.canvas,
+      parent: this.canvas,
+      sizeScale: { x: 1, y: 1 },
+      numFrames: 337, // the number of frames in the animation
+      frameBuffer: 5, // the amount of times the canvas should draw before loading the next frames
+      animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations
+    });
+
+    // this._chloeAnimation.play()
   }
 }

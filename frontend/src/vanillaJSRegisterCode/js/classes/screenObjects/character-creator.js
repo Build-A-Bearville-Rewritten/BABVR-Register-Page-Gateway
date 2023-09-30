@@ -20,12 +20,12 @@ export default class CharacterCreator {
 
     let rightArrow = new Sprite({
       canvas: this.canvas,
-      imageSrc: leftArrow.imageSrc,
+      imageSrc: leftArrow.getImageSrc(),
       parent: this.registerScreen,
       sizeScale: leftArrow.sizeScale,
       anchorPoint: leftArrow.anchorPoint,
       positionScale: {
-        x: leftArrow.positionScale.x + spaceBetweenScale,
+        x: leftArrow.getPositionScale().x + spaceBetweenScale,
         y: heightScale
       },
       flip: 'horizontal'
@@ -35,22 +35,22 @@ export default class CharacterCreator {
   }
 
   createSprites() {
-    (this.registerScreen = new Sprite({
+    this.registerScreen = new Sprite({
       canvas: this.canvas,
       imageSrc: 'assets/Register/sprites/registerStep1.png',
       parent: this.canvas,
       sizeScale: 0.78,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.42, y: 0.5 }
-    })),
-      (this.genderButton = new Sprite({
-        canvas: this.canvas,
-        imageSrc: 'assets/Register/sprites/genderTemp.png',
-        parent: this.registerScreen,
-        sizeScale: 0.035,
-        anchorPoint: { x: 0.5, y: 0.5 },
-        positionScale: { x: 0.734, y: 0.89 }
-      }));
+    });
+    this.genderButton = new Sprite({
+      canvas: this.canvas,
+      imageSrc: 'assets/Register/sprites/genderTemp.png',
+      parent: this.registerScreen,
+      sizeScale: 0.035,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.734, y: 0.89 }
+    });
 
     this.eyeColorSquare = new Sprite({
       canvas: this.canvas,
@@ -63,10 +63,10 @@ export default class CharacterCreator {
 
     this.skinColorSquare = new Sprite({
       canvas: this.canvas,
-      imageSrc: this.eyeColorSquare.imageSrc,
+      imageSrc: this.eyeColorSquare.getImageSrc(),
       parent: this.registerScreen,
-      sizeScale: this.eyeColorSquare.sizeScale,
-      anchorPoint: this.eyeColorSquare.anchorPoint,
+      sizeScale: this.eyeColorSquare.getSizeScale(),
+      anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.645, y: 0.77 }
     });
 

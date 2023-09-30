@@ -20,7 +20,6 @@ export default class chloeTalk {
     this.createSprites();
   }
   clearScreen(ctx){
-    console.log("The 'S' key was pressed!");
    // ctx.clearRect(0.42, 0.5, this.canvas.width, this.canvas.height);
   }
 }

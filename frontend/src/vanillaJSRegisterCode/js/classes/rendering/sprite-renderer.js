@@ -1,13 +1,10 @@
-// TODO: REMOVE SPRITE FROM SPRITES TABLE WHEN IT IS DESTROYED
-// IF THERE ARE NO SPRITES AT ZINDEX GET RID OF ARRAY AT ZINDEX
-// Should have a check to move the sprite to a new zindex if their zindex doesn't match it's current zindex in the table (akak it changed zindex)
-
 // Loads in sprites onto their in specified loading order.
 export default class SpriteRenderer {
   constructor() {
     this.numSprites = 0;
     this.preloadCB = null;
-    this._sprites = {};
+    this._sprites = [];
+    this._animatedSprites = [];
     this._isPreloaded = false;
     this._preRedrawCBs = []; // functions to be called before a redraw
   }
@@ -18,21 +15,16 @@ export default class SpriteRenderer {
 
   // Load the sprites images, and then add the sprite to the _sprites array
   async addSpriteToScreen(sprite) {
-    await sprite.loadImages();
+    let spriteKey = null;
+    const zIndex = sprite.getZIndex();
 
     sprite.id = ++this.numSprites;
-    const spriteKey = 'sprite' + sprite.id;
-    if (!this._sprites[sprite.zIndex]) this._sprites[sprite.zIndex] = {};
+    spriteKey = 'sprite' + sprite.id;
 
-    this._sprites[sprite.zIndex][spriteKey] = sprite;
-    // console.log(this._sprites[sprite.zIndex]);
+    if (!this._sprites[zIndex]) this._sprites[zIndex] = {};
+    if (sprite.isAnimation) this._animatedSprites.push(sprite);
+    this._sprites[zIndex][spriteKey] = sprite;
   }
-
-  // Calls addSpriteToScreen for each sprite in sprites
-  async addSpritesToScreen(sprites) {
-    for (const sprite of sprites) await this.addSpriteToScreen(sprite);
-  }
-
   // Binds a method `callback` to be called before the sprites are redrawn
   //  Usage: .addRedrawCB(myMethod.bind(this));
   addRedrawCB(callback) {
@@ -48,31 +40,29 @@ export default class SpriteRenderer {
     for (const spritesAtZIndex in this._sprites)
       for (const spriteKey in this._sprites[spritesAtZIndex]) {
         let sprite = this._sprites[spritesAtZIndex][spriteKey];
-        sprite.update();
+        if (sprite.getImage() && sprite.isAnimation) sprite.update();
       }
+  }
+
+  updateAnimations() {
+    window.requestAnimationFrame(this.updateAnimations.bind(this));
+
+    for (const index in this._animatedSprites) {
+      const animatedSprite = this._animatedSprites[index];
+      // animatedSprite.update();
+    }
   }
 
   removeAllSprites() {
-    for (const spritesAtZIndex in this._sprites)
-      for (const spriteKey in this._sprites[spritesAtZIndex]) {
-        let sprite = this._sprites[spritesAtZIndex][spriteKey];
+    for (const zIndex in this._sprites) {
+      for (const spriteKey in this._sprites[zIndex]) {
+        let sprite = this._sprites[zIndex][spriteKey];
         sprite.destroy();
+        this._sprites[zIndex][spriteKey] = null;
       }
-
-    this.numSprites = 0;
-    this._sprites = [];
-  }
-
-  // TODO: Needs to be tested
-  // removes a sprite from the sprites table
-  removeSprite(sprite) {
-    this.sprites[sprite.zIndex][spriteKey] = null;
-
-    if (this.sprites[sprite.zIndex].length <= 0) {
-      this.sprites[sprite.zIndex] = null;
     }
 
-    sprite.destroy();
+    this._sprites.length = 0;
   }
 
   // -------------------------------------------
