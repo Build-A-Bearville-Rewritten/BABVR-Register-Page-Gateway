@@ -1,9 +1,9 @@
 import Sprite from '../rendering/sprite.js';
 import ChloeIntro from './chloe-intro-screen.js';
 
-import Character from '../screenObjects/character.js';
-import ColorWheel from '../screenObjects/color-wheel.js';
-import CharacterCreator from '../screenObjects/character-creator.js';
+import Character from '../screen-objects/character.js';
+import ColorWheel from '../screen-objects/color-wheel.js';
+import CharacterCreator from '../screen-objects/character-creator.js';
 
 import spriteRendererModule from '../../modules/sprite-renderer-module.js';
 import screenHandler from '../../modules/screen-handler.js';

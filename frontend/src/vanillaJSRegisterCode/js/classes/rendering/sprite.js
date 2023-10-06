@@ -53,7 +53,7 @@ export default class Sprite {
     this._imageSrc = imageSrc;
     this._image = null;
 
-    if (!animationFolder) this.isAnimation = true;
+    if (animationFolder) this.isAnimation = true;
     spriteRendererModule.getSpriteRenderer().addSpriteToScreen(this);
     this.loadImages();
   }
@@ -66,12 +66,16 @@ export default class Sprite {
   // and updates it's animation, size, and position
   update() {
     if (!this.isAnimation && !this._image == null)
-      throw Error("Tried to load sprite without image");
+      throw Error('Tried to load sprite without image');
+    else if (this.isAnimation && !this._image) return;
+
+    if (this.isAnimation) console.log(this._image);
 
     this.updateSize();
     this.updatePosition();
-    this.draw();
-    if (this._isPlaying) this.updateFrames();
+    this.drawSprite();
+
+    // if (this._isPlaying) this.updateFrames();
   }
 
   // calls dragCb, dragStartCb, and dragEndCb methods when the mouse is dragging the image, starts dragging, or ends dragging respectfully
@@ -190,8 +194,13 @@ export default class Sprite {
     const image = new Image();
 
     image.onload = () => {
-      this._image = image;
-      window.requestAnimationFrame(screenHandler.drawScreen);
+      if (!this.isAnimation) {
+        window.requestAnimationFrame(screenHandler.drawScreen);
+        this._image = image;
+      } else {
+        this._animationFrames.push(image);
+        this._image = this._animationFrames[0];
+      }
     };
 
     image.src = url;
@@ -200,25 +209,21 @@ export default class Sprite {
   // If an animation folder is specified, creates images and stores them in this._animationFrames
   // Assumes there are `this.numFrames` images inside of the animation folder named 1.png, 2.png, ... (numberOfFrames).png
   async preloadFrames(animationFolder) {
+    this._isFolderAnimation = true;
+    this._animationFrames = [];
+
     animationFolder = animationFolder.endsWith('/')
       ? animationFolder
       : animationFolder + '/';
 
-    this._animationFrames = [];
-
     for (let i = 0; i < this._numFrames; i++) {
       const url = animationFolder + (i + 1) + '.png';
-      const image = await this.loadImage(url);
-
-      this._animationFrames.push(image);
+      this.loadImage(url);
     }
-
-    this._image = this._animationFrames[0];
-    this._isFolderAnimation = true;
   }
 
   // draws the sprite onto the screen
-  draw() {
+  drawSprite() {
     let offset = null;
 
     const ctx = this.canvas.getContext('2d');

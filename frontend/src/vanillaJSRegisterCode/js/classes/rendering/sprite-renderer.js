@@ -40,7 +40,7 @@ export default class SpriteRenderer {
     for (const spritesAtZIndex in this._sprites)
       for (const spriteKey in this._sprites[spritesAtZIndex]) {
         let sprite = this._sprites[spritesAtZIndex][spriteKey];
-        if (sprite.getImage() && sprite.isAnimation) sprite.update();
+        if (sprite.getImage()) sprite.update();
       }
   }
 
