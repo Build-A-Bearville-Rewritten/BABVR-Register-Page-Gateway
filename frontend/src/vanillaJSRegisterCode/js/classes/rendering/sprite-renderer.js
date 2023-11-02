@@ -1,4 +1,5 @@
 // Loads in sprites onto their in specified loading order.
+
 export default class SpriteRenderer {
   constructor() {
     this.numSprites = 0;
@@ -39,7 +40,7 @@ export default class SpriteRenderer {
 
     for (const spritesAtZIndex in this._sprites)
       for (const spriteKey in this._sprites[spritesAtZIndex]) {
-        let sprite = this._sprites[spritesAtZIndex][spriteKey];
+        const sprite = this._sprites[spritesAtZIndex][spriteKey];
         if (sprite.getImage()) sprite.update();
       }
   }
@@ -56,7 +57,7 @@ export default class SpriteRenderer {
   removeAllSprites() {
     for (const zIndex in this._sprites) {
       for (const spriteKey in this._sprites[zIndex]) {
-        let sprite = this._sprites[zIndex][spriteKey];
+        const sprite = this._sprites[zIndex][spriteKey];
         sprite.destroy();
         this._sprites[zIndex][spriteKey] = null;
       }

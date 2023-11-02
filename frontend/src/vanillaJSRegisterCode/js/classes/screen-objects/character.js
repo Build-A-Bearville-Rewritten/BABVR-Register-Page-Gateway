@@ -116,8 +116,8 @@ export default class Character {
   async createSprites() {
     const characterFolder = 'assets/Character';
 
-    await this.createHeadSprites();
-    await this.createHairSprites();
+    // await this.createHeadSprites();
+    // await this.createHairSprites();
     
     // this.torso = new Sprite({
     //   canvas: this.canvas,

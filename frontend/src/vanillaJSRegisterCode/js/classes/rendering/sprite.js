@@ -1,5 +1,5 @@
 import spriteRendererModule from '../../modules/sprite-renderer-module.js';
-import screenHandler from '../../modules/screen-handler.js';
+import screenHandlerModule from '../../modules/screen-handler-module.js';
 
 /*
 Class for drawing a Sprite onto the screen
@@ -124,6 +124,7 @@ export default class Sprite {
   }
 
   setRotation(newRotation) {
+    const screenHandler = screenHandlerModule.getInstance(this.canvas)
     this._rotation = newRotation;
     window.requestAnimationFrame(screenHandler.drawScreen);
   }
@@ -133,6 +134,8 @@ export default class Sprite {
   }
 
   setPositionScale({ x, y }) {
+    const screenHandler = screenHandlerModule.getInstance(this.canvas)
+
     this._positionScale.x = x || this._positionScale.x;
     this._positionScale.y = y || this._positionScale.y;
 
@@ -144,6 +147,8 @@ export default class Sprite {
   }
 
   setHSL({ h, s, l }) {
+    const screenHandler = screenHandlerModule.getInstance(this.canvas)
+
     this._hsl = {
       h: h || this._hsl.h,
       s: s || this._hsl.s,
@@ -195,6 +200,7 @@ export default class Sprite {
 
     image.onload = () => {
       if (!this.isAnimation) {
+        const screenHandler = screenHandlerModule.getInstance(this.canvas)
         window.requestAnimationFrame(screenHandler.drawScreen);
         this._image = image;
       } else {
@@ -288,14 +294,14 @@ export default class Sprite {
 
   // updates the sprite's position based on the `positionScale` property
   updatePosition() {
-    let parentPosition = this.getParentPosition();
-    let parentSize = this.getParentSize();
+    const parentPosition = this.getParentPosition();
+    const parentSize = this.getParentSize();
 
-    let positionScalex = this._positionScale.x * parentSize.x;
-    let positionScaley = this._positionScale.y * parentSize.y;
+    const positionScalex = this._positionScale.x * parentSize.x;
+    const positionScaley = this._positionScale.y * parentSize.y;
 
-    let anchorx = this._anchorPoint.x * this._size.x;
-    let anchory = this._anchorPoint.y * this._size.y;
+    const anchorx = this._anchorPoint.x * this._size.x;
+    const anchory = this._anchorPoint.y * this._size.y;
 
     this._position.x = parentPosition.x + positionScalex - anchorx;
     this._position.y = parentPosition.y + positionScaley - anchory;
@@ -308,9 +314,9 @@ export default class Sprite {
     if (this._isFixedSize) return;
 
     if (typeof this._sizeScale === 'number') {
-      let imgAspectRatio = this._image.width / this._image.height;
-      let desiredHeight = parentSize.y * this._sizeScale;
-      let desiredWidth = desiredHeight * imgAspectRatio;
+      const imgAspectRatio = this._image.width / this._image.height;
+      const desiredHeight = parentSize.y * this._sizeScale;
+      const desiredWidth = desiredHeight * imgAspectRatio;
 
       this._size.x = desiredWidth;
       this._size.y = desiredHeight;

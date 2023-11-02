@@ -5,8 +5,7 @@ import Character from '../screen-objects/character.js';
 import ColorWheel from '../screen-objects/color-wheel.js';
 import CharacterCreator from '../screen-objects/character-creator.js';
 
-import spriteRendererModule from '../../modules/sprite-renderer-module.js';
-import screenHandler from '../../modules/screen-handler.js';
+import screenHandlerModule from '../../modules/screen-handler-module.js';
 
 // Color wheel portion of the page
 
@@ -27,8 +26,10 @@ export default class CharacterCreatorScreen {
   // -------------------------------------------
 
   bindEvents() {
-    this._backButton.onClick(() => {
-      screenHandler.setScreen(this.canvas, ChloeIntro);
+    this._backButton.onClick(() => { 
+      const screenHandler = screenHandlerModule.getInstance(this.canvas)
+
+      screenHandler.setScreen(ChloeIntro);
     });
     this._nextButton.onClick(() => {});
   }

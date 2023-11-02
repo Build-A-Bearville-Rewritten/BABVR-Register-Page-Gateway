@@ -58,8 +58,7 @@ const SVGHandler = (() => {
   // Splits each layer of an SVG into it's own SVGs
   // Returns a list of all layers as seperate svgs
   async function splitLayers(sourceSvg) {
-    let svgString = await getSVGString(sourceSvg);
-  
+    const svgString = await getSVGString(sourceSvg);
     const parser = new DOMParser();
     const doc = parser.parseFromString(svgString, "image/svg+xml");
 

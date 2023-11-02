@@ -1,61 +1,49 @@
-// TODO: Code for using temp image on screen resize
-// Start of code is commented out below
-//
-// let imgOfScreen = new Sprite({
-//   this.canvas: this.canvas,
-//   parent: this.canvas,
-//   sizeScale: { x: 1, y: 1 },
-//   zIndex: 0,
-// });
+// Handles redrawing the canvas whenever the screen is resized, or loaded for the first time. 
 
-// document.addEventListener("keydown", function (event) {
-//   if (event.key === "s") {
-//     const tempImage = new Image();
-//     tempImage.src = this.canvas.toDataURL();
-//     imgOfScreen.zIndex = 999999;
-//     imgOfScreen.setImage("assets/Register/chloe/talk1/frames/4.png");
-//   }
-// });
-
-import screenHandler from '../../modules/screen-handler.js';
+import screenHandlerModule from '../../modules/screen-handler-module.js';
 
 export default class CanvasRenderer {
+  
   static get CANVAS_PERCENT_OF_SCREEN() {
     return 0.8;
   }
+
+  // the ratio of the buildabear registration screen
   static get TARGET_RATIO() {
     return 1.46531764706;
   }
 
   constructor(canvas) {
     this.canvas = canvas;
-    this._isResizing = false;
   }
 
+  // Init canvas rendering and create resize event for resizing the canvas
+  // when the screen size changes
   startRender() {
+    const screenHandler = screenHandlerModule.getInstance(this.canvas)
     this.resizeCanvas4by3();
-
+    
+    // binds the resizeCanvas4by3 method to the page's resize event.
     window.addEventListener(
       'resize',
       function () {
-        this._isResizing = true;
         this.resizeCanvas4by3();
         window.requestAnimationFrame(screenHandler.drawScreen);
-        this._isResizing = false;
       }.bind(this)
     );
   }
 
+  // Make canvas have orignal 4:3 screen ratio 
   resizeCanvas4by3() {
-    let ctx = this.canvas.getContext('2d');
+    const ctx = this.canvas.getContext('2d');
 
-    let currentWidth = window.innerWidth;
-    let currentHeight = window.innerHeight;
+    const currentWidth = window.innerWidth;
+    const currentHeight = window.innerHeight;
 
     let newHeight = currentHeight;
     let newWidth = currentWidth;
 
-    let currentRatio = currentWidth / currentHeight;
+    const currentRatio = currentWidth / currentHeight;
 
     if (currentRatio > CanvasRenderer.TARGET_RATIO)
       newWidth = currentHeight * CanvasRenderer.TARGET_RATIO;

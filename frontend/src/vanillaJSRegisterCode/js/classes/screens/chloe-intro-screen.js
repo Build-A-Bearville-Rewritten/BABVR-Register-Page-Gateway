@@ -1,7 +1,6 @@
 import Sprite from '../rendering/sprite.js';
 import CharacterCreatorScreen from './character-creator-screen.js';
-
-import screenHandler from '../../modules/screen-handler.js';
+import screenHandlerModule from '../../modules/screen-handler-module.js';
 
 // Color wheel portion of the page
 
@@ -23,7 +22,8 @@ export default class ColorWheel {
 
   bindEvents() {
     this._nextButton.onClick(() => {
-      screenHandler.setScreen(this.canvas, CharacterCreatorScreen);
+      const screenHandler = screenHandlerModule.getInstance(this.canvas)
+      screenHandler.setScreen(CharacterCreatorScreen);
     });
   }
 
@@ -60,14 +60,14 @@ export default class ColorWheel {
       sizeScale: { x: 1, y: 1 }
     });
 
-    this._chloeAnimation = new Sprite({
-      canvas: this.canvas,
-      parent: this.canvas,
-      sizeScale: { x: 1, y: 1 },
-      numFrames: 337, // the number of frames in the animation
-      frameBuffer: 5, // the amount of times the canvas should draw before loading the next frames
-      animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations
-    });
+    // this._chloeAnimation = new Sprite({
+    //   canvas: this.canvas,
+    //   parent: this.canvas,
+    //   sizeScale: { x: 1, y: 1 },
+    //   numFrames: 337, // the number of frames in the animation
+    //   frameBuffer: 5, // the amount of times the canvas should draw before loading the next frames
+    //   animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations
+    // });
 
     // this._chloeAnimation.play()
   }

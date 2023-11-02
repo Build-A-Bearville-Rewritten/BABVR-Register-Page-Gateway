@@ -9,7 +9,7 @@ export default class CharacterCreator {
 
   // Draw arrow prites at heightScale, and leaves spaceBetweenScale space between the arrows
   createArrows(heightScale, spaceBetweenScale) {
-    let leftArrow = new Sprite({
+    const leftArrow = new Sprite({
       canvas: this.canvas,
       imageSrc: 'assets/Register/color-wheel/sprites/upDownArrowColored.png',
       parent: this.registerScreen,
@@ -18,7 +18,7 @@ export default class CharacterCreator {
       positionScale: { x: 0.6, y: heightScale }
     });
 
-    let rightArrow = new Sprite({
+    const rightArrow = new Sprite({
       canvas: this.canvas,
       imageSrc: leftArrow.getImageSrc(),
       parent: this.registerScreen,
