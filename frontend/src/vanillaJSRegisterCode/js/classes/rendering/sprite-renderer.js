@@ -1,5 +1,7 @@
 // Loads in sprites onto their in specified loading order.
 
+import SpriteDrawer from './sprite/sprite-drawer.js';
+
 export default class SpriteRenderer {
   constructor() {
     this.numSprites = 0;
@@ -8,6 +10,7 @@ export default class SpriteRenderer {
     this._animatedSprites = [];
     this._isPreloaded = false;
     this._preRedrawCBs = []; // functions to be called before a redraw
+    this.SpriteDrawer = new SpriteDrawer();
   }
 
   // -------------------------------------------
@@ -41,7 +44,10 @@ export default class SpriteRenderer {
     for (const spritesAtZIndex in this._sprites)
       for (const spriteKey in this._sprites[spritesAtZIndex]) {
         const sprite = this._sprites[spritesAtZIndex][spriteKey];
-        if (sprite.getImage()) sprite.update();
+        if (sprite.getImage()) {
+          sprite.update();
+          this.SpriteDrawer.drawSprite(sprite);
+        }
       }
   }
 
@@ -55,10 +61,11 @@ export default class SpriteRenderer {
   }
 
   removeAllSprites() {
+    this.numSprites = 0;
+
     for (const zIndex in this._sprites) {
       for (const spriteKey in this._sprites[zIndex]) {
         const sprite = this._sprites[zIndex][spriteKey];
-        sprite.destroy();
         this._sprites[zIndex][spriteKey] = null;
       }
     }

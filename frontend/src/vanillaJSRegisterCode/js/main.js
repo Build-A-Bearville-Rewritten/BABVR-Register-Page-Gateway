@@ -1,21 +1,21 @@
 import ChloeIntro from './classes/screens/chloe-intro-screen.js';
-import Sprite from './classes/rendering/sprite.js';
 
 import screenHandlerModule from './modules/screen-handler-module.js';
 import canvasRendererModule from './modules/canvas-renderer-module.js';
+import Sprite from './classes/rendering/sprite/abstract-sprite.js';
 
 (function () {
   const canvas = document.createElement('canvas');
-  const screenHandler = screenHandlerModule.getInstance(canvas)
-  
+  const screenHandler = screenHandlerModule.getInstance(canvas);
+
   document.body.appendChild(canvas);
   canvas.style.margin = 'auto';
   canvas.style.display = 'block';
-  
+
   const canvasRenderer = canvasRendererModule.getCanvasRenderer(canvas);
   canvasRenderer.startRender();
 
   // chloe's talk, which is the default screen / can't be accessed with buttons
-  
   screenHandler.setScreen(ChloeIntro);
+
 })();

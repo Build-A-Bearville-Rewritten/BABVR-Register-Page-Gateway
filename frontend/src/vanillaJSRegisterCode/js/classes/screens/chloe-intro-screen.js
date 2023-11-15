@@ -1,12 +1,15 @@
-import Sprite from '../rendering/sprite.js';
-import CharacterCreatorScreen from './character-creator-screen.js';
 import screenHandlerModule from '../../modules/screen-handler-module.js';
+import StaticSprite from '../rendering/sprite/static-sprite.js';
+import Clickable from '../rendering/sprite/clickable.js';
+import CharacterCreatorScreen from '../screens/character-creator-screen.js';
 
 // Color wheel portion of the page
 
-export default class ColorWheel {
+export default class ChloeIntro {
   constructor(canvas) {
     this.canvas = canvas;
+
+    this._clickable = new Clickable(canvas);
 
     this.createSprites();
     this.bindEvents();
@@ -21,42 +24,43 @@ export default class ColorWheel {
   // -------------------------------------------
 
   bindEvents() {
-    this._nextButton.onClick(() => {
-      const screenHandler = screenHandlerModule.getInstance(this.canvas)
+    this._clickable.onClick(this._nextButton, () => {
+      this._clickable.destroy();
+      const screenHandler = screenHandlerModule.getInstance(this.canvas);
       screenHandler.setScreen(CharacterCreatorScreen);
     });
   }
 
   async createSprites() {
-    this._backgroundImage = new Sprite({
+    this._backgroundImage = new StaticSprite({
       canvas: this.canvas,
       parent: this.canvas,
-      imageSrc: 'assets/Register/sprites/BABW_Register_Background.png',
+      imagePath: 'assets/Register/sprites/BABW_Register_Background.png',
       sizeScale: { x: 1, y: 1 }
     });
 
-    this._testSprite = new Sprite({
+    this._testSprite = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: 'assets/Register/sprites/chloeTest.png',
+      imagePath: 'assets/Register/sprites/chloeTest.png',
       parent: this.canvas,
       sizeScale: 0.6,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.42, y: 0.5 }
     });
 
-    this._nextButton = new Sprite({
+    this._nextButton = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/sprites/emptyButton.png',
+      imagePath: './assets/Register/sprites/emptyButton.png',
       sizeScale: 0.05,
       parent: this.canvas,
       anchorPoint: { x: 0.5, y: -1 },
       positionScale: { x: 0.83, y: 0.85 }
     });
 
-    this._loginHUD = new Sprite({
+    this._loginHUD = new StaticSprite({
       canvas: this.canvas,
       parent: this.canvas,
-      imageSrc: 'assets/Register/sprites/loginHUD.png',
+      imagePath: 'assets/Register/sprites/loginHUD.png',
       sizeScale: { x: 1, y: 1 }
     });
 
@@ -70,5 +74,9 @@ export default class ColorWheel {
     // });
 
     // this._chloeAnimation.play()
+  }
+
+  destroy() {
+    this._clickable.destroy();
   }
 }

@@ -1,11 +1,16 @@
-import Sprite from '../rendering/sprite.js';
+import StaticSprite from '../rendering/sprite/static-sprite.js';
+import Clickable from '../rendering/sprite/clickable.js';
+import Draggable from '../rendering/sprite/draggable.js';
 
 // Color wheel portion of the page
 
 export default class ColorWheel {
   constructor(canvas) {
     this.canvas = canvas;
+
     this._spriteBeingDragged = null;
+    this._clickable = new Clickable(canvas);
+    this._draggable = new Draggable(canvas);
 
     this.createSprites();
     this.bindEvents();
@@ -22,31 +27,45 @@ export default class ColorWheel {
   // PRIVATE METHODS (remove when we add ts)
   // -------------------------------------------
 
-  // bind any of the sprite's events
+  // bind any of the StaticSprite's events
   bindEvents() {
-    this.bottomArrow.onClick(() => {
+    this._clickable.onClick(this.bottomArrow, () => {
       const nearestAngle = this.roundToNearestAngle(15);
       this.colorWheelColors.setRotation(nearestAngle);
       this.moveWheel(15);
     });
 
-    this.topArrow.onClick(() => {
+    this._clickable.onClick(this.topArrow, () => {
       const nearestAngle = this.roundToNearestAngle(15);
       this.colorWheelColors.setRotation(nearestAngle);
       this.moveWheel(-15);
     });
 
-    this.sliderContainer.onDrag({
-      dragCb: this.onColorSliderDrag.bind(this),
-      dragStartCb: this.onDragStarted.bind(this),
-      dragEndCb: this.onDragEnded.bind(this)
-    });
+    this._draggable.onDrag(
+      this.sliderContainer,
+      this.onColorSliderDrag.bind(this)
+    );
+    this._draggable.onDragStarted(
+      this.sliderContainer,
+      this.onDragStarted.bind(this)
+    );
+    this._draggable.onDragEnded(
+      this.sliderContainer,
+      this.onDragEnded.bind(this)
+    );
 
-    this.colorWheelColors.onDrag({
-      dragCb: this.onColorWheelDragged.bind(this),
-      dragStartCb: this.onDragStarted.bind(this),
-      dragEndCb: this.onDragEnded.bind(this)
-    });
+    this._draggable.onDrag(
+      this.colorWheelColors,
+      this.onColorWheelDragged.bind(this)
+    );
+    this._draggable.onDragStarted(
+      this.colorWheelColors,
+      this.onDragStarted.bind(this)
+    );
+    this._draggable.onDragEnded(
+      this.colorWheelColors,
+      this.onDragEnded.bind(this)
+    );
   }
 
   // called when we started dragging the slider
@@ -124,27 +143,27 @@ export default class ColorWheel {
 
   // create the sprites for the colorwheel
   createSprites() {
-    this.cogSprite = new Sprite({
+    this.cogSprite = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/sprites/blueCog.png',
+      imagePath: './assets/Register/color-wheel/sprites/blueCog.png',
       sizeScale: 0.5,
       parent: this.canvas,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 1, y: 0.5 }
     });
-    
-    this.whiteCircleInner = new Sprite({
+
+    this.whiteCircleInner = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/shapes/whiteCircle.svg',
+      imagePath: './assets/Register/color-wheel/shapes/whiteCircle.svg',
       sizeScale: 0.8,
       parent: this.cogSprite,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.5, y: 0.5 }
     });
 
-    this.colorWheelColors = new Sprite({
+    this.colorWheelColors = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/sprites/colorWheelColors.png',
+      imagePath: './assets/Register/color-wheel/sprites/colorWheelColors.png',
       sizeScale: this.whiteCircleInner.getSizeScale(),
       parent: this.cogSprite,
       anchorPoint: { x: 0.5, y: 0.5 },
@@ -152,18 +171,18 @@ export default class ColorWheel {
       rotation: 285
     });
 
-    this.sliderContainer = new Sprite({
+    this.sliderContainer = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/shapes/sliderContainer.svg',
+      imagePath: './assets/Register/color-wheel/shapes/sliderContainer.svg',
       sizeScale: 0.5,
       parent: this.cogSprite,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.4, y: 0.5 }
     });
 
-    this.sliderColor = new Sprite({
+    this.sliderColor = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/shapes/sliderWhite.svg',
+      imagePath: './assets/Register/color-wheel/shapes/sliderWhite.svg',
       sizeScale: 0.66,
       parent: this.sliderContainer,
       anchorPoint: { x: 0.5, y: 0.5 },
@@ -171,36 +190,36 @@ export default class ColorWheel {
       hsl: { h: 216 }
     });
 
-    this.sliderGradient = new Sprite({
+    this.sliderGradient = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/shapes/sliderGradient.svg',
+      imagePath: './assets/Register/color-wheel/shapes/sliderGradient.svg',
       sizeScale: 1,
       parent: this.sliderColor,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.5, y: 0.5 }
     });
 
-    this.sliderArrow = new Sprite({
+    this.sliderArrow = new StaticSprite({
       canvas: this.canvas,
       parent: this.sliderColor,
-      imageSrc: './assets/Register/color-wheel/sprites/sliderArrow.png',
+      imagePath: './assets/Register/color-wheel/sprites/sliderArrow.png',
       sizeScale: { x: 1.3, y: 0.23 },
       anchorPoint: { x: 0, y: 0.5 },
       positionScale: { x: -0.8, y: 0.5 }
     });
 
-    this.blueColorArrow = new Sprite({
+    this.blueColorArrow = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/sprites/blueArrow.png',
+      imagePath: './assets/Register/color-wheel/sprites/blueArrow.png',
       sizeScale: 0.15,
       parent: this.cogSprite,
       anchorPoint: { x: 0, y: 0.5 },
       positionScale: { x: 0, y: 0.5 }
     });
 
-    this.colorCircleInner = new Sprite({
+    this.colorCircleInner = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/sprites/colorCircleInner.png',
+      imagePath: './assets/Register/color-wheel/sprites/colorCircleInner.png',
       sizeScale: 0.5,
       parent: this.blueColorArrow,
       anchorPoint: { x: 0.5, y: 0.5 },
@@ -208,22 +227,27 @@ export default class ColorWheel {
       hsl: { ...this.sliderColor.getHSL() }
     });
 
-    this.topArrow = new Sprite({
+    this.topArrow = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: './assets/Register/color-wheel/sprites/upDownArrowColored.png',
+      imagePath: './assets/Register/color-wheel/sprites/upDownArrowColored.png',
       sizeScale: 1,
       parent: this.colorCircleInner,
       positionScale: { x: 0, y: -1.8 },
       rotation: 110
     });
 
-    this.bottomArrow = new Sprite({
+    this.bottomArrow = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: this.topArrow.getImageSrc(),
+      imagePath: this.topArrow.getImagePath(),
       sizeScale: this.topArrow.getSizeScale(),
       parent: this.colorCircleInner,
       positionScale: { x: 0, y: 2.1 },
       rotation: 250
     });
+  }
+
+  destroy() {
+    this._clickable.destroy();
+    this._draggable.destroy();
   }
 }

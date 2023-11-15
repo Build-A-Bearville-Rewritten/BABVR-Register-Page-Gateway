@@ -1,6 +1,7 @@
-import Sprite from '../rendering/sprite.js';
-
 // Creates the character creator creator frame
+
+import StaticSprite from '../rendering/sprite/static-sprite.js';
+
 export default class CharacterCreator {
   constructor(canvas) {
     this.canvas = canvas;
@@ -9,18 +10,18 @@ export default class CharacterCreator {
 
   // Draw arrow prites at heightScale, and leaves spaceBetweenScale space between the arrows
   createArrows(heightScale, spaceBetweenScale) {
-    const leftArrow = new Sprite({
+    const leftArrow = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: 'assets/Register/color-wheel/sprites/upDownArrowColored.png',
+      imagePath: 'assets/Register/color-wheel/sprites/upDownArrowColored.png',
       parent: this.registerScreen,
       sizeScale: 0.04,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.6, y: heightScale }
     });
 
-    const rightArrow = new Sprite({
+    const rightArrow = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: leftArrow.getImageSrc(),
+      imagePath: leftArrow.getImagePath(),
       parent: this.registerScreen,
       sizeScale: leftArrow.sizeScale,
       anchorPoint: leftArrow.anchorPoint,
@@ -35,44 +36,44 @@ export default class CharacterCreator {
   }
 
   createSprites() {
-    this.registerScreen = new Sprite({
+    this.registerScreen = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: 'assets/Register/sprites/registerStep1.png',
+      imagePath: 'assets/Register/sprites/registerStep1.png',
       parent: this.canvas,
       sizeScale: 0.78,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.42, y: 0.5 }
     });
-    this.genderButton = new Sprite({
+    this.genderButton = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: 'assets/Register/sprites/genderTemp.png',
+      imagePath: 'assets/Register/sprites/genderTemp.png',
       parent: this.registerScreen,
       sizeScale: 0.035,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.734, y: 0.89 }
     });
 
-    this.eyeColorSquare = new Sprite({
+    this.eyeColorSquare = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: 'assets/Register/sprites/colorSquare.png',
+      imagePath: 'assets/Register/sprites/colorSquare.png',
       parent: this.registerScreen,
       sizeScale: 0.05,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.645, y: 0.62 }
     });
 
-    this.skinColorSquare = new Sprite({
+    this.skinColorSquare = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: this.eyeColorSquare.getImageSrc(),
+      imagePath: this.eyeColorSquare.getImagePath(),
       parent: this.registerScreen,
       sizeScale: this.eyeColorSquare.getSizeScale(),
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.645, y: 0.77 }
     });
 
-    this.characterContainer = new Sprite({
+    this.characterContainer = new StaticSprite({
       canvas: this.canvas,
-      imageSrc: 'assets/Character/container.png',
+      imagePath: 'assets/Character/container.png',
       parent: this.registerScreen,
       sizeScale: 0.65,
       anchorPoint: { x: 0.5, y: 0.5 },
