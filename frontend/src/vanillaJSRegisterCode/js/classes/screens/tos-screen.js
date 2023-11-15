@@ -1,9 +1,7 @@
-import screenHandlerModule from '../../modules/screen-handler-module.js';
 import StaticSprite from '../rendering/sprite/static-sprite.js';
 import Clickable from '../rendering/sprite/clickable.js';
-import CharacterCreatorScreen from '../screens/character-creator-screen.js';
 
-export default class ChloeIntroScreen {
+export default class TOSScreen {
   constructor(canvas) {
     this.canvas = canvas;
 
@@ -22,11 +20,7 @@ export default class ChloeIntroScreen {
   // -------------------------------------------
 
   bindEvents() {
-    this._clickable.onClick(this._nextButton, () => {
-      this._clickable.destroy();
-      const screenHandler = screenHandlerModule.getInstance(this.canvas);
-      screenHandler.setScreen(CharacterCreatorScreen);
-    });
+    
   }
 
   async createSprites() {
@@ -39,20 +33,11 @@ export default class ChloeIntroScreen {
 
     this._testSprite = new StaticSprite({
       canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/chloeTest.png',
+      imagePath: 'assets/Register/sprites/TOSscreen.png',
       parent: this.canvas,
       sizeScale: 0.6,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.42, y: 0.5 }
-    });
-
-    this._nextButton = new StaticSprite({
-      canvas: this.canvas,
-      imagePath: './assets/Register/sprites/emptyButton.png',
-      sizeScale: 0.05,
-      parent: this.canvas,
-      anchorPoint: { x: 0.5, y: -1 },
-      positionScale: { x: 0.83, y: 0.85 }
     });
 
     this._loginHUD = new StaticSprite({
@@ -61,17 +46,6 @@ export default class ChloeIntroScreen {
       imagePath: 'assets/Register/sprites/loginHUD.png',
       sizeScale: { x: 1, y: 1 }
     });
-
-    // this._chloeAnimation = new Sprite({
-    //   canvas: this.canvas,
-    //   parent: this.canvas,
-    //   sizeScale: { x: 1, y: 1 },
-    //   numFrames: 337, // the number of frames in the animation
-    //   frameBuffer: 5, // the amount of times the canvas should draw before loading the next frames
-    //   animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations
-    // });
-
-    // this._chloeAnimation.play()
   }
 
   destroy() {
