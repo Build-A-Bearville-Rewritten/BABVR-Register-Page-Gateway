@@ -1,6 +1,6 @@
-import StaticSprite from '../rendering/sprite/static-sprite.js';
+import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import spriteRendererModule from '../../modules/sprite-renderer-module.js';
-import svgHandler from '../../modules/svg-handler.js';
+import svgHandler from '../../modules/svg-handler.ts';
 
 // Character instance
 export default class Character {

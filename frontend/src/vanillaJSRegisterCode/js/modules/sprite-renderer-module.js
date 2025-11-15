@@ -1,4 +1,4 @@
-import SpriteRenderer from '../classes/rendering/sprite-renderer.js';
+import SpriteRenderer from '../classes/rendering/sprite-renderer.ts';
 
 // keeps track of all sprite loader instances,
 // and allows for getting and setting sprite renderers for each canvas

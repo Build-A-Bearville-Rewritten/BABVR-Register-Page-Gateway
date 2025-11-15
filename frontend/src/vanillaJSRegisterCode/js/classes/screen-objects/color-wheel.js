@@ -1,6 +1,6 @@
-import StaticSprite from '../rendering/sprite/static-sprite.js';
-import Clickable from '../rendering/sprite/clickable.js';
-import Draggable from '../rendering/sprite/draggable.js';
+import StaticSprite from '../rendering/sprite/static-sprite.ts';
+import Clickable from '../rendering/sprite/clickable.ts';
+import Draggable from '../rendering/sprite/draggable.ts';
 
 // Color wheel portion of the page
 

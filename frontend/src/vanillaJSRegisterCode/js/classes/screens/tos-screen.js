@@ -1,5 +1,5 @@
-import StaticSprite from '../rendering/sprite/static-sprite.js';
-import Clickable from '../rendering/sprite/clickable.js';
+import StaticSprite from '../rendering/sprite/static-sprite.ts';
+import Clickable from '../rendering/sprite/clickable.ts';
 
 export default class TOSScreen {
   constructor(canvas) {

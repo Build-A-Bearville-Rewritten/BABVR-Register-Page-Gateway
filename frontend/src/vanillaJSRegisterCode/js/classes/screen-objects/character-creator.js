@@ -1,6 +1,6 @@
 // Creates the character creator creator frame
 
-import StaticSprite from '../rendering/sprite/static-sprite.js';
+import StaticSprite from '../rendering/sprite/static-sprite.ts';
 
 export default class CharacterCreator {
   constructor(canvas) {

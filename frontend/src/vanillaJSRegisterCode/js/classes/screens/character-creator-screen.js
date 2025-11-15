@@ -1,9 +1,9 @@
-import StaticSprite from '../rendering/sprite/static-sprite.js';
+import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import ChloeIntroScreen from './chloe-intro-screen.js';
 import Character from '../screen-objects/character.js';
 import ColorWheel from '../screen-objects/color-wheel.js';
 import CharacterCreator from '../screen-objects/character-creator.js';
-import Clickable from '../rendering/sprite/clickable.js';
+import Clickable from '../rendering/sprite/clickable.ts';
 
 import screenHandlerModule from '../../modules/screen-handler-module.js';
 import NamingScreen from './naming-screen.js';
