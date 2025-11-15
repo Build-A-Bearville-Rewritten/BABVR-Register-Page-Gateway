@@ -2,6 +2,8 @@
  * Rendering-related type definitions
  */
 
+import { HSL, Point2D, Size2D } from "./common";
+
 /**
  * Canvas element type
  */
@@ -54,3 +56,18 @@ export interface ISpriteDrawer {
   drawSprite(sprite: any, ctx: CanvasRenderingContext2D): void;
 }
 
+export interface IDrawableSprite {
+  canvas: HTMLCanvasElement | undefined;
+  getImage(): HTMLImageElement | null;
+  getSize(): Size2D;
+  getHSL(): HSL | undefined;
+  getPosition(): Point2D;
+  getRotation(): number | undefined;
+  getFlip(): 'horizontal' | 'vertical' | undefined;
+  propertiesChanged: {
+    size?: boolean;
+    hsl?: boolean;
+  };
+  getImgCanvas(): HTMLCanvasElement | undefined;
+  setImgCanvas(imgCanvas: HTMLCanvasElement): void;
+}

@@ -1,17 +1,14 @@
 // Loads in sprites onto their in specified loading order.
 
-import SpriteDrawer from './sprite/sprite-drawer.js';
-import type { ISpriteRenderer } from '../../../types/rendering.js';
+import SpriteDrawer from './sprite/sprite-drawer.ts';
+import type { IDrawableSprite, ISpriteRenderer } from '../../../types/rendering.ts';
 
 /**
  * Interface for sprites that can be rendered
  */
-// TODO: likely combine IRenderableSprite and IDrawableSprite into one interface
-interface IRenderableSprite {
+interface IRenderableSprite extends IDrawableSprite {
   id: number | null;
-  canvas: HTMLCanvasElement | undefined;
   getZIndex(): number;
-  getImage(): HTMLImageElement | null;
   update(): void;
   isAnimation?: boolean;
 }
@@ -21,7 +18,6 @@ interface IRenderableSprite {
  */
 interface IAnimatedSprite extends IRenderableSprite {
   isAnimation: true;
-  update(): void;
 }
 
 /**

@@ -1,24 +1,5 @@
-import type { Point2D, Size2D, HSL } from '../../../../types/common.js';
-import type AbstractSprite from './abstract-sprite.js';
-
-/**
- * Interface for sprites that can be drawn
- */
-interface IDrawableSprite {
-  canvas: HTMLCanvasElement | undefined;
-  getImage(): HTMLImageElement | null;
-  getSize(): Size2D;
-  getHSL(): HSL | undefined;
-  getPosition(): Point2D;
-  getRotation(): number | undefined;
-  getFlip(): 'horizontal' | 'vertical' | undefined;
-  propertiesChanged: {
-    size?: boolean;
-    hsl?: boolean;
-  };
-  getImgCanvas(): HTMLCanvasElement | undefined;
-  setImgCanvas(imgCanvas: HTMLCanvasElement): void;
-}
+import type { Point2D } from '../../../../types/common.ts';
+import type { IDrawableSprite } from '../../../../types/rendering.ts';
 
 /**
  * Class responsible for drawing sprites onto the canvas
