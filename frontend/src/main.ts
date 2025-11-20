@@ -1,2 +1,2 @@
 import './main.css';
-import './vanillaJSRegisterCode/js/main.js';
+import './vanillaJSRegisterCode/js/main.ts';
