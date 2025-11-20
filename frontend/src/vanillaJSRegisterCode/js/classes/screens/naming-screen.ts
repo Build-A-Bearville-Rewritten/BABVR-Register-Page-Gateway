@@ -1,42 +1,43 @@
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
-import CharacterCreatorScreen from './character-creator-screen.js';
-import TOSScreen from './tos-screen.js'
+import CharacterCreatorScreen from './character-creator-screen.ts';
+import TOSScreen from './tos-screen.ts';
+import { AbstractScreen } from '../../../types/rendering.ts';
 
-export default class NamingScreen {
-  constructor(canvas) {
-    this.canvas = canvas;
+export default class NamingScreen extends AbstractScreen {
+  private _clickable: Clickable;
 
-    this._clickable = new Clickable(canvas);
+  private _backgroundImage!: StaticSprite;
+  private _testSprite!: StaticSprite;
+  private _nextButton!: StaticSprite;
+  private _backButton!: StaticSprite;
+  private _loginHUD!: StaticSprite;
+
+  constructor(canvas: HTMLCanvasElement) {
+    super(canvas);
+
+    this._clickable = new Clickable();
 
     this.createSprites();
     this.bindEvents();
   }
 
-  // -------------------------------------------
-  // PUBLIC METHODS (remove when we add ts)
-  // -------------------------------------------
-
-  // ------------------w-------------------------
-  // PRIVATE METHODS (remove when we add ts)
-  // -------------------------------------------
-
-  bindEvents() {
+  private bindEvents(): void {
     this._clickable.onClick(this._backButton, () => {
       const screenHandler = screenHandlerModule.getInstance(this.canvas);
 
-      screenHandler.setScreen(CharacterCreatorScreen);
+      void screenHandler.setScreen(CharacterCreatorScreen);
     });
 
     this._clickable.onClick(this._nextButton, () => {
       const screenHandler = screenHandlerModule.getInstance(this.canvas);
 
-      screenHandler.setScreen(TOSScreen);
+      void screenHandler.setScreen(TOSScreen);
     });
   }
 
-  async createSprites() {
+  private createSprites(): void {
     this._backgroundImage = new StaticSprite({
       canvas: this.canvas,
       parent: this.canvas,
@@ -79,7 +80,7 @@ export default class NamingScreen {
     });
   }
 
-  destroy() {
+  public destroy(): void {
     this._clickable.destroy();
   }
 }

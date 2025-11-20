@@ -38,6 +38,7 @@ export interface ISpriteRenderer {
   removeAllSprites(): void;
   drawSprites(): void;
   updateAnimations(): void;
+  addRedrawCB(cb: () => void): void;
 }
 
 /**

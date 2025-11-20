@@ -1,35 +1,48 @@
+// Chloe intro screen implementation - handles the introductory dialogue UI
+// and transitions into the character creator flow.
+
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
-import CharacterCreatorScreen from '../screens/character-creator-screen.js';
+import CharacterCreatorScreen from '../screens/character-creator-screen.ts';
+import { AbstractScreen } from '../../../types/rendering.ts';
 
-export default class ChloeIntroScreen {
-  constructor(canvas) {
-    this.canvas = canvas;
+/**
+ * ChloeIntroScreen draws Chloe's intro art and advances to the
+ * character creator when the player taps the next button.
+ */
+export default class ChloeIntroScreen extends AbstractScreen {
+  private _clickable: Clickable;
 
-    this._clickable = new Clickable(canvas);
+  private _backgroundImage!: StaticSprite;
+  private _chloeSprite!: StaticSprite;
+  private _nextButton!: StaticSprite;
+  private _loginHUD!: StaticSprite;
+
+  constructor(canvas: HTMLCanvasElement) {
+    super(canvas);
+
+    this._clickable = new Clickable();
 
     this.createSprites();
     this.bindEvents();
   }
 
-  // -------------------------------------------
-  // PUBLIC METHODS (remove when we add ts)
-  // -------------------------------------------
-
-  // ------------------w-------------------------
-  // PRIVATE METHODS (remove when we add ts)
-  // -------------------------------------------
-
-  bindEvents() {
+  /**
+   * Register click interactions for screen controls.
+   */
+  private bindEvents(): void {
     this._clickable.onClick(this._nextButton, () => {
       this._clickable.destroy();
       const screenHandler = screenHandlerModule.getInstance(this.canvas);
-      screenHandler.setScreen(CharacterCreatorScreen);
+      void screenHandler.setScreen(CharacterCreatorScreen);
     });
   }
 
-  async createSprites() {
+  /**
+   * Build the static sprites that compose this screen.
+   */
+  private createSprites(): void {
     this._backgroundImage = new StaticSprite({
       canvas: this.canvas,
       parent: this.canvas,
@@ -37,7 +50,7 @@ export default class ChloeIntroScreen {
       sizeScale: { x: 1, y: 1 }
     });
 
-    this._testSprite = new StaticSprite({
+    this._chloeSprite = new StaticSprite({
       canvas: this.canvas,
       imagePath: 'assets/Register/sprites/chloeTest.png',
       parent: this.canvas,
@@ -74,7 +87,12 @@ export default class ChloeIntroScreen {
     // this._chloeAnimation.play()
   }
 
-  destroy() {
+  /**
+   * Cleanup resources when the screen is replaced.
+   */
+  public destroy(): void {
     this._clickable.destroy();
   }
 }
+
+

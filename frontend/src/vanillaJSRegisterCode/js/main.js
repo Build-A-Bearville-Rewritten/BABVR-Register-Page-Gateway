@@ -1,4 +1,4 @@
-import ChloeIntro from './classes/screens/chloe-intro-screen.js';
+import ChloeIntro from './classes/screens/chloe-intro-screen.ts';
 
 import screenHandlerModule from './modules/screen-handler-module.ts';
 import canvasRendererModule from './modules/canvas-renderer-module.ts';

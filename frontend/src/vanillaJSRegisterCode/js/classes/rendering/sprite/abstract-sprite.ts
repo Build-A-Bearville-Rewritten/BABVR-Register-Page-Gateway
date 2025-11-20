@@ -181,6 +181,14 @@ export default class AbstractSprite {
   }
 
   /**
+   * Gets the anchor point of the sprite
+   * @returns The anchor point as a Point2D
+   */
+  getAnchorPoint(): Point2D {
+    return this._anchorPoint;
+  }
+
+  /**
    * Gets the current size of the sprite
    * @returns The size as a Size2D
    */

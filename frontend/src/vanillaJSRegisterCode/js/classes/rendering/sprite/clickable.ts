@@ -5,7 +5,7 @@ import type { Point2D, Size2D } from '../../../../types/common.js';
  * Interface for sprites that can be clicked
  */
 interface IClickableSprite {
-  canvas: HTMLCanvasElement;
+  canvas?: HTMLCanvasElement;
   getPosition(): Point2D;
   getSize(): Size2D;
 }

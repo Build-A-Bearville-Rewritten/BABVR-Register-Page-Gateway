@@ -1,29 +1,28 @@
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
+import { AbstractScreen } from '../../../types/rendering.ts';
 
-export default class TOSScreen {
-  constructor(canvas) {
-    this.canvas = canvas;
+export default class TOSScreen extends AbstractScreen {
+  private _clickable: Clickable;
 
-    this._clickable = new Clickable(canvas);
+  private _backgroundImage!: StaticSprite;
+  private _testSprite!: StaticSprite;
+  private _loginHUD!: StaticSprite;
+
+  constructor(canvas: HTMLCanvasElement) {
+    super(canvas);
+
+    this._clickable = new Clickable();
 
     this.createSprites();
     this.bindEvents();
   }
 
-  // -------------------------------------------
-  // PUBLIC METHODS (remove when we add ts)
-  // -------------------------------------------
-
-  // ------------------w-------------------------
-  // PRIVATE METHODS (remove when we add ts)
-  // -------------------------------------------
-
-  bindEvents() {
+  private bindEvents(): void {
     
   }
 
-  async createSprites() {
+  private createSprites(): void {
     this._backgroundImage = new StaticSprite({
       canvas: this.canvas,
       parent: this.canvas,
@@ -48,7 +47,7 @@ export default class TOSScreen {
     });
   }
 
-  destroy() {
+  public destroy(): void {
     this._clickable.destroy();
   }
 }

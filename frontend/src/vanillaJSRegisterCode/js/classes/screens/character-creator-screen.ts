@@ -1,48 +1,50 @@
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
-import ChloeIntroScreen from './chloe-intro-screen.js';
-import Character from '../screen-objects/character.js';
-import ColorWheel from '../screen-objects/color-wheel.js';
-import CharacterCreator from '../screen-objects/character-creator.js';
+import ChloeIntroScreen from './chloe-intro-screen.ts';
+import Character from '../screen-objects/character.ts';
+import ColorWheel from '../screen-objects/color-wheel.ts';
+import CharacterCreator from '../screen-objects/character-creator.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
-
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
-import NamingScreen from './naming-screen.js';
+import NamingScreen from './naming-screen.ts';
+import { AbstractScreen } from '../../../types/rendering.ts';
 
 // Color wheel portion of the page
 
-export default class CharacterCreatorScreen {
-  constructor(canvas) {
-    this.canvas = canvas;
+export default class CharacterCreatorScreen extends AbstractScreen {
+  private _clickable: Clickable;
 
-    this._clickable = new Clickable(canvas);
+  private _backgroundImage!: StaticSprite;
+  private _nextButton!: StaticSprite;
+  private _backButton!: StaticSprite;
+  private loginHUD!: StaticSprite;
+
+  private characterCreator!: CharacterCreator;
+  private colorWheel!: ColorWheel;
+
+  constructor(canvas: HTMLCanvasElement) {
+    super(canvas);
+
+    this._clickable = new Clickable();
 
     this.createSprites();
     this.bindEvents();
   }
 
-  // -------------------------------------------
-  // PUBLIC METHODS (remove when we add ts)
-  // -------------------------------------------
-
-  // -------------------------------------------
-  // PRIVATE METHODS (remove when we add ts)
-  // -------------------------------------------
-
-  bindEvents() {
+  private bindEvents(): void {
     this._clickable.onClick(this._backButton, () => {
       const screenHandler = screenHandlerModule.getInstance(this.canvas);
 
-      screenHandler.setScreen(ChloeIntroScreen);
+      void screenHandler.setScreen(ChloeIntroScreen);
     });
 
     this._clickable.onClick(this._nextButton, () => {
       const screenHandler = screenHandlerModule.getInstance(this.canvas);
 
-      screenHandler.setScreen(NamingScreen);
+      void screenHandler.setScreen(NamingScreen);
     });
   }
 
-  async createSprites() {
+  private createSprites(): void {
     this._backgroundImage = new StaticSprite({
       canvas: this.canvas,
       parent: this.canvas,
@@ -70,7 +72,7 @@ export default class CharacterCreatorScreen {
 
     this.characterCreator = new CharacterCreator(this.canvas);
     new Character(this.canvas, this.characterCreator.characterContainer);
-    this.ColorWheel = new ColorWheel(this.canvas);
+    this.colorWheel = new ColorWheel(this.canvas);
 
     this.loginHUD = new StaticSprite({
       canvas: this.canvas,
@@ -80,8 +82,8 @@ export default class CharacterCreatorScreen {
     });
   }
 
-  destroy() {
+  public destroy(): void {
     this._clickable.destroy();
-    this.ColorWheel.destroy();
+    this.colorWheel.destroy();
   }
 }

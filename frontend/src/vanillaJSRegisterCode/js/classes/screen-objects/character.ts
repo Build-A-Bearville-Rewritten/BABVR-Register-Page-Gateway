@@ -1,14 +1,51 @@
+// Character instance
+
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import spriteRendererModule from '../../modules/sprite-renderer-module.ts';
 import svgHandler from '../../modules/svg-handler.ts';
+import type { SpriteParent } from '../../../types/rendering.ts';
 
-// Character instance
+/**
+ * Dictionary type for storing SVG URLs by key
+ */
+type SVGDictionary = {
+  [key: string]: string | undefined;
+};
+
+/**
+ * Character class for rendering character sprites with SVG handling
+ */
 export default class Character {
-  constructor(canvas, parent) {
+  public canvas: HTMLCanvasElement;
+  public parent: SpriteParent;
+  
+  // SVG storage - maps SVG part names to their blob URLs
+  private _svgs: SVGDictionary = {};
+  private _isCharacterLoaded: boolean = false;
+
+  // Head sprites
+  public headNoColor?: StaticSprite;
+  public headColored?: StaticSprite;
+
+  // Hair sprites
+  public hairNoColor?: StaticSprite;
+  public hairColored?: StaticSprite;
+
+  // Torso and body sprites (commented out in original, but typed for future use)
+  public torso?: StaticSprite;
+  public rightUpperArm?: StaticSprite;
+  public rightLowerArm?: StaticSprite;
+  public leftUpperArm?: StaticSprite;
+  public leftLowerArm?: StaticSprite;
+  public hips?: StaticSprite;
+  public rightUpLeg?: StaticSprite;
+  public rightLowLeg?: StaticSprite;
+  public leftUpLeg?: StaticSprite;
+  public leftLowLeg?: StaticSprite;
+
+  constructor(canvas: HTMLCanvasElement, parent: SpriteParent) {
     this.canvas = canvas;
     this.parent = parent;
-    this._svgs = {};
-    this._isCharacterLoaded = false;
 
     // splits the default character _svgs, then draws the sprites with those _svgs
     // this.splitSvgs()
@@ -22,41 +59,44 @@ export default class Character {
     });
   }
 
-  onPreRedraw() {
+  /**
+   * Pre-redraw callback - called before sprites are redrawn
+   */
+  onPreRedraw(): void {
+    // Override in subclasses or add logic here
   }
 
-  // splits _svgs where each layer of the svg is turned into a new svg
-  // and saves the _svgs in the _svgs array
-  async splitSvgs() {
+  /**
+   * Splits SVGs where each layer of the SVG is turned into a new SVG
+   * and saves the SVGs in the _svgs dictionary
+   * @returns Promise that resolves when all SVGs are split
+   */
+  async splitSvgs(): Promise<void> {
+    // Example implementation (commented out in original):
+    // const assetsFolder = 'assets/Character/';
+    // let urls = await svgHandler.splitLayers(assetsFolder + 'Character/torsoWomen.svg');
     // this._svgs['torsoWomen'] = urls[0];
-    // urls = await svgHandler.splitLayers(
-    //   assetsFolder + 'Character/arms/upArmTemp.svg'
-    // );
+    // urls = await svgHandler.splitLayers(assetsFolder + 'Character/arms/upArmTemp.svg');
     // this._svgs['upArmTemp'] = urls[0];
-    // urls = await svgHandler.splitLayers(
-    //   assetsFolder + 'Character/arms/lowArmTemp.svg'
-    // );
+    // urls = await svgHandler.splitLayers(assetsFolder + 'Character/arms/lowArmTemp.svg');
     // this._svgs['lowArmTemp'] = urls[0];
-    // urls = await svgHandler.splitLayers(
-    //   assetsFolder + '/Character/hips/testHips.svg'
-    // );
+    // urls = await svgHandler.splitLayers(assetsFolder + '/Character/hips/testHips.svg');
     // this._svgs['hips'] = urls[0];
-    // urls = await svgHandler.splitLayers(
-    //   assetsFolder + 'Character/legs/upLeg.svg'
-    // );
+    // urls = await svgHandler.splitLayers(assetsFolder + 'Character/legs/upLeg.svg');
     // this._svgs['upLeg'] = urls[0];
-    // urls = await svgHandler.splitLayers(
-    //   assetsFolder + 'Character/legs/lowLeg.svg'
-    // );
+    // urls = await svgHandler.splitLayers(assetsFolder + 'Character/legs/lowLeg.svg');
     // this._svgs['lowLeg'] = urls[0];
   }
 
-  // Draws the sprites for the characterw
-
-  async createHeadSprites() {
+  /**
+   * Creates head sprites from SVG layers
+   * @returns Promise that resolves when head sprites are created
+   */
+  async createHeadSprites(): Promise<void> {
     const characterFolder = 'assets/Character';
 
-    const headSVGs = await svgHandler.splitLayers(
+    // Split SVG layers - returns array of blob URLs
+    const headSVGs: string[] = await svgHandler.splitLayers(
       characterFolder + '/head/testHead.svg'
     );
 
@@ -82,12 +122,21 @@ export default class Character {
     });
   }
 
-  async createHairSprites() {
+  /**
+   * Creates hair sprites from SVG layers
+   * @returns Promise that resolves when hair sprites are created
+   */
+  async createHairSprites(): Promise<void> {
     const characterFolder = 'assets/Character';
 
-    const hairSVGs = await svgHandler.splitLayers(
+    // Split SVG layers - returns array of blob URLs
+    const hairSVGs: string[] = await svgHandler.splitLayers(
       characterFolder + '/hair/womenHair5.svg'
     );
+
+    if (!this.headNoColor) {
+      throw new Error('headNoColor must be created before hair sprites');
+    }
 
     this.hairNoColor = new StaticSprite({
       canvas: this.canvas,
@@ -100,7 +149,7 @@ export default class Character {
       zIndex: this.headNoColor.getZIndex()
     });
 
-    if (this._svgs.hairColored)
+    if (hairSVGs[2]) {
       this.hairColored = new StaticSprite({
         canvas: this.canvas,
         imagePath: hairSVGs[2],
@@ -108,15 +157,25 @@ export default class Character {
         sizeScale: 1,
         anchorPoint: { x: 0.5, y: 0 },
         positionScale: { x: 0.5, y: 0 },
-        zIndex: ret.hairNoColor.getZIndex()
+        zIndex: this.hairNoColor.getZIndex()
       });
+    }
   }
 
-  async createSprites() {
+  /**
+   * Creates all character sprites
+   * @returns Promise that resolves when all sprites are created
+   */
+  async createSprites(): Promise<void> {
     const characterFolder = 'assets/Character';
 
     // await this.createHeadSprites();
     // await this.createHairSprites();
+    
+    // Example sprite creation (commented out in original):
+    // if (!this.headNoColor) {
+    //   throw new Error('headNoColor must be created first');
+    // }
     
     // this.torso = new StaticSprite({
     //   canvas: this.canvas,
@@ -125,11 +184,11 @@ export default class Character {
     //   sizeScale: 1.4,
     //   anchorPoint: { x: 0.5, y: 0 },
     //   positionScale: { x: 0.5, y: 0.85 },
-    //   hsl: this.headNoColor.hsl,
-    //   zIndex: this.headNoColor.getZIndex() -1
+    //   hsl: this.headNoColor.getHSL(),
+    //   zIndex: this.headNoColor.getZIndex() - 1
     // });
 
-    // (this.rightUpperArm = new StaticSprite({
+    // this.rightUpperArm = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: this._svgs.upArmTemp,
     //   parent: this.torso,
@@ -137,19 +196,19 @@ export default class Character {
     //   anchorPoint: { x: 0.5, y: 0 },
     //   positionScale: { x: 0.2, y: 0.1 },
     //   hsl: { h: 0, s: 100, l: 50 }
-    // })),
+    // });
 
-    // (this.rightLowerArm = new StaticSprite({
+    // this.rightLowerArm = new StaticSprite({
     //   canvas: this.canvas,
-    //   imagePath:  characterFolder + '/arms/upArmTemp.svg',
+    //   imagePath: characterFolder + '/arms/upArmTemp.svg',
     //   parent: this.rightUpperArm,
     //   sizeScale: 1,
     //   anchorPoint: { x: 0.5, y: 0 },
     //   positionScale: { x: 0.5, y: 0.9 },
     //   hsl: { h: 200, s: 100, l: 50 }
-    // })),
+    // });
 
-    // (this.leftUpperArm = new StaticSprite({
+    // this.leftUpperArm = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: this._svgs.upArmTemp,
     //   parent: this.torso,
@@ -158,9 +217,9 @@ export default class Character {
     //   positionScale: { x: 1, y: 0.2 },
     //   hsl: { h: 0, s: 100, l: 50 },
     //   zIndex: this.torso.getZIndex()
-    // })),
+    // });
 
-    // (this.leftLowerArm = new StaticSprite({
+    // this.leftLowerArm = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: this._svgs.upArmTemp,
     //   parent: this.leftUpperArm,
@@ -169,9 +228,9 @@ export default class Character {
     //   positionScale: { x: 0.5, y: 0.9 },
     //   hsl: { h: 200, s: 100, l: 50 },
     //   zIndex: this.torso.getZIndex()
-    // })),
+    // });
 
-    // (this.hips = new StaticSprite({
+    // this.hips = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: this._svgs.hips,
     //   parent: this.torso,
@@ -180,9 +239,9 @@ export default class Character {
     //   positionScale: { x: 0.5, y: 0.9 },
     //   hsl: { h: 170, s: 100, l: 50 },
     //   zIndex: this.torso.getZIndex() - 1
-    // })),
+    // });
 
-    // (this.rightUpLeg = new StaticSprite({
+    // this.rightUpLeg = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: this._svgs.upLeg,
     //   parent: this.hips,
@@ -190,36 +249,37 @@ export default class Character {
     //   anchorPoint: { x: 0, y: 0 },
     //   positionScale: { x: 0.1, y: 0.7 },
     //   hsl: { h: 150, s: 100, l: 50 }
-    // })),
+    // });
 
-    // (this.rightLowLeg = new StaticSprite({
+    // this.rightLowLeg = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: this._svgs.lowLeg,
     //   parent: this.rightUpLeg,
     //   sizeScale: 1,
     //   anchorPoint: { x: 0.5, y: 0 },
     //   positionScale: { x: 0.5, y: 0.7 },
-    //   hsl: this.rightUpLeg.hsl
-    // })),
+    //   hsl: this.rightUpLeg.getHSL()
+    // });
 
-    // (this.leftUpLeg = new StaticSprite({
+    // this.leftUpLeg = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: this._svgs.upLeg,
     //   parent: this.hips,
-    //   sizeScale: this.rightUpLeg.sizeScale,
+    //   sizeScale: this.rightUpLeg.getSizeScale(),
     //   anchorPoint: { x: 1, y: 0 },
     //   positionScale: { x: 1, y: 0.7 },
     //   hsl: { h: 140, s: 100, l: 50 }
-    // })),
+    // });
 
-    // (this.leftLowLeg = new StaticSprite({
+    // this.leftLowLeg = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: this._svgs.lowLeg,
     //   parent: this.leftUpLeg,
-    //   sizeScale: this.rightLowLeg.sizeScale,
+    //   sizeScale: this.rightLowLeg.getSizeScale(),
     //   anchorPoint: { x: 0.5, y: 0 },
     //   positionScale: { x: 0.5, y: 0.7 },
-    //   hsl: this.leftUpLeg.hsl
-    // }))
+    //   hsl: this.leftUpLeg.getHSL()
+    // });
   }
 }
+

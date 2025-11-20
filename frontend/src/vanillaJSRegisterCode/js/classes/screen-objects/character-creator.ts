@@ -1,15 +1,43 @@
-// Creates the character creator creator frame
+// Character creator UI component - responsible for drawing the selection frame
+// and related controls on the registration screen
 
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 
+/**
+ * Convenience type describing the arrow sprites that appear in pairs
+ */
+type ArrowSprites = {
+  left: StaticSprite;
+  right: StaticSprite;
+};
+
+/**
+ * CharacterCreator renders the UI container, color squares, and selection arrows
+ * that surround the character preview on the registration screen.
+ */
 export default class CharacterCreator {
-  constructor(canvas) {
+  public canvas: HTMLCanvasElement;
+
+  public registerScreen!: StaticSprite;
+  public genderButton!: StaticSprite;
+  public eyeColorSquare!: StaticSprite;
+  public skinColorSquare!: StaticSprite;
+  public characterContainer!: StaticSprite;
+
+  public hairArrows!: ArrowSprites;
+  public headArrows!: ArrowSprites;
+  public eyeArrows!: ArrowSprites;
+  public skinArrows!: ArrowSprites;
+
+  constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.createSprites();
   }
 
-  // Draw arrow prites at heightScale, and leaves spaceBetweenScale space between the arrows
-  createArrows(heightScale, spaceBetweenScale) {
+  /**
+   * Draw arrow sprites at a specific vertical scale and horizontal spacing.
+   */
+  private createArrows(heightScale: number, spaceBetweenScale: number): ArrowSprites {
     const leftArrow = new StaticSprite({
       canvas: this.canvas,
       imagePath: 'assets/Register/color-wheel/sprites/upDownArrowColored.png',
@@ -23,8 +51,8 @@ export default class CharacterCreator {
       canvas: this.canvas,
       imagePath: leftArrow.getImagePath(),
       parent: this.registerScreen,
-      sizeScale: leftArrow.sizeScale,
-      anchorPoint: leftArrow.anchorPoint,
+      sizeScale: leftArrow.getSizeScale(),
+      anchorPoint: leftArrow.getAnchorPoint(),
       positionScale: {
         x: leftArrow.getPositionScale().x + spaceBetweenScale,
         y: heightScale
@@ -35,7 +63,10 @@ export default class CharacterCreator {
     return { left: leftArrow, right: rightArrow };
   }
 
-  createSprites() {
+  /**
+   * Create all sprites that compose the character creator UI component.
+   */
+  private createSprites(): void {
     this.registerScreen = new StaticSprite({
       canvas: this.canvas,
       imagePath: 'assets/Register/sprites/registerStep1.png',
@@ -44,6 +75,7 @@ export default class CharacterCreator {
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.42, y: 0.5 }
     });
+
     this.genderButton = new StaticSprite({
       canvas: this.canvas,
       imagePath: 'assets/Register/sprites/genderTemp.png',
@@ -86,8 +118,12 @@ export default class CharacterCreator {
     this.skinArrows = this.createArrows(0.77, 0.095);
   }
 
-  showScreen() {
-    this.createArrows();
+  /**
+   * Public entry point used by screens to redraw the component.
+   */
+  public showScreen(): void {
     this.createSprites();
   }
 }
+
+

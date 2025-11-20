@@ -4,7 +4,7 @@ import type { Point2D, Size2D } from '../../../../types/common.js';
  * Interface for sprites that can be checked for mouse interaction
  */
 interface ISpriteWithMouse {
-  canvas: HTMLCanvasElement;
+  canvas?: HTMLCanvasElement;
   getPosition(): Point2D;
   getSize(): Size2D;
 }
@@ -22,6 +22,9 @@ export default class AbstractMouse {
    * @returns True if the mouse is within the sprite's bounds, false otherwise
    */
   mouseIsOnSprite(sprite: ISpriteWithMouse, event: MouseEvent): boolean {
+    if (!sprite.canvas) {
+      return false;
+    }
     let isInBounds = false;
 
     const rect = sprite.canvas.getBoundingClientRect();
