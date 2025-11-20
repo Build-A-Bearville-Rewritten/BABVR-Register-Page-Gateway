@@ -1,4 +1,4 @@
-import screenHandlerModule from '../../modules/screen-handler-module.js';
+import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
 import CharacterCreatorScreen from './character-creator-screen.js';

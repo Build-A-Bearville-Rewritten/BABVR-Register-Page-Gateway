@@ -1,7 +1,7 @@
 import ChloeIntro from './classes/screens/chloe-intro-screen.js';
 
-import screenHandlerModule from './modules/screen-handler-module.js';
-import canvasRendererModule from './modules/canvas-renderer-module.js';
+import screenHandlerModule from './modules/screen-handler-module.ts';
+import canvasRendererModule from './modules/canvas-renderer-module.ts';
 
 (function () {
   const canvas = document.createElement('canvas');

@@ -5,7 +5,7 @@ import ColorWheel from '../screen-objects/color-wheel.js';
 import CharacterCreator from '../screen-objects/character-creator.js';
 import Clickable from '../rendering/sprite/clickable.ts';
 
-import screenHandlerModule from '../../modules/screen-handler-module.js';
+import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import NamingScreen from './naming-screen.js';
 
 // Color wheel portion of the page

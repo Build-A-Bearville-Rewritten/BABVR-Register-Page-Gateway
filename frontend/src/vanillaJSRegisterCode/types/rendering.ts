@@ -41,11 +41,41 @@ export interface ISpriteRenderer {
 }
 
 /**
+ * Abstract base class for all screen classes
+ * All screens must extend this class and implement the destroy method
+ */
+export abstract class AbstractScreen {
+  public canvas: HTMLCanvasElement;
+
+  constructor(canvas: HTMLCanvasElement, ...args: any[]) {
+    this.canvas = canvas;
+  }
+
+  /**
+   * Cleanup method called when the screen is being replaced
+   * Must be implemented by all screen classes
+   */
+  abstract destroy(): void;
+}
+
+/**
+ * Type for screen class constructors
+ * Screens must extend AbstractScreen and take canvas as first parameter
+ */
+export type ScreenClass<T extends AbstractScreen = AbstractScreen> = new (
+  canvas: HTMLCanvasElement,
+  ...args: any[]
+) => T;
+
+/**
  * Interface for screen handler
  */
 export interface IScreenHandler {
   canvas: HTMLCanvasElement;
-  setScreen(screenToDraw: any, screenArgs?: any[]): Promise<void>;
+  setScreen<T extends AbstractScreen>(
+    screenToDraw: ScreenClass<T>,
+    screenArgs?: any[]
+  ): Promise<void>;
   drawScreen(): Promise<void>;
 }
 
