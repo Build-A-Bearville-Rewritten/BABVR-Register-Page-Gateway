@@ -26,7 +26,7 @@ export default {
   },
   resolve: {
     alias: {
-      '@types': resolve(__dirname, 'src/vanillaJSRegisterCode/types')
+      '@types': resolve(__dirname, 'src/types')
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json']
   },
@@ -40,7 +40,7 @@ export default {
       name: 'serve-assets',
       configureServer(server) {
         server.middlewares.use('/assets', (req, res, next) => {
-          const assetsPath = resolve(__dirname, 'src/vanillaJSRegisterCode/assets');
+          const assetsPath = resolve(__dirname, 'src/assets');
           const filePath = join(assetsPath, req.url);
           
           // Security check - ensure the file is within assets directory

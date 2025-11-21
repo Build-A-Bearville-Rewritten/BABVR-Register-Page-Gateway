@@ -1,7 +1,7 @@
 // Loads in sprites onto their in specified loading order.
 
 import SpriteDrawer from './sprite/sprite-drawer.ts';
-import type { IDrawableSprite, ISpriteRenderer } from '../../../types/rendering.ts';
+import type { IDrawableSprite, ISpriteRenderer } from '../../types/rendering.ts';
 
 /**
  * Interface for sprites that can be rendered

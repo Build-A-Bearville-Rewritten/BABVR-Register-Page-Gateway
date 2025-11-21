@@ -1,6 +1,6 @@
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
-import { AbstractScreen } from '../../../types/rendering.ts';
+import { AbstractScreen } from '../../types/rendering.ts';
 
 export default class TOSScreen extends AbstractScreen {
   private _clickable: Clickable;

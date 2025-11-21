@@ -1,7 +1,7 @@
 // Handles redrawing the canvas whenever the screen is resized, or loaded for the first time. 
 
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
-import type { ICanvasRenderer } from '../../../types/rendering.ts';
+import type { ICanvasRenderer } from '../../types/rendering.ts';
 
 /**
  * Type for requestAnimationFrame callback

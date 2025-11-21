@@ -1,5 +1,5 @@
-import type { Point2D } from '../../../../types/common.ts';
-import type { IDrawableSprite } from '../../../../types/rendering.ts';
+import type { Point2D } from '../../../types/common.ts';
+import type { IDrawableSprite } from '../../../types/rendering.ts';
 
 /**
  * Class responsible for drawing sprites onto the canvas

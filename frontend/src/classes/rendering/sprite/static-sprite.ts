@@ -1,5 +1,5 @@
 import AbstractSprite from './abstract-sprite.js';
-import type { SpriteConstructorOptions } from '../../../../types/common.js';
+import type { SpriteConstructorOptions } from '../../../types/common.js';
 
 /**
  * Static sprite class that extends AbstractSprite

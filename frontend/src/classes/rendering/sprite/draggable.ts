@@ -1,5 +1,5 @@
 import AbstractMouse from './abstract-mouse.js';
-import type { Point2D, Size2D } from '../../../../types/common.js';
+import type { Point2D, Size2D } from '../../../types/common.js';
 
 /**
  * Interface for sprites that can be dragged

@@ -2,8 +2,8 @@
 // and allows for getting and setting sprite renderers for each canvas
 
 import SpriteRenderer from '../classes/rendering/sprite-renderer.ts';
-import type { ISpriteRendererModule, GetSpriteRenderer } from '../../types/modules.ts';
-import type { ISpriteRenderer } from '../../types/rendering.ts';
+import type { ISpriteRendererModule, GetSpriteRenderer } from '../types/modules.ts';
+import type { ISpriteRenderer } from '../types/rendering.ts';
 
 /**
  * Singleton class for managing sprite renderer instances per canvas

@@ -2,8 +2,8 @@
 // and allows for getting and setting canvas renderers for each canvas
 
 import CanvasRenderer from '../classes/rendering/canvas-renderer.ts';
-import type { ICanvasRendererModule, GetCanvasRenderer } from '../../types/modules.ts';
-import type { ICanvasRenderer } from '../../types/rendering.ts';
+import type { ICanvasRendererModule, GetCanvasRenderer } from '../types/modules.ts';
+import type { ICanvasRenderer } from '../types/rendering.ts';
 
 /**
  * Singleton class for managing canvas renderer instances per canvas

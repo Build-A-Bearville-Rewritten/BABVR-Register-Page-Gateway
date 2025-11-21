@@ -1,7 +1,7 @@
 import spriteRendererModule from '../../../modules/sprite-renderer-module.ts';
 import screenHandlerModule from '../../../modules/screen-handler-module.ts';
-import type { SpriteConstructorOptions, Point2D, Size2D, Scale2D, HSL } from '../../../../types/common.js';
-import type { SpriteParent } from '../../../../types/rendering.js';
+import type { SpriteConstructorOptions, Point2D, Size2D, Scale2D, HSL } from '../../../types/common.js';
+import type { SpriteParent } from '../../../types/rendering.js';
 
 /*
 Class for drawing a Sprite onto the screen

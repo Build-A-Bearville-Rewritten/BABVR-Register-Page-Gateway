@@ -1,4 +1,4 @@
-import type { AnimationConfig } from '../../../../types/common.js';
+import type { AnimationConfig } from '../../../types/common.js';
 
 /**
  * Callback function type for when animation ends

@@ -6,7 +6,7 @@ import CharacterCreator from '../screen-objects/character-creator.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import NamingScreen from './naming-screen.ts';
-import { AbstractScreen } from '../../../types/rendering.ts';
+import { AbstractScreen } from '../../types/rendering.ts';
 
 // Color wheel portion of the page
 

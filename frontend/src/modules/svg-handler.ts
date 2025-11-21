@@ -2,7 +2,7 @@
 //
 // Usage: let urls = await SVGHandler.splitLayers("your svg location");
 
-import type { ISVGHandler } from '../../types/modules.js';
+import type { ISVGHandler } from '../types/modules.ts';
 
 /**
  * SVG Handler class for splitting SVG layers into separate SVGs

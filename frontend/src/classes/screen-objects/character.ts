@@ -3,7 +3,7 @@
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import spriteRendererModule from '../../modules/sprite-renderer-module.ts';
 import svgHandler from '../../modules/svg-handler.ts';
-import type { SpriteParent } from '../../../types/rendering.ts';
+import type { SpriteParent } from '../../types/rendering.ts';
 
 /**
  * Dictionary type for storing SVG URLs by key

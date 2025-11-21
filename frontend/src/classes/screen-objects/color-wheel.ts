@@ -3,7 +3,7 @@
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
 import Draggable from '../rendering/sprite/draggable.ts';
-import type { Point2D } from '../../../types/common.ts';
+import type { Point2D } from '../../types/common.ts';
 
 /**
  * Helper type to bridge StaticSprite (which has canvas: HTMLCanvasElement | undefined)

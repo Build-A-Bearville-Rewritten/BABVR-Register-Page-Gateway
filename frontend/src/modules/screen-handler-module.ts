@@ -2,8 +2,8 @@
 // and allows for getting and setting screen handlers for each canvas
 
 import ScreenHandler from '../classes/rendering/screen-handler.ts';
-import type { IScreenHandlerModule, GetScreenHandlerInstance } from '../../types/modules.ts';
-import type { IScreenHandler } from '../../types/rendering.ts';
+import type { IScreenHandlerModule, GetScreenHandlerInstance } from '../types/modules.ts';
+import type { IScreenHandler } from '../types/rendering.ts';
 
 /**
  * Singleton class for managing screen handler instances per canvas

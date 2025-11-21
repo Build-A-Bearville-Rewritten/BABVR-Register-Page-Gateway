@@ -1,6 +1,6 @@
 import AbstractSprite from './abstract-sprite.js';
 import Animator from './animator.js';
-import type { SpriteConstructorOptions, AnimationConfig } from '../../../../types/common.js';
+import type { SpriteConstructorOptions, AnimationConfig } from '../../../types/common.js';
 
 /**
  * Callback function type for when animation ends
