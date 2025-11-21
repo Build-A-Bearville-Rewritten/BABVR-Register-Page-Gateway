@@ -3,7 +3,8 @@
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
 
-    "moduleResolution": "bundler",
+    "module": "nodeNext",
+    "moduleResolution": "nodeNext",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "noEmit": true,
