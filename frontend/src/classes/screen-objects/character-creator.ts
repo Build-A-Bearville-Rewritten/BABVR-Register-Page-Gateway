@@ -37,7 +37,10 @@ export default class CharacterCreator {
   /**
    * Draw arrow sprites at a specific vertical scale and horizontal spacing.
    */
-  private createArrows(heightScale: number, spaceBetweenScale: number): ArrowSprites {
+  private createArrows(
+    heightScale: number,
+    spaceBetweenScale: number
+  ): ArrowSprites {
     const leftArrow = new StaticSprite({
       canvas: this.canvas,
       imagePath: 'assets/Register/color-wheel/sprites/upDownArrowColored.png',
@@ -125,5 +128,3 @@ export default class CharacterCreator {
     this.createSprites();
   }
 }
-
-

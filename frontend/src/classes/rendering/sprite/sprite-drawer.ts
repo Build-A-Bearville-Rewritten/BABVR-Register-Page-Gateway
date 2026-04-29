@@ -12,7 +12,10 @@ export default class SpriteDrawer {
    * @param sprite - The sprite to recolor
    * @param innerCtx - The canvas context for the inner canvas
    */
-  private reColorHSL(sprite: IDrawableSprite, innerCtx: CanvasRenderingContext2D): void {
+  private reColorHSL(
+    sprite: IDrawableSprite,
+    innerCtx: CanvasRenderingContext2D
+  ): void {
     const image = sprite.getImage();
     if (!image) return;
 
@@ -129,7 +132,11 @@ export default class SpriteDrawer {
       this.reColorHSL(sprite, innerCtx);
     }
 
-    outerCtx.drawImage(imgCanvas, sprite.getPosition().x, sprite.getPosition().y);
+    outerCtx.drawImage(
+      imgCanvas,
+      sprite.getPosition().x,
+      sprite.getPosition().y
+    );
     innerCtx.globalCompositeOperation = 'source-over';
   }
 
@@ -205,4 +212,3 @@ export default class SpriteDrawer {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 }
-

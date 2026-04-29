@@ -2,6 +2,8 @@
  * Common type definitions used across the sprite rendering system
  */
 
+import AbstractSprite from '../classes/rendering/sprite/abstract-sprite.ts';
+
 /**
  * A 2D point with x and y coordinates
  */
@@ -37,7 +39,7 @@ export type HSL = {
  */
 export interface SpriteConstructorOptions {
   imagePath?: string;
-  parent?: HTMLCanvasElement | any; // AbstractSprite - using any to avoid circular dependency
+  parent?: HTMLCanvasElement | AbstractSprite;
   sizeScale?: Scale2D;
   anchorPoint?: Point2D;
   positionScale?: Point2D;
@@ -58,4 +60,3 @@ export interface AnimationConfig {
   frameBuffer?: number;
   isLooped?: boolean;
 }
-

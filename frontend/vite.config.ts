@@ -1,8 +1,8 @@
-import { resolve } from 'path';
-import { fileURLToPath } from 'url';
-import { statSync, createReadStream } from 'fs';
-import { join, extname } from 'path';
-import { IncomingMessage, ServerResponse } from 'http';
+import { statSync, createReadStream } from 'node:fs';
+import { IncomingMessage, ServerResponse } from 'node:http';
+import { extname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import type { ViteDevServer } from 'vite';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -49,20 +49,20 @@ export default {
             const assetsPath = resolve(__dirname, 'src/assets');
             const requestUrl = req.url || '/';
             const filePath = join(assetsPath, requestUrl);
-    
+
             // Security check - ensure the file is within the assets directory
             if (!filePath.startsWith(assetsPath)) {
               res.statusCode = 403;
               res.end('Forbidden');
               return;
             }
-    
+
             try {
               const stat = statSync(filePath);
-    
+
               if (stat.isFile()) {
-                res.setHeader('Content-Type', getMimeType(filePath));
                 const stream = createReadStream(filePath);
+                res.setHeader('Content-Type', getMimeType(filePath));
                 stream.pipe(res);
               } else {
                 next();

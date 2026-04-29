@@ -2,7 +2,11 @@
  * Module interfaces for singleton modules and factory function types
  */
 
-import type { ICanvasRenderer, ISpriteRenderer, IScreenHandler } from './rendering.js';
+import type {
+  ICanvasRenderer,
+  ISpriteRenderer,
+  IScreenHandler
+} from './rendering.js';
 
 /**
  * Factory function type for getting a canvas renderer
@@ -17,7 +21,9 @@ export type GetSpriteRenderer = (canvas?: HTMLCanvasElement) => ISpriteRenderer;
 /**
  * Factory function type for getting a screen handler instance
  */
-export type GetScreenHandlerInstance = (canvas: HTMLCanvasElement) => IScreenHandler;
+export type GetScreenHandlerInstance = (
+  canvas: HTMLCanvasElement
+) => IScreenHandler;
 
 /**
  * Interface for canvas renderer module
@@ -46,4 +52,3 @@ export interface IScreenHandlerModule {
 export interface ISVGHandler {
   splitLayers(sourceSvg: string): Promise<string[]>;
 }
-

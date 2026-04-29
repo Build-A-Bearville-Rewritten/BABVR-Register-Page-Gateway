@@ -1,7 +1,10 @@
 // Loads in sprites onto their in specified loading order.
 
 import SpriteDrawer from './sprite/sprite-drawer.ts';
-import type { IDrawableSprite, ISpriteRenderer } from '../../types/rendering.ts';
+import type {
+  IDrawableSprite,
+  ISpriteRenderer
+} from '../../types/rendering.ts';
 
 /**
  * Interface for sprites that can be rendered
@@ -79,11 +82,11 @@ export default class SpriteRenderer implements ISpriteRenderer {
     if (!this._sprites[zIndex]) {
       this._sprites[zIndex] = {};
     }
-    
+
     if (sprite.isAnimation) {
       this._animatedSprites.push(sprite as IAnimatedSprite);
     }
-    
+
     this._sprites[zIndex][spriteKey] = sprite;
   }
 
@@ -110,7 +113,7 @@ export default class SpriteRenderer implements ISpriteRenderer {
     for (const zIndexStr in this._sprites) {
       const zIndex = Number(zIndexStr);
       const spritesAtZIndex = this._sprites[zIndex];
-      
+
       for (const spriteKey in spritesAtZIndex) {
         const sprite = spritesAtZIndex[spriteKey];
         if (sprite && sprite.getImage()) {
@@ -142,7 +145,7 @@ export default class SpriteRenderer implements ISpriteRenderer {
     for (const zIndexStr in this._sprites) {
       const zIndex = Number(zIndexStr);
       const spritesAtZIndex = this._sprites[zIndex];
-      
+
       for (const spriteKey in spritesAtZIndex) {
         spritesAtZIndex[spriteKey] = null;
       }
@@ -156,4 +159,3 @@ export default class SpriteRenderer implements ISpriteRenderer {
   // PRIVATE METHODS
   // -------------------------------------------
 }
-

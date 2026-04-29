@@ -14,12 +14,19 @@ interface IDraggableSprite {
 /**
  * Callback function type for drag events (while dragging)
  */
-type DragCallback = (event: MouseEvent, velocityX: number, velocityY: number) => void;
+type DragCallback = (
+  event: MouseEvent,
+  velocityX: number,
+  velocityY: number
+) => void;
 
 /**
  * Callback function type for drag start/end events
  */
-type DragStartEndCallback = (event: MouseEvent, sprite: IDraggableSprite) => void;
+type DragStartEndCallback = (
+  event: MouseEvent,
+  sprite: IDraggableSprite
+) => void;
 
 /**
  * Event handler type for mouse move events
@@ -130,7 +137,10 @@ export default class Draggable extends AbstractMouse {
    * @param whichSprite - The sprite to track drag start for
    * @param callback - The callback function to call when drag starts
    */
-  onDragStarted(whichSprite: IDraggableSprite, callback: DragStartEndCallback): void {
+  onDragStarted(
+    whichSprite: IDraggableSprite,
+    callback: DragStartEndCallback
+  ): void {
     this.dragStartCallbacks.set(whichSprite, callback);
   }
 
@@ -139,7 +149,10 @@ export default class Draggable extends AbstractMouse {
    * @param whichSprite - The sprite to track drag end for
    * @param callback - The callback function to call when drag ends
    */
-  onDragEnded(whichSprite: IDraggableSprite, callback: DragStartEndCallback): void {
+  onDragEnded(
+    whichSprite: IDraggableSprite,
+    callback: DragStartEndCallback
+  ): void {
     this.dragEndCallbacks.set(whichSprite, callback);
   }
 
@@ -162,4 +175,3 @@ export default class Draggable extends AbstractMouse {
     this.dragCallbacks.clear();
   }
 }
-

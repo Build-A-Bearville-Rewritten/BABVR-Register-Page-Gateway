@@ -1,6 +1,9 @@
 import AbstractSprite from './abstract-sprite.js';
 import Animator from './animator.js';
-import type { SpriteConstructorOptions, AnimationConfig } from '../../../types/common.js';
+import type {
+  SpriteConstructorOptions,
+  AnimationConfig
+} from '../../../types/common.js';
 
 /**
  * Callback function type for when animation ends
@@ -10,14 +13,16 @@ export type AnimationEndedCallback = () => void;
 /**
  * Combined options for animated sprite constructor
  */
-export interface AnimatedSpriteOptions extends SpriteConstructorOptions, AnimationConfig {}
+export interface AnimatedSpriteOptions
+  extends SpriteConstructorOptions, AnimationConfig {}
 
 /**
  * Animated sprite class that extends AbstractSprite and uses Animator for animation management
  */
 export default class AnimatedSprite extends AbstractSprite {
-  private _animator: Animator;
   public readonly isAnimation: boolean = true;
+
+  private readonly _animator: Animator;
 
   constructor(options: AnimatedSpriteOptions) {
     // Extract animation config
@@ -48,7 +53,7 @@ export default class AnimatedSprite extends AbstractSprite {
   getImage(): HTMLImageElement | null {
     // Access the animator's protected _image property
     // This will be the current frame when using folder animations
-    const animatorImage = (this._animator as any)._image;
+    const animatorImage = this._animator.image;
     return animatorImage || super.getImage();
   }
 
@@ -58,7 +63,7 @@ export default class AnimatedSprite extends AbstractSprite {
   update(): void {
     // Update animation frames
     this._animator.updateFrames();
-    
+
     // Call parent update for size and position
     super.update();
   }
@@ -102,4 +107,3 @@ export default class AnimatedSprite extends AbstractSprite {
     this._animator.destroy();
   }
 }
-

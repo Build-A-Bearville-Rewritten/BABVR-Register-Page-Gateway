@@ -2,7 +2,10 @@
 // and allows for getting and setting sprite renderers for each canvas
 
 import SpriteRenderer from '../classes/rendering/sprite-renderer.ts';
-import type { ISpriteRendererModule, GetSpriteRenderer } from '../types/modules.ts';
+import type {
+  ISpriteRendererModule,
+  GetSpriteRenderer
+} from '../types/modules.ts';
 import type { ISpriteRenderer } from '../types/rendering.ts';
 
 /**
@@ -22,7 +25,9 @@ class SpriteRendererModuleClass implements ISpriteRendererModule {
    * @param canvas - Optional canvas element to get the renderer for
    * @returns The sprite renderer instance
    */
-  getSpriteRenderer: GetSpriteRenderer = (canvas?: HTMLCanvasElement): ISpriteRenderer => {
+  getSpriteRenderer: GetSpriteRenderer = (
+    canvas?: HTMLCanvasElement
+  ): ISpriteRenderer => {
     if (!canvas) {
       // Return default renderer if no canvas is provided
       if (!this._defaultRenderer) {
@@ -44,4 +49,3 @@ class SpriteRendererModuleClass implements ISpriteRendererModule {
 // Export singleton instance
 const SpriteRendererModule = new SpriteRendererModuleClass();
 export default SpriteRendererModule;
-

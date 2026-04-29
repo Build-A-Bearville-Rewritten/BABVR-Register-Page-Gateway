@@ -2,7 +2,10 @@
 // and allows for getting and setting screen handlers for each canvas
 
 import ScreenHandler from '../classes/rendering/screen-handler.ts';
-import type { IScreenHandlerModule, GetScreenHandlerInstance } from '../types/modules.ts';
+import type {
+  IScreenHandlerModule,
+  GetScreenHandlerInstance
+} from '../types/modules.ts';
 import type { IScreenHandler } from '../types/rendering.ts';
 
 /**
@@ -20,7 +23,9 @@ class ScreenHandlerModuleClass implements IScreenHandlerModule {
    * @param canvas - Canvas element to get the handler for
    * @returns The screen handler instance
    */
-  getInstance: GetScreenHandlerInstance = (canvas: HTMLCanvasElement): IScreenHandler => {
+  getInstance: GetScreenHandlerInstance = (
+    canvas: HTMLCanvasElement
+  ): IScreenHandler => {
     // Get or create handler for specific canvas
     if (!this._screenHandlers.has(canvas)) {
       const newInstance = new ScreenHandler(canvas);
@@ -34,4 +39,3 @@ class ScreenHandlerModuleClass implements IScreenHandlerModule {
 // Export singleton instance
 const ScreenHandlerModule = new ScreenHandlerModuleClass();
 export default ScreenHandlerModule;
-

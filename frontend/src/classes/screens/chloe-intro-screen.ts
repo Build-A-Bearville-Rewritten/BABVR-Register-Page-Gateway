@@ -94,5 +94,3 @@ export default class ChloeIntroScreen extends AbstractScreen {
     this._clickable.destroy();
   }
 }
-
-

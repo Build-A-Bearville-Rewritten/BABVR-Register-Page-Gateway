@@ -9,25 +9,21 @@ type AnimationEndedCallback = () => void;
  * Class responsible for managing sprite animation state, frame buffers, and timing
  */
 export default class Animator {
-  // Animation state management
+  // Image properties (may be set by parent class)
+  protected _image: HTMLImageElement | null;
+  protected _imagePath: string | undefined;
+
+  private _animationEndedCB: AnimationEndedCallback | null;
+  private _animationFrames: HTMLImageElement[];
   private _currentFrame: number;
   private _elapsedFrames: number;
   private _isPlaying: boolean;
-  private _isLooped: boolean;
   private _isFolderAnimation: boolean;
 
-  // Frame buffer and timing
-  private _frameBuffer: number;
-  private _numFrames: number;
-
-  // Animation data
-  private _animationFolder: string | undefined;
-  private _animationFrames: HTMLImageElement[];
-  private _animationEndedCB: AnimationEndedCallback | null;
-
-  // Image properties (may be set by parent class)
-  protected _imagePath: string | undefined;
-  protected _image: HTMLImageElement | null;
+  private readonly _isLooped: boolean;
+  private readonly _frameBuffer: number;
+  private readonly _numFrames: number;
+  private readonly _animationFolder: string | undefined;
 
   constructor({
     animationFolder,
@@ -58,6 +54,10 @@ export default class Animator {
     this.loadImages();
   }
 
+  public get image(): HTMLImageElement | null {
+    return this._image;
+  }
+
   /**
    * Loads images based on configuration
    * @throws Error if both imagePath and animationFolder are provided, or neither is provided
@@ -66,7 +66,9 @@ export default class Animator {
     if (this._imagePath && this._animationFolder) {
       throw new Error('Should only have image or animation folder, not both');
     } else if (!this._imagePath && !this._animationFolder) {
-      throw new Error('must have either an animation folder or an image source');
+      throw new Error(
+        'must have either an animation folder or an image source'
+      );
     }
 
     if (this._imagePath) {
@@ -74,7 +76,7 @@ export default class Animator {
     }
 
     if (this._animationFolder) {
-      this.preloadFrames(this._animationFolder);
+      this.preloadFrames(this._animationFolder).catch(console.error);
     }
   }
 
@@ -189,4 +191,3 @@ export default class Animator {
     this._image = null;
   }
 }
-

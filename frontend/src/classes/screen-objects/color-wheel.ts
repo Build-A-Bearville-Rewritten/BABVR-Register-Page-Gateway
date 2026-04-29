@@ -3,7 +3,8 @@
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
 import Draggable from '../rendering/sprite/draggable.ts';
-import type { Point2D } from '../../types/common.ts';
+import type { HSL, Point2D } from '../../types/common.ts';
+import AbstractSprite from '../rendering/sprite/abstract-sprite.ts';
 
 /**
  * Helper type to bridge StaticSprite (which has canvas: HTMLCanvasElement | undefined)
@@ -17,7 +18,7 @@ type SpriteWithCanvas = StaticSprite & { canvas: HTMLCanvasElement };
  */
 export default class ColorWheel {
   public canvas: HTMLCanvasElement;
-  
+
   // Sprite references
   private cogSprite!: StaticSprite;
   private whiteCircleInner!: StaticSprite;
@@ -31,10 +32,11 @@ export default class ColorWheel {
   private topArrow!: StaticSprite;
   private bottomArrow!: StaticSprite;
 
-  // Interaction handlers
-  private _clickable: Clickable;
-  private _draggable: Draggable;
   private _spriteBeingDragged: StaticSprite | null = null;
+
+  // Interaction handlers
+  private readonly _clickable: Clickable;
+  private readonly _draggable: Draggable;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -117,7 +119,15 @@ export default class ColorWheel {
    * @param _ - Mouse event (unused)
    * @param whichSprite - The sprite being dragged (IDraggableSprite interface, but we know it's StaticSprite at runtime)
    */
-  private onDragStarted(_: MouseEvent, whichSprite: { canvas: HTMLCanvasElement; getPosition(): Point2D; getSize(): { x: number; y: number }; _isDragging?: boolean }): void {
+  private onDragStarted(
+    _: MouseEvent,
+    whichSprite: {
+      canvas: HTMLCanvasElement;
+      getPosition(): Point2D;
+      getSize(): { x: number; y: number };
+      _isDragging?: boolean;
+    }
+  ): void {
     if (this._spriteBeingDragged) return;
     // Type assertion: IDraggableSprite passed here is always StaticSprite in our implementation
     this._spriteBeingDragged = whichSprite as StaticSprite;
@@ -139,18 +149,26 @@ export default class ColorWheel {
   private onColorSliderDrag(mouseEvent: MouseEvent): void {
     if (this._spriteBeingDragged !== this.sliderContainer) return;
 
-    const parent = this.sliderArrow.parent;
+    let bottomY = 0;
+    let clampedMouseY = 0;
+    let mouseY = 0;
+    let scaledY = 0;
+    let topY = 0;
+
+    const hsl: HSL | undefined = this.colorCircleInner.getHSL();
+    const parent: AbstractSprite | undefined = this.sliderArrow
+      .parent as AbstractSprite;
+
     if (!parent) return;
 
-    const topY = parent.getPosition().y;
-    const bottomY = topY + parent.getSize().y;
-    const mouseY = mouseEvent.clientY - 0.5 * this.sliderArrow.getSize().y;
-    const scaledY = (mouseY - topY) / (bottomY - topY);
-    const clampedMouseY = Math.min(Math.max(scaledY, 0), 1);
+    topY = parent.getPosition().y;
+    bottomY = topY + parent.getSize().y;
+    mouseY = mouseEvent.clientY - 0.5 * this.sliderArrow.getSize().y;
+    scaledY = (mouseY - topY) / (bottomY - topY);
+    clampedMouseY = Math.min(Math.max(scaledY, 0), 1);
 
     this.sliderArrow.setPositionScale({ y: clampedMouseY });
-    
-    const hsl = this.colorCircleInner.getHSL();
+
     if (hsl) {
       const newLightness = Math.max((1 - clampedMouseY) * 100, 0.1);
       this.colorCircleInner.setHSL({ l: newLightness });
@@ -213,11 +231,10 @@ export default class ColorWheel {
    * @param rotationAmount - The rotation amount to round
    * @returns The nearest angle rounded to 15 degrees
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private roundToNearestAngle(rotationAmount: number): number {
     const currentRotationValue = this.colorWheelColors.getRotation() ?? 0;
-    const nearestAngle = Math.round(currentRotationValue / 15) * 15;
-
-    return nearestAngle;
+    return Math.round(currentRotationValue / 15) * 15;
   }
 
   /**
@@ -328,4 +345,3 @@ export default class ColorWheel {
     });
   }
 }
-

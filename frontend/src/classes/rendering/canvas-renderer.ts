@@ -1,4 +1,4 @@
-// Handles redrawing the canvas whenever the screen is resized, or loaded for the first time. 
+// Handles redrawing the canvas whenever the screen is resized, or loaded for the first time.
 
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import type { ICanvasRenderer } from '../../types/rendering.ts';
@@ -14,10 +14,12 @@ type AnimationFrameCallback = (timestamp: DOMHighResTimeStamp) => void;
 type AnimationFrameId = number;
 
 export default class CanvasRenderer implements ICanvasRenderer {
-  
   public canvas: HTMLCanvasElement;
+
   private _animationFrameId: AnimationFrameId | null = null;
-  private _screenHandler: ReturnType<typeof screenHandlerModule.getInstance> | null = null;
+  private _screenHandler: ReturnType<
+    typeof screenHandlerModule.getInstance
+  > | null = null;
 
   static get CANVAS_PERCENT_OF_SCREEN(): number {
     return 0.8;
@@ -37,41 +39,42 @@ export default class CanvasRenderer implements ICanvasRenderer {
   startRender(): void {
     this._screenHandler = screenHandlerModule.getInstance(this.canvas);
     this.resizeCanvas4by3();
-    
+
     // Start the rendering loop
     this.startRenderingLoop();
-    
+
     // binds the resizeCanvas4by3 method to the page's resize event.
-    window.addEventListener(
-      'resize',
-      () => {
-        this.resizeCanvas4by3();
-        // Trigger a redraw on resize
-        if (this._screenHandler) {
-          const drawCallback: AnimationFrameCallback = () => {
-            this._screenHandler?.drawScreen();
-          };
-          window.requestAnimationFrame(drawCallback);
-        }
+    window.addEventListener('resize', () => {
+      this.resizeCanvas4by3();
+      // Trigger a redraw on resize
+      if (this._screenHandler) {
+        const drawCallback: AnimationFrameCallback = () => {
+          this._screenHandler?.drawScreen();
+        };
+
+        globalThis.requestAnimationFrame(drawCallback);
       }
-    );
+    });
   }
 
   /**
    * Starts the canvas rendering loop using requestAnimationFrame
    */
   private startRenderingLoop(): void {
-    const renderLoop: AnimationFrameCallback = (timestamp: DOMHighResTimeStamp) => {
+    const renderLoop: AnimationFrameCallback = (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _timestamp: DOMHighResTimeStamp
+    ) => {
       if (this._screenHandler) {
         this._screenHandler.drawScreen();
       }
-      
+
       // Continue the loop
-      this._animationFrameId = window.requestAnimationFrame(renderLoop);
+      this._animationFrameId = globalThis.requestAnimationFrame(renderLoop);
     };
 
     // Start the loop
-    this._animationFrameId = window.requestAnimationFrame(renderLoop);
+    this._animationFrameId = globalThis.requestAnimationFrame(renderLoop);
   }
 
   /**
@@ -79,12 +82,12 @@ export default class CanvasRenderer implements ICanvasRenderer {
    */
   stopRenderingLoop(): void {
     if (this._animationFrameId !== null) {
-      window.cancelAnimationFrame(this._animationFrameId);
+      globalThis.cancelAnimationFrame(this._animationFrameId);
       this._animationFrameId = null;
     }
   }
 
-  // Make canvas have orignal 4:3 screen ratio 
+  // Make canvas have original 4:3 screen ratio
   resizeCanvas4by3(): void {
     const ctx = this.canvas.getContext('2d');
     if (!ctx) {
@@ -107,4 +110,3 @@ export default class CanvasRenderer implements ICanvasRenderer {
     this.canvas.width = newWidth * CanvasRenderer.CANVAS_PERCENT_OF_SCREEN;
   }
 }
-

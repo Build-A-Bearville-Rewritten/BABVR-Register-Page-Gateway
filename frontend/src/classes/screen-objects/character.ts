@@ -18,19 +18,12 @@ type SVGDictionary = {
 export default class Character {
   public canvas: HTMLCanvasElement;
   public parent: SpriteParent;
-  
-  // SVG storage - maps SVG part names to their blob URLs
-  private _svgs: SVGDictionary = {};
-  private _isCharacterLoaded: boolean = false;
-
   // Head sprites
   public headNoColor?: StaticSprite;
   public headColored?: StaticSprite;
-
   // Hair sprites
   public hairNoColor?: StaticSprite;
   public hairColored?: StaticSprite;
-
   // Torso and body sprites (commented out in original, but typed for future use)
   public torso?: StaticSprite;
   public rightUpperArm?: StaticSprite;
@@ -42,6 +35,11 @@ export default class Character {
   public rightLowLeg?: StaticSprite;
   public leftUpLeg?: StaticSprite;
   public leftLowLeg?: StaticSprite;
+
+  private _isCharacterLoaded: boolean = false;
+
+  // SVG storage - maps SVG part names to their blob URLs
+  private readonly _svgs: SVGDictionary = {};
 
   constructor(canvas: HTMLCanvasElement, parent: SpriteParent) {
     this.canvas = canvas;
@@ -55,7 +53,9 @@ export default class Character {
     //   });
 
     this.createSprites().then(() => {
-      spriteRendererModule.getSpriteRenderer().addRedrawCB(this.onPreRedraw.bind(this));
+      spriteRendererModule
+        .getSpriteRenderer()
+        .addRedrawCB(this.onPreRedraw.bind(this));
     });
   }
 
@@ -167,16 +167,17 @@ export default class Character {
    * @returns Promise that resolves when all sprites are created
    */
   async createSprites(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const characterFolder = 'assets/Character';
 
     // await this.createHeadSprites();
     // await this.createHairSprites();
-    
+
     // Example sprite creation (commented out in original):
     // if (!this.headNoColor) {
     //   throw new Error('headNoColor must be created first');
     // }
-    
+
     // this.torso = new StaticSprite({
     //   canvas: this.canvas,
     //   imagePath: './Test.svg',
@@ -282,4 +283,3 @@ export default class Character {
     // });
   }
 }
-

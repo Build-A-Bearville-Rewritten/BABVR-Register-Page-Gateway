@@ -67,4 +67,3 @@ export default class Clickable extends AbstractMouse {
     document.removeEventListener('click', this.boundClickHandler);
   }
 }
-

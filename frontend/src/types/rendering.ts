@@ -2,7 +2,8 @@
  * Rendering-related type definitions
  */
 
-import { HSL, Point2D, Size2D } from "./common";
+import { HSL, Point2D, Size2D } from './common';
+import AbstractSprite from '../classes/rendering/sprite/abstract-sprite.ts';
 
 /**
  * Canvas element type
@@ -17,7 +18,7 @@ export type Image = HTMLImageElement;
 /**
  * A sprite's parent can be either a canvas or another sprite
  */
-export type SpriteParent = HTMLCanvasElement | any; // AbstractSprite - using any to avoid circular dependency
+export type SpriteParent = HTMLCanvasElement | AbstractSprite;
 
 /**
  * Interface for canvas renderer
@@ -34,7 +35,8 @@ export interface ICanvasRenderer {
 export interface ISpriteRenderer {
   numSprites: number;
   preloadCB: (() => void) | null;
-  addSpriteToScreen(sprite: any): Promise<void>;
+
+  addSpriteToScreen(sprite: AbstractSprite): Promise<void>;
   removeAllSprites(): void;
   drawSprites(): void;
   updateAnimations(): void;
@@ -48,7 +50,8 @@ export interface ISpriteRenderer {
 export abstract class AbstractScreen {
   public canvas: HTMLCanvasElement;
 
-  constructor(canvas: HTMLCanvasElement, ...args: any[]) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(canvas: HTMLCanvasElement, ..._args: unknown[]) {
     this.canvas = canvas;
   }
 
@@ -65,7 +68,7 @@ export abstract class AbstractScreen {
  */
 export type ScreenClass<T extends AbstractScreen = AbstractScreen> = new (
   canvas: HTMLCanvasElement,
-  ...args: any[]
+  ...args: unknown[]
 ) => T;
 
 /**
@@ -75,7 +78,7 @@ export interface IScreenHandler {
   canvas: HTMLCanvasElement;
   setScreen<T extends AbstractScreen>(
     screenToDraw: ScreenClass<T>,
-    screenArgs?: any[]
+    screenArgs?: unknown[]
   ): Promise<void>;
   drawScreen(): Promise<void>;
 }
@@ -84,7 +87,7 @@ export interface IScreenHandler {
  * Interface for sprite drawer
  */
 export interface ISpriteDrawer {
-  drawSprite(sprite: any, ctx: CanvasRenderingContext2D): void;
+  drawSprite(sprite: AbstractSprite, ctx: CanvasRenderingContext2D): void;
 }
 
 export interface IDrawableSprite {

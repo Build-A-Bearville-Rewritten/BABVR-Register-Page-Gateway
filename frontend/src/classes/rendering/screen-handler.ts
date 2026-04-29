@@ -1,11 +1,17 @@
 // Renders all objects on the current screen with help from the sprite-renderer class.
 
 import spriteRendererModule from '../../modules/sprite-renderer-module.ts';
-import type { IScreenHandler, AbstractScreen, ScreenClass } from '../../types/rendering.ts';
+import type {
+  IScreenHandler,
+  AbstractScreen,
+  ScreenClass,
+  ISpriteRenderer
+} from '../../types/rendering.ts';
 
 export default class ScreenHandler implements IScreenHandler {
   public canvas: HTMLCanvasElement;
-  private _currentScreens: Map<HTMLCanvasElement, AbstractScreen>;
+
+  private readonly _currentScreens: Map<HTMLCanvasElement, AbstractScreen>;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -19,7 +25,7 @@ export default class ScreenHandler implements IScreenHandler {
    */
   async setScreen<T extends AbstractScreen>(
     screenToDraw: ScreenClass<T>,
-    screenArgs?: any[]
+    screenArgs?: unknown[]
   ): Promise<void> {
     const spriteRenderer = spriteRendererModule.getSpriteRenderer();
     const previousScreen = this._currentScreens.get(this.canvas);
@@ -41,11 +47,11 @@ export default class ScreenHandler implements IScreenHandler {
    * Draws all sprites on the screen
    */
   async drawScreen(): Promise<void> {
-    const spriteRenderer = spriteRendererModule.getSpriteRenderer();
+    const spriteRenderer: ISpriteRenderer =
+      spriteRendererModule.getSpriteRenderer();
 
-    if (spriteRenderer.numSprites > 0) {
-      spriteRenderer.drawSprites();
-    }
+    if (spriteRenderer.numSprites < 1) return;
+
+    spriteRenderer.drawSprites();
   }
 }
-

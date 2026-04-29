@@ -15,7 +15,8 @@ import type { IScreenHandler, ICanvasRenderer } from './types/rendering.ts';
   canvasStyle.margin = 'auto';
   canvasStyle.display = 'block';
 
-  const canvasRenderer: ICanvasRenderer = canvasRendererModule.getCanvasRenderer(canvas);
+  const canvasRenderer: ICanvasRenderer =
+    canvasRendererModule.getCanvasRenderer(canvas);
   canvasRenderer.startRender();
 
   // Chloe's talk, which is the default screen / can't be accessed with buttons

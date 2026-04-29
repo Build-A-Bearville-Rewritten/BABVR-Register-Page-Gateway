@@ -18,9 +18,7 @@ export default class TOSScreen extends AbstractScreen {
     this.bindEvents();
   }
 
-  private bindEvents(): void {
-    
-  }
+  private bindEvents(): void {}
 
   private createSprites(): void {
     this._backgroundImage = new StaticSprite({

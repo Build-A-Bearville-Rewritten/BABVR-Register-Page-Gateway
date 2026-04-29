@@ -1,6 +1,12 @@
 import spriteRendererModule from '../../../modules/sprite-renderer-module.ts';
 import screenHandlerModule from '../../../modules/screen-handler-module.ts';
-import type { SpriteConstructorOptions, Point2D, Size2D, Scale2D, HSL } from '../../../types/common.js';
+import type {
+  HSL,
+  Point2D,
+  Scale2D,
+  Size2D,
+  SpriteConstructorOptions
+} from '../../../types/common.js';
 import type { SpriteParent } from '../../../types/rendering.js';
 
 /*
@@ -26,19 +32,19 @@ export default class AbstractSprite {
   public id: string | null;
 
   // Private properties
-  private _position: Point2D;
-  private _positionScale: Point2D;
-  private _size: Size2D;
-  private _sizeScale: Scale2D;
-  private _anchorPoint: Point2D;
-  private _zIndex: number;
-  private _isFixedSize: boolean;
-  private _imagePath: string | undefined;
   private _image: HTMLImageElement | null;
   private _rotation: number | undefined;
   private _hsl: HSL | undefined;
-  private _flip: 'horizontal' | 'vertical' | undefined;
   private _imgCanvas: HTMLCanvasElement | undefined;
+  private readonly _position: Point2D;
+  private readonly _positionScale: Point2D;
+  private readonly _size: Size2D;
+  private readonly _sizeScale: Scale2D;
+  private readonly _anchorPoint: Point2D;
+  private readonly _zIndex: number;
+  private readonly _isFixedSize: boolean;
+  private readonly _imagePath: string | undefined;
+  private readonly _flip: 'horizontal' | 'vertical' | undefined;
 
   constructor({
     imagePath,
@@ -82,6 +88,7 @@ export default class AbstractSprite {
     this._imgCanvas = undefined;
 
     spriteRendererModule.getSpriteRenderer().addSpriteToScreen(this);
+
     this.loadImage(imagePath);
   }
 
@@ -111,10 +118,13 @@ export default class AbstractSprite {
    */
   setRotation(newRotation: number): void {
     if (!this.canvas) return;
+
     const screenHandler = screenHandlerModule.getInstance(this.canvas);
+
     this._rotation = newRotation;
     this.propertiesChanged.rotation = true;
-    window.requestAnimationFrame(() => screenHandler.drawScreen());
+
+    globalThis.requestAnimationFrame(() => screenHandler.drawScreen());
   }
 
   /**
@@ -131,11 +141,13 @@ export default class AbstractSprite {
    */
   setPositionScale({ x, y }: Partial<Point2D>): void {
     if (!this.canvas) return;
+
     const screenHandler = screenHandlerModule.getInstance(this.canvas);
 
     this._positionScale.x = x ?? this._positionScale.x;
     this._positionScale.y = y ?? this._positionScale.y;
-    window.requestAnimationFrame(() => screenHandler.drawScreen());
+
+    globalThis.requestAnimationFrame(() => screenHandler.drawScreen());
   }
 
   /**
@@ -161,7 +173,8 @@ export default class AbstractSprite {
     };
 
     this.propertiesChanged.hsl = true;
-    window.requestAnimationFrame(() => screenHandler.drawScreen());
+
+    globalThis.requestAnimationFrame(() => screenHandler.drawScreen());
   }
 
   /**
@@ -260,7 +273,7 @@ export default class AbstractSprite {
     image.onload = () => {
       if (!this.canvas) return;
       const screenHandler = screenHandlerModule.getInstance(this.canvas);
-      window.requestAnimationFrame(() => screenHandler.drawScreen());
+      globalThis.requestAnimationFrame(() => screenHandler.drawScreen());
       this._image = image;
     };
 
@@ -272,18 +285,18 @@ export default class AbstractSprite {
    * @returns The parent size as a Size2D
    */
   private getParentSize(): Size2D {
-    let parentSizex = 0;
-    let parentSizey = 0;
+    let parentSizeX = 0;
+    let parentSizeY = 0;
 
     if (this.parent instanceof HTMLCanvasElement) {
-      parentSizex = this.parent.width;
-      parentSizey = this.parent.height;
+      parentSizeX = this.parent.width;
+      parentSizeY = this.parent.height;
     } else if (this.parent) {
-      parentSizex = (this.parent as any)._size.x;
-      parentSizey = (this.parent as any)._size.y;
+      parentSizeX = this.parent._size.x;
+      parentSizeY = this.parent._size.y;
     }
 
-    return { x: parentSizex, y: parentSizey };
+    return { x: parentSizeX, y: parentSizeY };
   }
 
   /**
@@ -291,16 +304,16 @@ export default class AbstractSprite {
    * @returns The parent position as a Point2D
    */
   private getParentPosition(): Point2D {
-    let parentPosx = 0;
-    let parentPosy = 0;
+    let parentPositionX = 0;
+    let parentPositionY = 0;
 
     if (this.parent && !(this.parent instanceof HTMLCanvasElement)) {
-      const parentPos = (this.parent as any).getPosition();
-      parentPosx = parentPos.x;
-      parentPosy = parentPos.y;
+      const parentPosition = this.parent.getPosition();
+      parentPositionX = parentPosition.x;
+      parentPositionY = parentPosition.y;
     }
 
-    return { x: parentPosx, y: parentPosy };
+    return { x: parentPositionX, y: parentPositionY };
   }
 
   /**
@@ -309,15 +322,13 @@ export default class AbstractSprite {
   private updatePosition(): void {
     const parentPosition = this.getParentPosition();
     const parentSize = this.getParentSize();
+    const positionScaleX = this._positionScale.x * parentSize.x;
+    const positionScaleY = this._positionScale.y * parentSize.y;
+    const anchorX = this._anchorPoint.x * this._size.x;
+    const anchorY = this._anchorPoint.y * this._size.y;
 
-    const positionScalex = this._positionScale.x * parentSize.x;
-    const positionScaley = this._positionScale.y * parentSize.y;
-
-    const anchorx = this._anchorPoint.x * this._size.x;
-    const anchory = this._anchorPoint.y * this._size.y;
-
-    this._position.x = parentPosition.x + positionScalex - anchorx;
-    this._position.y = parentPosition.y + positionScaley - anchory;
+    this._position.x = parentPosition.x + positionScaleX - anchorX;
+    this._position.y = parentPosition.y + positionScaleY - anchorY;
 
     this.propertiesChanged.position = true;
   }
@@ -333,9 +344,8 @@ export default class AbstractSprite {
     if (typeof this._sizeScale === 'number') {
       const imgAspectRatio = this._image.width / this._image.height;
       const desiredHeight = parentSize.y * this._sizeScale;
-      const desiredWidth = desiredHeight * imgAspectRatio;
 
-      this._size.x = desiredWidth;
+      this._size.x = desiredHeight * imgAspectRatio;
       this._size.y = desiredHeight;
     } else {
       this._size.x = this._sizeScale.x * parentSize.x;
@@ -345,4 +355,3 @@ export default class AbstractSprite {
     this.propertiesChanged.size = true;
   }
 }
-

@@ -32,13 +32,11 @@ class SVGHandler implements ISVGHandler {
   private createUrl(svg: SVGSVGElement): string {
     const svgString = new XMLSerializer().serializeToString(svg);
     const svgBlob = new Blob([svgString], {
-      type: "image/svg+xml;charset=utf-8",
+      type: 'image/svg+xml;charset=utf-8'
     });
+    const DOMURL = globalThis.URL || globalThis.webkitURL || globalThis;
 
-    const DOMURL = window.URL || (window as any).webkitURL || window;
-    const url = DOMURL.createObjectURL(svgBlob);
-
-    return url;
+    return DOMURL.createObjectURL(svgBlob);
   }
 
   /**
@@ -46,26 +44,33 @@ class SVGHandler implements ISVGHandler {
    * @param doc - The parsed SVG document
    * @returns Tuple containing [style element, width, height]
    */
-  private getAttributes(doc: Document): [HTMLStyleElement | null, string | null, string | null] {
-    const style = doc.querySelector("style") as HTMLStyleElement | null;
-    const svg = doc.querySelector("svg") as SVGSVGElement | null;
-    
+  private getAttributes(
+    doc: Document
+  ): [HTMLStyleElement | null, string | null, string | null] {
+    let height: string | null = null;
+    let vHeight: string | null = null;
+    let viewBox: string | null = null;
+    let vWidth: string | null = null;
+    let width: string | null = null;
+
+    const style = doc.querySelector('style') as HTMLStyleElement | null;
+    const svg = doc.querySelector('svg') as SVGSVGElement | null;
+
     if (!svg) {
       return [null, null, null];
     }
 
-    const viewBox = svg.getAttribute("viewBox");
+    viewBox = svg.getAttribute('viewBox');
 
-    let vWidth: string | null = null;
-    let vHeight: string | null = null;
     if (viewBox) {
-      const [x, y, width, height] = viewBox.split(" ");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [_x, _y, width, height] = viewBox.split(' ');
       vWidth = width || null;
       vHeight = height || null;
     }
 
-    const width = svg.getAttribute("width") || vWidth;
-    const height = svg.getAttribute("height") || vHeight;
+    width = svg.getAttribute('width') || vWidth;
+    height = svg.getAttribute('height') || vHeight;
 
     return [style, width, height];
   }
@@ -78,15 +83,18 @@ class SVGHandler implements ISVGHandler {
   private createSVG(doc: Document): SVGSVGElement {
     const [style, width, height] = this.getAttributes(doc);
 
-    const newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGSVGElement;
+    const newSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    ) as SVGSVGElement;
     if (style) {
       newSvg.appendChild(style.cloneNode(true));
     }
     if (width) {
-      newSvg.setAttribute("width", width);
+      newSvg.setAttribute('width', width);
     }
     if (height) {
-      newSvg.setAttribute("height", height);
+      newSvg.setAttribute('height', height);
     }
 
     return newSvg;
@@ -101,9 +109,9 @@ class SVGHandler implements ISVGHandler {
   async splitLayers(sourceSvg: string): Promise<string[]> {
     const svgString = await this.getSVGString(sourceSvg);
     const parser = new DOMParser();
-    const doc = parser.parseFromString(svgString, "image/svg+xml");
+    const doc = parser.parseFromString(svgString, 'image/svg+xml');
 
-    const layerList = doc.querySelectorAll("svg > g");
+    const layerList = doc.querySelectorAll('svg > g');
     const svgURLS: string[] = [];
 
     layerList.forEach((layer: Element) => {
@@ -120,4 +128,3 @@ class SVGHandler implements ISVGHandler {
 // Export singleton instance
 const svgHandler = new SVGHandler();
 export default svgHandler;
-

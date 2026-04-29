@@ -2,7 +2,10 @@
 // and allows for getting and setting canvas renderers for each canvas
 
 import CanvasRenderer from '../classes/rendering/canvas-renderer.ts';
-import type { ICanvasRendererModule, GetCanvasRenderer } from '../types/modules.ts';
+import type {
+  ICanvasRendererModule,
+  GetCanvasRenderer
+} from '../types/modules.ts';
 import type { ICanvasRenderer } from '../types/rendering.ts';
 
 /**
@@ -20,7 +23,9 @@ class CanvasRendererModuleClass implements ICanvasRendererModule {
    * @param canvas - Canvas element to get the renderer for
    * @returns The canvas renderer instance
    */
-  getCanvasRenderer: GetCanvasRenderer = (canvas: HTMLCanvasElement): ICanvasRenderer => {
+  getCanvasRenderer: GetCanvasRenderer = (
+    canvas: HTMLCanvasElement
+  ): ICanvasRenderer => {
     // Get or create renderer for specific canvas
     if (!this._canvasRenderers.has(canvas)) {
       const newRenderer = new CanvasRenderer(canvas);
@@ -34,4 +39,3 @@ class CanvasRendererModuleClass implements ICanvasRendererModule {
 // Export singleton instance
 const CanvasRendererModule = new CanvasRendererModuleClass();
 export default CanvasRendererModule;
-
