@@ -27,8 +27,14 @@
     "url": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway/issues"
   },
   "homepage": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway#readme",
+  "engines": {
+    "node": ">=24.11.1",
+    "pnpm": ">=10.24.0"
+  },
+  "engineStrict": true,
+  "packageManager": "pnpm@10.24.0",
   "devDependencies": {
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.5.10"
   }
 }

@@ -9,22 +9,22 @@ let config: IConfiguration;
 
 const app: Express = express();
 const environment: Readonly<string> = process.env.NODE_ENV || 'development';
-const port: Readonly<number> = parseInt(process.env.PORT || '3000');
+const port: Readonly<number> = Number.parseInt(process.env.PORT || '3000');
 
-if (environment !== 'development')
-  import('./config/config.prod.js')
-    .then(module => (config = module.config))
-    .catch((error: Error) => {
-      throw error;
-    });
-else
+if (environment === 'development')
   import('./config/config.dev.js')
     .then(module => (config = module.config))
     .catch((error: Error) => {
       throw error;
     });
+else
+  import('./config/config.prod.js')
+    .then(module => (config = module.config))
+    .catch((error: Error) => {
+      throw error;
+    });
 
-app.use((request: Request, response: Response, next: NextFunction): void => {
+app.use((request: Request, _response: Response, next: NextFunction): void => {
   console.log(`Request: ${request.method} ${request.path} from ${request.ip}`);
   next();
 });
@@ -48,29 +48,27 @@ app.use((request: Request, response: Response, next: NextFunction): void => {
     return;
   }
 
-  try {
-    const urlObject: URL = new URL(redirectUrl);
-    const host: Readonly<string> = urlObject.host;
-    const protocol: Readonly<string> = urlObject.protocol;
+  const urlObject: URL = new URL(redirectUrl);
+  const host: Readonly<string> = urlObject.host;
+  const protocol: Readonly<string> = urlObject.protocol;
 
-    if (
-      config.redirectUrlQueryParameter.shouldEnforceHttps &&
-      protocol !== 'https:'
-    ) {
-      console.error('Protocol must be https');
-      throw new Error('Protocol must be https');
-    }
-
-    if (
-      !config.redirectUrlQueryParameter.allowedHosts.includes('*') &&
-      !config.redirectUrlQueryParameter.allowedHosts.includes(host)
-    ) {
-      console.error('Host is not allowed');
-      throw new Error('Host is not allowed');
-    }
-  } catch (error) {
+  if (
+    config.redirectUrlQueryParameter.shouldEnforceHttps &&
+    protocol !== 'https:'
+  ) {
+    console.error('Protocol must be https');
     console.groupEnd();
-    response.status(400).send('Invalid redirectUrl query parameter');
+    response.status(400).send('Protocol must be https');
+    return;
+  }
+
+  if (
+    !config.redirectUrlQueryParameter.allowedHosts.includes('*') &&
+    !config.redirectUrlQueryParameter.allowedHosts.includes(host)
+  ) {
+    console.error('Host is not allowed');
+    console.groupEnd();
+    response.status(400).send('Host is not allowed');
     return;
   }
 

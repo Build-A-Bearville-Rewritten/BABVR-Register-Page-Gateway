@@ -1,0 +1,9 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 27" width="13" height="27">
+	<title>female</title>
+	<defs>
+		<image  width="13" height="27" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAbCAMAAACQuvXIAAAAAXNSR0IB2cksfwAAAPZQTFRFAAAA////////////////////////////////////8/Pz7Ozs8/Pz9vb23Nzc////7OzszMzMz8/P////////////9vb2zMzM4ODg/////////////Pz87+/v9vb2////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////u6j7sQAAAFJ0Uk5TABogKL/41VCk/9XK192L2cn/rwYQ/dv0wM0lQ/HP3/JdfKIF4WHu17Xeeq8/gfoJUsgkjQHFGJfwEXnHAtNXM7F47aC5vZD2Cq7rTJ3S+7ptD5BU48YAAACuSURBVHicVc7nUkJBDAXgQ5UgxQUREKnS6wUuTVABqUqR938ZlrYbzq98k5mcALBYbXaH8wGXuMj96PH6rvLTkxAiEDzjOUQvYSEi0deTYkT0Fk8QJVNSaVLJ4D2rRcgx5FFgKqLEVEaFqYqaRr0BQ6sJtLTagJlUMuQvHaWuVO+G/kDqQ+2GI5if+swXvln7GBOmKX6YCLM7ze+0YFhitVb4/ZP11c12J8f9/wFHiz8WMpShjd4AAAAASUVORK5CYII="/>
+	</defs>
+	<style>
+	</style>
+	<use id="Background" href="#img1" x="0" y="0"/>
+</svg>
