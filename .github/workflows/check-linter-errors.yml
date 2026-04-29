@@ -20,8 +20,8 @@ jobs:
       contents: read
     strategy:
       matrix:
-        node-version: [18.x]
-        pnpm-version: [8.x]
+        node-version: [24.x]
+        pnpm-version: [10.x]
     steps:
       - uses: actions/checkout@v4
         with:
