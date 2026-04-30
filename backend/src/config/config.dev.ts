@@ -1,6 +1,6 @@
 import { IConfiguration } from '../typings/config';
 
-export const config: IConfiguration = {
+export const config: Readonly<IConfiguration> = {
   redirectUrlQueryParameter: {
     allowedHosts: ['*'],
     shouldEnforceHttps: false

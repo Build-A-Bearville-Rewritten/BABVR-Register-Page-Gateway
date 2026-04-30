@@ -20,8 +20,16 @@ Gateway for the registration page of Build-A-Bearville Rewritten.
 
 ## Requirements
 
-- **[Node.js](https://nodejs.org/en/) -** Version 18
-- **[PNPM](https://pnpm.io/) -** Version 8
+- **[Node.js](https://nodejs.org/en/) -** Version 24.11.1 or higher
+- **[PNPM](https://pnpm.io/) -** Version 10.24.0 or higher
+- **Environment variables**
+
+    - **Backend**
+
+        | Variable   | Type   | Description                                    | Required | Default       | Example      |
+        |------------|--------|------------------------------------------------|----------|---------------|--------------|
+        | `NODE_ENV` | String | The environment in which the server is running | No       | `development` | `production` |
+        | `PORT`     | String | The port where the server will run on          | No       | `3000`        | `3001`       |
 
 ### Plugins for development
 
@@ -50,3 +58,11 @@ in this guide from the root directory of the repository.
       to start the client
     - `pnpm run --filter babvr-registration-page-backend dev`
       to start the server
+
+If you prefer, you can start the backend and frontend separately.
+To do so, you can run the following commands:
+
+- `pnpm run --filter babvr-registration-page-frontend dev`
+  to start the client
+- `pnpm run --filter babvr-registration-page-backend start`
+  to start the server
