@@ -3,10 +3,12 @@ root = true
 [*]
 end_of_line = lf
 insert_final_newline = true
+max_line_length = 80
 
 [*.{js,json,ts}]
 charset = utf-8
 indent_style = space
+trim_trailing_whitespace = true
 
 [**/**.{js,ts}]
 indent_size = 2

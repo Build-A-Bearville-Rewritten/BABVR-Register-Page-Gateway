@@ -1,5 +1,6 @@
-import AbstractMouse from './abstract-mouse.js';
 import type { Point2D, Size2D } from '../../../types/common.js';
+
+import AbstractMouse from './abstract-mouse.js';
 
 /**
  * Interface for sprites that can be dragged
@@ -15,8 +16,11 @@ interface IDraggableSprite {
  * Callback function type for drag events (while dragging)
  */
 type DragCallback = (
+  // eslint-disable-next-line no-unused-vars
   event: MouseEvent,
+  // eslint-disable-next-line no-unused-vars
   velocityX: number,
+  // eslint-disable-next-line no-unused-vars
   velocityY: number
 ) => void;
 
@@ -24,18 +28,22 @@ type DragCallback = (
  * Callback function type for drag start/end events
  */
 type DragStartEndCallback = (
+  // eslint-disable-next-line no-unused-vars
   event: MouseEvent,
+  // eslint-disable-next-line no-unused-vars
   sprite: IDraggableSprite
 ) => void;
 
 /**
  * Event handler type for mouse move events
  */
+// eslint-disable-next-line no-unused-vars
 type MouseMoveHandler = (event: MouseEvent) => void;
 
 /**
  * Event handler type for mouse up/down events
  */
+// eslint-disable-next-line no-unused-vars
 type MouseUpDownHandler = (event: MouseEvent) => void;
 
 /**
@@ -49,7 +57,7 @@ export default class Draggable extends AbstractMouse {
   private draggingHandler: MouseMoveHandler | null;
   private dragEndedHandler: MouseUpDownHandler | null;
   private dragStartedHandler: MouseUpDownHandler | null;
-  private usingMouseMoveEvent: boolean;
+  private isUsingMouseMoveEvent: boolean;
 
   constructor() {
     super();
@@ -60,7 +68,7 @@ export default class Draggable extends AbstractMouse {
     this.draggingHandler = null;
     this.dragEndedHandler = null;
     this.dragStartedHandler = null;
-    this.usingMouseMoveEvent = false;
+    this.isUsingMouseMoveEvent = false;
 
     this.initEvents();
   }
@@ -98,7 +106,7 @@ export default class Draggable extends AbstractMouse {
       if (this.draggingHandler) {
         document.removeEventListener('mousemove', this.draggingHandler);
       }
-      this.usingMouseMoveEvent = false;
+      this.isUsingMouseMoveEvent = false;
 
       for (const [sprite, callback] of this.dragEndCallbacks) {
         callback(event, sprite);
@@ -109,7 +117,7 @@ export default class Draggable extends AbstractMouse {
       if (this.draggingHandler) {
         document.addEventListener('mousemove', this.draggingHandler);
       }
-      this.usingMouseMoveEvent = true;
+      this.isUsingMouseMoveEvent = true;
 
       for (const [sprite, callback] of this.dragStartCallbacks) {
         if (this.mouseIsOnSprite(sprite, event)) {

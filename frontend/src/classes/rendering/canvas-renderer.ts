@@ -1,11 +1,13 @@
 // Handles redrawing the canvas whenever the screen is resized, or loaded for the first time.
 
-import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import type { ICanvasRenderer } from '../../types/rendering.ts';
+
+import screenHandlerModule from '../../modules/screen-handler-module.ts';
 
 /**
  * Type for requestAnimationFrame callback
  */
+// eslint-disable-next-line no-unused-vars
 type AnimationFrameCallback = (timestamp: DOMHighResTimeStamp) => void;
 
 /**
@@ -62,7 +64,7 @@ export default class CanvasRenderer implements ICanvasRenderer {
    */
   private startRenderingLoop(): void {
     const renderLoop: AnimationFrameCallback = (
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
       _timestamp: DOMHighResTimeStamp
     ) => {
       if (this._screenHandler) {

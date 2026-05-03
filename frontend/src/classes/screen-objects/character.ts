@@ -167,7 +167,7 @@ export default class Character {
    * @returns Promise that resolves when all sprites are created
    */
   async createSprites(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
     const characterFolder = 'assets/Character';
 
     // await this.createHeadSprites();

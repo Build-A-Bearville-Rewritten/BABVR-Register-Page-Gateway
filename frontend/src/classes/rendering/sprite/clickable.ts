@@ -13,11 +13,13 @@ interface IClickableSprite {
 /**
  * Callback function type for click events
  */
+// eslint-disable-next-line no-unused-vars
 type ClickCallback = (event: MouseEvent) => void;
 
 /**
  * Click handler function type
  */
+// eslint-disable-next-line no-unused-vars
 type ClickHandler = (event: MouseEvent) => void;
 
 /**

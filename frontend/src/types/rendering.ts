@@ -1,7 +1,3 @@
-/**
- * Rendering-related type definitions
- */
-
 import { HSL, Point2D, Size2D } from './common';
 import AbstractSprite from '../classes/rendering/sprite/abstract-sprite.ts';
 
@@ -30,16 +26,28 @@ export interface ICanvasRenderer {
 }
 
 /**
+ * Interface for sprites that can be rendered
+ */
+export interface IRenderableSprite extends IDrawableSprite {
+  id: number | null;
+  getZIndex(): number;
+  update(): void;
+  isAnimation?: boolean;
+}
+
+/**
  * Interface for sprite renderer
  */
 export interface ISpriteRenderer {
   numSprites: number;
   preloadCB: (() => void) | null;
 
-  addSpriteToScreen(sprite: AbstractSprite): Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  addSpriteToScreen(sprite: IRenderableSprite): Promise<void>;
   removeAllSprites(): void;
   drawSprites(): void;
   updateAnimations(): void;
+  // eslint-disable-next-line no-unused-vars
   addRedrawCB(cb: () => void): void;
 }
 
@@ -50,7 +58,7 @@ export interface ISpriteRenderer {
 export abstract class AbstractScreen {
   public canvas: HTMLCanvasElement;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
   constructor(canvas: HTMLCanvasElement, ..._args: unknown[]) {
     this.canvas = canvas;
   }
@@ -67,7 +75,9 @@ export abstract class AbstractScreen {
  * Screens must extend AbstractScreen and take canvas as first parameter
  */
 export type ScreenClass<T extends AbstractScreen = AbstractScreen> = new (
+  // eslint-disable-next-line no-unused-vars
   canvas: HTMLCanvasElement,
+  // eslint-disable-next-line no-unused-vars
   ...args: unknown[]
 ) => T;
 
@@ -77,7 +87,9 @@ export type ScreenClass<T extends AbstractScreen = AbstractScreen> = new (
 export interface IScreenHandler {
   canvas: HTMLCanvasElement;
   setScreen<T extends AbstractScreen>(
+    // eslint-disable-next-line no-unused-vars
     screenToDraw: ScreenClass<T>,
+    // eslint-disable-next-line no-unused-vars
     screenArgs?: unknown[]
   ): Promise<void>;
   drawScreen(): Promise<void>;
@@ -87,6 +99,7 @@ export interface IScreenHandler {
  * Interface for sprite drawer
  */
 export interface ISpriteDrawer {
+  // eslint-disable-next-line no-unused-vars
   drawSprite(sprite: AbstractSprite, ctx: CanvasRenderingContext2D): void;
 }
 
@@ -103,5 +116,6 @@ export interface IDrawableSprite {
     hsl?: boolean;
   };
   getImgCanvas(): HTMLCanvasElement | undefined;
+  // eslint-disable-next-line no-unused-vars
   setImgCanvas(imgCanvas: HTMLCanvasElement): void;
 }

@@ -5,8 +5,6 @@ import type { IDrawableSprite } from '../../../types/rendering.ts';
  * Class responsible for drawing sprites onto the canvas
  */
 export default class SpriteDrawer {
-  constructor() {}
-
   /**
    * Changes the image's color using HSL
    * @param sprite - The sprite to recolor
@@ -107,11 +105,11 @@ export default class SpriteDrawer {
     let innerCtx: CanvasRenderingContext2D | null = null;
 
     const outerCtx = sprite.canvas.getContext('2d');
-    if (!outerCtx) return;
-
     const hasSizeChanged = sprite.propertiesChanged.size === true;
     const hasHSLChanged = sprite.propertiesChanged.hsl === true;
     const spriteSize = sprite.getSize();
+
+    if (!outerCtx) return;
 
     if (!imgCanvas) {
       imgCanvas = document.createElement('canvas');
@@ -190,10 +188,10 @@ export default class SpriteDrawer {
       offset = this.rotateSprite(sprite);
     }
 
-    if (sprite.getHSL() != null) {
-      this.recolorSprite(sprite);
-    } else {
+    if (!sprite.getHSL()) this.recolorSprite(sprite);
+    else {
       const image = sprite.getImage();
+
       if (!image) return;
 
       if (offset) {
@@ -204,9 +202,7 @@ export default class SpriteDrawer {
           spriteSizePixels.x,
           spriteSizePixels.y
         );
-      } else {
-        this.drawImage(sprite);
-      }
+      } else this.drawImage(sprite);
     }
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);

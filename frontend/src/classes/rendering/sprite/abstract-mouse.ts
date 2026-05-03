@@ -25,19 +25,19 @@ export default class AbstractMouse {
     if (!sprite.canvas) {
       return false;
     }
-    let isInBounds = false;
 
+    const position: Point2D = sprite.getPosition();
     const rect = sprite.canvas.getBoundingClientRect();
+    const size: Size2D = sprite.getSize();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    const pos = sprite.getPosition();
-    const size = sprite.getSize();
-
-    isInBounds =
-      x >= pos.x && x < pos.x + size.x && y >= pos.y && y < pos.y + size.y;
-
-    return isInBounds;
+    return (
+      x >= position.x &&
+      x < position.x + size.x &&
+      y >= position.y &&
+      y < position.y + size.y
+    );
   }
 
   /**

@@ -1,4 +1,4 @@
-# Build-A-Bearville Rewritten Registration Page Gateway
+# Build-A-Bearville Rewritten - Register Page Gateway
 
 Gateway for the registration page of Build-A-Bearville Rewritten.
 

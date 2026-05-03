@@ -231,7 +231,7 @@ export default class ColorWheel {
    * @param rotationAmount - The rotation amount to round
    * @returns The nearest angle rounded to 15 degrees
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
   private roundToNearestAngle(rotationAmount: number): number {
     const currentRotationValue = this.colorWheelColors.getRotation() ?? 0;
     return Math.round(currentRotationValue / 15) * 15;

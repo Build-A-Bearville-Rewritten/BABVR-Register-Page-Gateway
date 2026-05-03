@@ -1,40 +1,53 @@
 {
-  "name": "babvr-registration-page-frontend",
-  "version": "1.0.0",
-  "description": "Frontend for the registration page of Build-A-Bearville Rewritten",
-  "private": true,
-  "author": "Juansecu",
-  "license": "UNLICENSED",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Juansecu/BABVR-Registration-Page-Gateway.git"
-  },
-  "keywords": [
-    "babvr",
-    "build-a-bearville",
-    "bearville",
-    "register",
-    "register-page",
-    "frontend"
-  ],
-  "bugs": {
-    "url": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway/issues"
-  },
-  "homepage": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway#readme",
-  "engines": {
-    "node": ">=24.11.1",
-    "pnpm": ">=10.24.0"
-  },
-  "engineStrict": true,
-  "packageManager": "pnpm@10.24.0",
-  "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.5.10"
-  }
+    "name": "babvr-register-page-frontend",
+    "version": "1.0.0",
+    "description": "Frontend for the registration page of Build-A-Bearville Rewritten",
+    "private": true,
+    "author": {
+        "name": "Juansecu",
+        "url": "https://github.com/Juansecu"
+    },
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "build": "tsc && vite build",
+        "dev": "vite",
+        "lint": "eslint --ext .ts .",
+        "lint:fix": "eslint --fix --ext .ts .",
+        "preview": "vite preview"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Juansecu/BABVR-Registration-Page-Gateway.git"
+    },
+    "keywords": [
+        "babvr",
+        "build-a-bearville",
+        "bearville",
+        "register",
+        "register-page",
+        "frontend"
+    ],
+    "bugs": {
+        "url": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway/issues"
+    },
+    "homepage": "https://github.com/Juansecu/BABVR-Registration-Page-Gateway#readme",
+    "engines": {
+        "node": ">=24.11.1",
+        "pnpm": ">=10.24.0"
+    },
+    "engineStrict": true,
+    "packageManager": "pnpm@10.24.0",
+    "devDependencies": {
+        "@eslint/css": "^1.2.0",
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.3.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.5",
+        "globals": "^17.6.0",
+        "prettier": "^3.8.3",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.59.1",
+        "vite": "^4.5.14"
+    }
 }

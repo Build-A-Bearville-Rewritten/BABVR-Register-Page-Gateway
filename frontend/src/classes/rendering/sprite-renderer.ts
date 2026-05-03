@@ -1,20 +1,11 @@
 // Loads in sprites onto their in specified loading order.
 
-import SpriteDrawer from './sprite/sprite-drawer.ts';
 import type {
-  IDrawableSprite,
+  IRenderableSprite,
   ISpriteRenderer
 } from '../../types/rendering.ts';
 
-/**
- * Interface for sprites that can be rendered
- */
-interface IRenderableSprite extends IDrawableSprite {
-  id: number | null;
-  getZIndex(): number;
-  update(): void;
-  isAnimation?: boolean;
-}
+import SpriteDrawer from './sprite/sprite-drawer.ts';
 
 /**
  * Interface for animated sprites
@@ -73,11 +64,10 @@ export default class SpriteRenderer implements ISpriteRenderer {
    * @param sprite - The sprite to add to the screen
    */
   async addSpriteToScreen(sprite: IRenderableSprite): Promise<void> {
-    let spriteKey: string | null = null;
+    const spriteKey = `sprite${sprite.id}`;
     const zIndex = sprite.getZIndex();
 
     sprite.id = ++this.numSprites;
-    spriteKey = 'sprite' + sprite.id;
 
     if (!this._sprites[zIndex]) {
       this._sprites[zIndex] = {};
