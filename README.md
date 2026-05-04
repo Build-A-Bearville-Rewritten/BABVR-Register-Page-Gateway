@@ -26,10 +26,11 @@ Gateway for the registration page of Build-A-Bearville Rewritten.
 
     - **Backend**
 
-        | Variable   | Type   | Description                                    | Required | Default       | Example      |
-        |------------|--------|------------------------------------------------|----------|---------------|--------------|
-        | `NODE_ENV` | String | The environment in which the server is running | No       | `development` | `production` |
-        | `PORT`     | String | The port where the server will run on          | No       | `3000`        | `3001`       |
+        | Variable                 | Type    | Description                                      | Required | Default       | Example       |
+        |--------------------------|---------|--------------------------------------------------|----------|---------------|---------------|
+        | `ALLOWED_REDIRECT_HOSTS` | String  | A comma-separated list of allowed redirect hosts | No       | `localhost`   | `example.com` |
+        | `PORT`                   | String  | The port where the server will run on            | No       | `3000`        | `443`         |
+        | `SHOULD_ENFORCE_HTTPS`   | Boolean | Whether to enforce HTTPS for redirect endpoints  | No       | `false`       | `true`        |
 
 ### Plugins for development
 

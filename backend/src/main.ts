@@ -10,24 +10,23 @@ import express, {
 
 import type { IConfiguration } from './typings/config';
 
-let config: IConfiguration;
+import { getEnvironmentVariable, validateEnvironment } from './environment';
+
+let config: IConfiguration | null = null;
+let port: Readonly<number> = 0;
 
 const app: Express = express();
-const environment: Readonly<string> = process.env.NODE_ENV || 'development';
-const port: Readonly<number> = Number.parseInt(process.env.PORT || '3000');
 
-if (environment === 'development')
-  import('./config/config.dev.js')
-    .then(module => (config = module.config))
-    .catch((error: Error) => {
-      throw error;
-    });
-else
-  import('./config/config.prod.js')
-    .then(module => (config = module.config))
-    .catch((error: Error) => {
-      throw error;
-    });
+validateEnvironment();
+
+port = getEnvironmentVariable<number>('PORT')!;
+
+config = {
+  redirectUrlQueryParameter: {
+    allowedHosts: getEnvironmentVariable<string[]>('ALLOWED_REDIRECT_HOSTS')!,
+    shouldEnforceHttps: getEnvironmentVariable<boolean>('SHOULD_ENFORCE_HTTPS')!
+  }
+};
 
 app.use((request: Request, _response: Response, next: NextFunction): void => {
   console.log(`Request: ${request.method} ${request.path} from ${request.ip}`);

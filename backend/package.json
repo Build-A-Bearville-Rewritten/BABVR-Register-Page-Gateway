@@ -40,7 +40,8 @@
     "engineStrict": true,
     "packageManager": "pnpm@10.24.0",
     "dependencies": {
-        "express": "^4.22.1"
+        "express": "^4.22.1",
+        "joi": "^18.1.2"
     },
     "devDependencies": {
         "@types/express": "^4.17.25",
