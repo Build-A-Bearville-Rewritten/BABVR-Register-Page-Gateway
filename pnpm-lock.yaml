@@ -20,6 +20,9 @@ importers:
       eslint-plugin-prettier:
         specifier: ^5.5.5
         version: 5.5.5(eslint-config-prettier@10.1.8(eslint@10.3.0))(eslint@10.3.0)(prettier@3.8.3)
+      prettier:
+        specifier: ^3.8.3
+        version: 3.8.3
       typescript-eslint:
         specifier: ^8.59.1
         version: 8.59.1(eslint@10.3.0)(typescript@5.9.3)

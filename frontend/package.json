@@ -40,15 +40,10 @@
     "packageManager": "pnpm@10.24.0",
     "devDependencies": {
         "@eslint/css": "^1.2.0",
-        "@eslint/js": "^10.0.1",
         "@types/node": "^24.12.2",
         "eslint": "^10.3.0",
-        "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-prettier": "^5.5.5",
         "globals": "^17.6.0",
-        "prettier": "^3.8.3",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.59.1",
         "vite": "^4.5.14"
     }
 }
