@@ -58,8 +58,7 @@ export interface ISpriteRenderer {
 export abstract class AbstractScreen {
   public canvas: HTMLCanvasElement;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
-  constructor(canvas: HTMLCanvasElement, ..._args: unknown[]) {
+  protected constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
   }
 

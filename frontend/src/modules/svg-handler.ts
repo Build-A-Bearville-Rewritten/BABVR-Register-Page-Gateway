@@ -125,6 +125,5 @@ class SVGHandler implements ISVGHandler {
   }
 }
 
-// Export singleton instance
 const svgHandler = new SVGHandler();
 export default svgHandler;

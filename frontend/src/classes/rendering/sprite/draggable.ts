@@ -50,25 +50,31 @@ type MouseUpDownHandler = (event: MouseEvent) => void;
  * Class for handling draggable sprite interactions
  */
 export default class Draggable extends AbstractMouse {
-  private dragStartCallbacks: Map<IDraggableSprite, DragStartEndCallback>;
-  private dragEndCallbacks: Map<IDraggableSprite, DragStartEndCallback>;
-  private dragCallbacks: Map<IDraggableSprite, DragCallback>;
+  private _dragEndedHandler: MouseUpDownHandler | null;
+  private _draggingHandler: MouseMoveHandler | null;
+  private _dragStartedHandler: MouseUpDownHandler | null;
+  private _isUsingMouseMoveEvent: boolean;
 
-  private draggingHandler: MouseMoveHandler | null;
-  private dragEndedHandler: MouseUpDownHandler | null;
-  private dragStartedHandler: MouseUpDownHandler | null;
-  private isUsingMouseMoveEvent: boolean;
+  private readonly _dragCallbacks: Map<IDraggableSprite, DragCallback>;
+  private readonly _dragEndCallbacks: Map<
+    IDraggableSprite,
+    DragStartEndCallback
+  >;
+  private readonly _dragStartCallbacks: Map<
+    IDraggableSprite,
+    DragStartEndCallback
+  >;
 
   constructor() {
     super();
-    this.dragStartCallbacks = new Map();
-    this.dragEndCallbacks = new Map();
-    this.dragCallbacks = new Map();
+    this._dragStartCallbacks = new Map();
+    this._dragEndCallbacks = new Map();
+    this._dragCallbacks = new Map();
 
-    this.draggingHandler = null;
-    this.dragEndedHandler = null;
-    this.dragStartedHandler = null;
-    this.isUsingMouseMoveEvent = false;
+    this._draggingHandler = null;
+    this._dragEndedHandler = null;
+    this._dragStartedHandler = null;
+    this._isUsingMouseMoveEvent = false;
 
     this.initEvents();
   }
@@ -83,7 +89,7 @@ export default class Draggable extends AbstractMouse {
     let velocityX = 0;
     let velocityY = 0;
 
-    this.draggingHandler = (event: MouseEvent) => {
+    this._draggingHandler = (event: MouseEvent) => {
       const currentTime = Date.now();
       const deltaTime = currentTime - previousTime || 1; // Avoid division by zero
       const currentX = event.clientX;
@@ -96,30 +102,30 @@ export default class Draggable extends AbstractMouse {
       previousY = currentY;
       previousTime = currentTime;
 
-      for (const [sprite, callback] of this.dragCallbacks) {
+      for (const [sprite, callback] of this._dragCallbacks) {
         if (!sprite._isDragging) continue;
         callback(event, velocityX, velocityY);
       }
     };
 
-    this.dragEndedHandler = (event: MouseEvent) => {
-      if (this.draggingHandler) {
-        document.removeEventListener('mousemove', this.draggingHandler);
+    this._dragEndedHandler = (event: MouseEvent) => {
+      if (this._draggingHandler) {
+        document.removeEventListener('mousemove', this._draggingHandler);
       }
-      this.isUsingMouseMoveEvent = false;
+      this._isUsingMouseMoveEvent = false;
 
-      for (const [sprite, callback] of this.dragEndCallbacks) {
+      for (const [sprite, callback] of this._dragEndCallbacks) {
         callback(event, sprite);
       }
     };
 
-    this.dragStartedHandler = (event: MouseEvent) => {
-      if (this.draggingHandler) {
-        document.addEventListener('mousemove', this.draggingHandler);
+    this._dragStartedHandler = (event: MouseEvent) => {
+      if (this._draggingHandler) {
+        document.addEventListener('mousemove', this._draggingHandler);
       }
-      this.isUsingMouseMoveEvent = true;
+      this._isUsingMouseMoveEvent = true;
 
-      for (const [sprite, callback] of this.dragStartCallbacks) {
+      for (const [sprite, callback] of this._dragStartCallbacks) {
         if (this.mouseIsOnSprite(sprite, event)) {
           sprite._isDragging = true;
           callback(event, sprite);
@@ -127,8 +133,8 @@ export default class Draggable extends AbstractMouse {
       }
     };
 
-    document.addEventListener('mouseup', this.dragEndedHandler);
-    document.addEventListener('mousedown', this.dragStartedHandler);
+    document.addEventListener('mouseup', this._dragEndedHandler);
+    document.addEventListener('mousedown', this._dragStartedHandler);
   }
 
   /**
@@ -137,7 +143,7 @@ export default class Draggable extends AbstractMouse {
    * @param callback - The callback function to call during drag
    */
   onDrag(whichSprite: IDraggableSprite, callback: DragCallback): void {
-    this.dragCallbacks.set(whichSprite, callback);
+    this._dragCallbacks.set(whichSprite, callback);
   }
 
   /**
@@ -149,7 +155,7 @@ export default class Draggable extends AbstractMouse {
     whichSprite: IDraggableSprite,
     callback: DragStartEndCallback
   ): void {
-    this.dragStartCallbacks.set(whichSprite, callback);
+    this._dragStartCallbacks.set(whichSprite, callback);
   }
 
   /**
@@ -161,25 +167,25 @@ export default class Draggable extends AbstractMouse {
     whichSprite: IDraggableSprite,
     callback: DragStartEndCallback
   ): void {
-    this.dragEndCallbacks.set(whichSprite, callback);
+    this._dragEndCallbacks.set(whichSprite, callback);
   }
 
   /**
    * Cleanup method - removes event listeners and clears callbacks
    */
   destroy(): void {
-    if (this.draggingHandler) {
-      document.removeEventListener('mousemove', this.draggingHandler);
+    if (this._draggingHandler) {
+      document.removeEventListener('mousemove', this._draggingHandler);
     }
-    if (this.dragEndedHandler) {
-      document.removeEventListener('mouseup', this.dragEndedHandler);
+    if (this._dragEndedHandler) {
+      document.removeEventListener('mouseup', this._dragEndedHandler);
     }
-    if (this.dragStartedHandler) {
-      document.removeEventListener('mousedown', this.dragStartedHandler);
+    if (this._dragStartedHandler) {
+      document.removeEventListener('mousedown', this._dragStartedHandler);
     }
 
-    this.dragStartCallbacks.clear();
-    this.dragEndCallbacks.clear();
-    this.dragCallbacks.clear();
+    this._dragStartCallbacks.clear();
+    this._dragEndCallbacks.clear();
+    this._dragCallbacks.clear();
   }
 }

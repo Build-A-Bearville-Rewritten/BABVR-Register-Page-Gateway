@@ -15,10 +15,12 @@ export default class SpriteDrawer {
     innerCtx: CanvasRenderingContext2D
   ): void {
     const image = sprite.getImage();
+
     if (!image) return;
 
     const spriteSize = sprite.getSize();
     const hsl = sprite.getHSL();
+
     if (!hsl) return;
 
     innerCtx.globalCompositeOperation = 'source-over';
@@ -55,6 +57,7 @@ export default class SpriteDrawer {
     const spritePosition = sprite.getPosition();
     const spriteSize = sprite.getSize();
     const rotation = sprite.getRotation();
+
     if (rotation === undefined) return null;
 
     const ctx = sprite.canvas.getContext('2d');
@@ -79,8 +82,8 @@ export default class SpriteDrawer {
 
     const spriteSize = sprite.getSize();
     const spritePosition = sprite.getPosition();
-
     const ctx = sprite.canvas.getContext('2d');
+
     if (!ctx) return null;
 
     const centerX = spritePosition.x + spriteSize.x / 2;
@@ -104,9 +107,9 @@ export default class SpriteDrawer {
     let imgCanvas = sprite.getImgCanvas();
     let innerCtx: CanvasRenderingContext2D | null = null;
 
-    const outerCtx = sprite.canvas.getContext('2d');
     const hasSizeChanged = sprite.propertiesChanged.size === true;
     const hasHSLChanged = sprite.propertiesChanged.hsl === true;
+    const outerCtx = sprite.canvas.getContext('2d');
     const spriteSize = sprite.getSize();
 
     if (!outerCtx) return;
@@ -180,6 +183,7 @@ export default class SpriteDrawer {
 
     const spriteSizePixels = sprite.getSize();
     const ctx = sprite.canvas.getContext('2d');
+
     if (!ctx) return;
 
     if (sprite.getFlip() === 'horizontal') {
@@ -188,7 +192,7 @@ export default class SpriteDrawer {
       offset = this.rotateSprite(sprite);
     }
 
-    if (!sprite.getHSL()) this.recolorSprite(sprite);
+    if (sprite.getHSL()) this.recolorSprite(sprite);
     else {
       const image = sprite.getImage();
 

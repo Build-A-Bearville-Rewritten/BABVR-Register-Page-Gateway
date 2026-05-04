@@ -22,9 +22,7 @@ export default class AbstractMouse {
    * @returns True if the mouse is within the sprite's bounds, false otherwise
    */
   mouseIsOnSprite(sprite: ISpriteWithMouse, event: MouseEvent): boolean {
-    if (!sprite.canvas) {
-      return false;
-    }
+    if (!sprite.canvas) return false;
 
     const position: Point2D = sprite.getPosition();
     const rect = sprite.canvas.getBoundingClientRect();

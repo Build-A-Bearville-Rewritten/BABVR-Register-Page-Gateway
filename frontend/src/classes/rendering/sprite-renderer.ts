@@ -39,11 +39,13 @@ type SpriteDictionary = {
 export default class SpriteRenderer implements ISpriteRenderer {
   public numSprites: number;
   public preloadCB: PreloadCallback | null;
+
+  public readonly SpriteDrawer: SpriteDrawer;
+
   private _sprites: SpriteDictionary;
   private _animatedSprites: IAnimatedSprite[];
   private _isPreloaded: boolean;
   private _preRedrawCBs: PreRedrawCallback[];
-  public readonly SpriteDrawer: SpriteDrawer;
 
   constructor() {
     this.numSprites = 0;
@@ -64,10 +66,13 @@ export default class SpriteRenderer implements ISpriteRenderer {
    * @param sprite - The sprite to add to the screen
    */
   async addSpriteToScreen(sprite: IRenderableSprite): Promise<void> {
-    const spriteKey = `sprite${sprite.id}`;
+    let spriteKey: string | null = null;
+
     const zIndex = sprite.getZIndex();
 
     sprite.id = ++this.numSprites;
+
+    spriteKey = `sprite${sprite.id}`;
 
     if (!this._sprites[zIndex]) {
       this._sprites[zIndex] = {};
@@ -106,7 +111,8 @@ export default class SpriteRenderer implements ISpriteRenderer {
 
       for (const spriteKey in spritesAtZIndex) {
         const sprite = spritesAtZIndex[spriteKey];
-        if (sprite && sprite.getImage()) {
+
+        if (sprite?.getImage()) {
           sprite.update();
           this.SpriteDrawer.drawSprite(sprite);
         }
@@ -118,7 +124,7 @@ export default class SpriteRenderer implements ISpriteRenderer {
    * Updates animations for all animated sprites
    */
   updateAnimations(): void {
-    window.requestAnimationFrame(() => this.updateAnimations());
+    globalThis.requestAnimationFrame(() => this.updateAnimations());
 
     for (const animatedSprite of this._animatedSprites) {
       // Update animation frames

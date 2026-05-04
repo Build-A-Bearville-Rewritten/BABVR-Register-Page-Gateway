@@ -1,23 +1,24 @@
 // Chloe intro screen implementation - handles the introductory dialogue UI
 // and transitions into the character creator flow.
 
+import { AbstractScreen } from '../../types/rendering.ts';
+
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
 import CharacterCreatorScreen from '../screens/character-creator-screen.ts';
-import { AbstractScreen } from '../../types/rendering.ts';
 
 /**
  * ChloeIntroScreen draws Chloe's intro art and advances to the
  * character creator when the player taps the next button.
  */
 export default class ChloeIntroScreen extends AbstractScreen {
-  private _clickable: Clickable;
-
   private _backgroundImage!: StaticSprite;
   private _chloeSprite!: StaticSprite;
   private _nextButton!: StaticSprite;
   private _loginHUD!: StaticSprite;
+
+  private readonly _clickable: Clickable;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
