@@ -1,9 +1,14 @@
 import { resolve } from 'node:path';
 import { URL } from 'node:url';
 
-import express, { Express, NextFunction, Request, Response } from 'express';
+import express, {
+  type Express,
+  type NextFunction,
+  type Request,
+  type Response
+} from 'express';
 
-import { IConfiguration } from './typings/config';
+import type { IConfiguration } from './typings/config';
 
 let config: IConfiguration;
 
