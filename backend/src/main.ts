@@ -28,6 +28,8 @@ config = {
   }
 };
 
+app.disable('x-powered-by');
+
 app.use((request: Request, _response: Response, next: NextFunction): void => {
   console.log(`Request: ${request.method} ${request.path} from ${request.ip}`);
   next();
