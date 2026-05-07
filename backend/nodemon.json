@@ -1,5 +1,5 @@
 {
-    "exec": "node --loader ts-node/esm --experimental-specifier-resolution=node src/main.ts",
+    "exec": "tsx src/main.ts",
     "ext": "ts",
     "watch": ["src"]
 }

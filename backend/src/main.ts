@@ -1,12 +1,14 @@
 import { resolve } from 'node:path';
 import { URL } from 'node:url';
 
+import ConsoleLogger from '@jscv-solutions/node-logger';
 import express, {
   type Express,
   type NextFunction,
   type Request,
   type Response
 } from 'express';
+import { Logger } from 'winston';
 
 import type { IConfiguration } from './typings/config';
 
@@ -16,6 +18,7 @@ let config: IConfiguration | null = null;
 let port: Readonly<number> = 0;
 
 const app: Express = express();
+const consoleLogger: Logger = ConsoleLogger.getLogger('main', 'verbose', true);
 
 validateEnvironment();
 
@@ -31,7 +34,10 @@ config = {
 app.disable('x-powered-by');
 
 app.use((request: Request, _response: Response, next: NextFunction): void => {
-  console.log(`Request: ${request.method} ${request.path} from ${request.ip}`);
+  consoleLogger.info(
+    `Request: ${request.method} ${request.path} from ${request.ip}`
+  );
+
   next();
 });
 app.use((request: Request, response: Response, next: NextFunction): void => {
@@ -44,12 +50,10 @@ app.use((request: Request, response: Response, next: NextFunction): void => {
   const redirectUrl: Readonly<string | undefined> =
     queryParameters.redirectUrl as string;
 
-  console.log(queryParameters);
-
-  console.group('Validating redirectUrl query parameter...');
+  consoleLogger.verbose('Validating redirectUrl query parameter...');
 
   if (!redirectUrl) {
-    console.error('Missing redirectUrl query parameter');
+    consoleLogger.error('Missing redirectUrl query parameter');
     response.status(400).send('Missing redirectUrl query parameter');
     return;
   }
@@ -62,8 +66,7 @@ app.use((request: Request, response: Response, next: NextFunction): void => {
     config.redirectUrlQueryParameter.shouldEnforceHttps &&
     protocol !== 'https:'
   ) {
-    console.error('Protocol must be https');
-    console.groupEnd();
+    consoleLogger.error('Protocol must be https');
     response.status(400).send('Protocol must be https');
     return;
   }
@@ -72,14 +75,12 @@ app.use((request: Request, response: Response, next: NextFunction): void => {
     !config.redirectUrlQueryParameter.allowedHosts.includes('*') &&
     !config.redirectUrlQueryParameter.allowedHosts.includes(host)
   ) {
-    console.error('Host is not allowed');
-    console.groupEnd();
+    consoleLogger.error('Host is not allowed');
     response.status(400).send('Host is not allowed');
     return;
   }
 
-  console.log('Valid redirectUrl query parameter');
-  console.groupEnd();
+  consoleLogger.info('Valid redirectUrl query parameter');
 
   next();
 });
@@ -87,8 +88,8 @@ app.use('/', express.static(resolve('public')));
 
 app.get('/redirect', (request: Request, response: Response) => {
   const redirectUrl: Readonly<string> = request.query.redirectUrl as string;
-  console.log(`Redirecting to ${redirectUrl}...`);
+  consoleLogger.info(`Redirecting to ${redirectUrl}...`);
   response.redirect(redirectUrl);
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}!`));
+app.listen(port, () => consoleLogger.info(`Listening on port ${port}!`));
