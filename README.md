@@ -9,19 +9,16 @@ Gateway for the registration page of Build-A-Bearville Rewritten.
     </summary>
 
 - [Requirements](#requirements)
-
     - [Plugins for development](#plugins-for-development)
 - [Installation](#installation)
-
     - [Using Node.js](#using-nodejs)
-
         - [For development](#for-development)
 </details>
 
 ## Requirements
 
 - **[Node.js](https://nodejs.org/en/) -** Version 24.11.1 or higher
-- **[PNPM](https://pnpm.io/) -** Version 10.24.0 or higher
+- **[PNPM](https://pnpm.io/) -** Version 11.1.3 or higher
 - **Environment variables**
 
     - **Backend**
