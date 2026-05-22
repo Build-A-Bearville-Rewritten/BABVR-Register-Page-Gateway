@@ -45,6 +45,7 @@ export default class SpriteRenderer implements ISpriteRenderer {
   private _sprites: SpriteDictionary;
   private _animatedSprites: IAnimatedSprite[];
   private _isPreloaded: boolean;
+  private _isAnimationLoopRunning: boolean;
   private _preRedrawCBs: PreRedrawCallback[];
 
   constructor() {
@@ -53,6 +54,7 @@ export default class SpriteRenderer implements ISpriteRenderer {
     this._sprites = {};
     this._animatedSprites = [];
     this._isPreloaded = false;
+    this._isAnimationLoopRunning = false;
     this._preRedrawCBs = [];
     this.SpriteDrawer = new SpriteDrawer();
   }
@@ -124,10 +126,21 @@ export default class SpriteRenderer implements ISpriteRenderer {
    * Updates animations for all animated sprites
    */
   updateAnimations(): void {
-    globalThis.requestAnimationFrame(() => this.updateAnimations());
+    if (this._isAnimationLoopRunning) {
+      return;
+    }
+
+    this._isAnimationLoopRunning = true;
+    this._runAnimationLoop();
+  }
+
+  /**
+   * Advances animated sprites once per display frame.
+   */
+  private _runAnimationLoop(): void {
+    globalThis.requestAnimationFrame(() => this._runAnimationLoop());
 
     for (const animatedSprite of this._animatedSprites) {
-      // Update animation frames
       animatedSprite.update();
     }
   }

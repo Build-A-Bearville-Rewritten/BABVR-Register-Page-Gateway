@@ -116,6 +116,10 @@ export default class Animator {
    * Updates frame timing based on frame buffer
    */
   updateFrames(): void {
+    if (!this._isPlaying) {
+      return;
+    }
+
     const isOnLastFrame = this._currentFrame === this._numFrames - 1;
 
     this._elapsedFrames++;
@@ -124,7 +128,7 @@ export default class Animator {
       if (this._animationEndedCB) {
         this._animationEndedCB();
       }
-      this._currentFrame = -1;
+      this._isPlaying = false;
       return;
     }
 

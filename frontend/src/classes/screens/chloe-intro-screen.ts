@@ -7,6 +7,7 @@ import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
 import CharacterCreatorScreen from '../screens/character-creator-screen.ts';
+import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
 
 /**
  * ChloeIntroScreen draws Chloe's intro art and advances to the
@@ -14,7 +15,9 @@ import CharacterCreatorScreen from '../screens/character-creator-screen.ts';
  */
 export default class ChloeIntroScreen extends AbstractScreen {
   private _backgroundImage!: StaticSprite;
-  private _chloeSprite!: StaticSprite;
+  private _chloeAnimation!: AnimatedSprite;
+  private _chloeSound!: HTMLAudioElement;
+  private _chloeSoundTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private _nextButton!: StaticSprite;
   private _loginHUD!: StaticSprite;
 
@@ -51,15 +54,6 @@ export default class ChloeIntroScreen extends AbstractScreen {
       sizeScale: { x: 1, y: 1 }
     });
 
-    this._chloeSprite = new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/chloeTest.png',
-      parent: this.canvas,
-      sizeScale: 0.6,
-      anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.42, y: 0.5 }
-    });
-
     this._nextButton = new StaticSprite({
       canvas: this.canvas,
       imagePath: './assets/Register/sprites/emptyButton.png',
@@ -73,25 +67,41 @@ export default class ChloeIntroScreen extends AbstractScreen {
       canvas: this.canvas,
       parent: this.canvas,
       imagePath: 'assets/Register/sprites/loginHUD.png',
-      sizeScale: { x: 1, y: 1 }
+      sizeScale: { x: 1, y: 1 },
+      zIndex: 1000, // load this image before the chloe animation but draw it on top
     });
 
-    // this._chloeAnimation = new Sprite({
-    //   canvas: this.canvas,
-    //   parent: this.canvas,
-    //   sizeScale: { x: 1, y: 1 },
-    //   numFrames: 337, // the number of frames in the animation
-    //   frameBuffer: 5, // the amount of times the canvas should draw before loading the next frames
-    //   animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations
-    // });
+    this._chloeAnimation = new AnimatedSprite({
+      canvas: this.canvas,
+      parent: this.canvas,
+      sizeScale: { x: 1, y: 1 },
+      numFrames: 337, // the number of frames in the animation
+      frameBuffer: 3, // the amount of times the canvas should draw before loading the next frames
+      animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations
+    });
 
-    // this._chloeAnimation.play()
+    this._chloeSound = new Audio(
+      'assets/Register/chloe/talk1/sounds/162.mp3'
+    );
+
+    this._chloeAnimation.play();
+    this._chloeSoundTimeoutId = setTimeout(() => {
+      this._chloeSoundTimeoutId = null;
+      void this._chloeSound.play();
+    }, 700);
   }
 
   /**
    * Cleanup resources when the screen is replaced.
    */
   public destroy(): void {
+    this._chloeAnimation.destroy();
+    if (this._chloeSoundTimeoutId !== null) {
+      clearTimeout(this._chloeSoundTimeoutId);
+      this._chloeSoundTimeoutId = null;
+    }
+    this._chloeSound.pause();
+    this._chloeSound.currentTime = 0;
     this._clickable.destroy();
   }
 }
