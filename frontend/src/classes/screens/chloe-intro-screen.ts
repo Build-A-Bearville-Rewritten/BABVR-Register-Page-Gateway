@@ -14,12 +14,10 @@ import Button from '../rendering/sprite/widgets/button.ts';
  * character creator when the player taps the next button.
  */
 export default class ChloeIntroScreen extends AbstractScreen {
-  private _backgroundImage!: StaticSprite;
   private _chloeAnimation!: AnimatedSprite;
   private _chloeSound!: HTMLAudioElement;
   private _chloeSoundTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private _nextButton!: Button;
-  private _loginHUD!: StaticSprite;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -31,24 +29,10 @@ export default class ChloeIntroScreen extends AbstractScreen {
    * Build the static sprites that compose this screen.
    */
   private createSprites(): void {
-    this._backgroundImage = new StaticSprite({
-      canvas: this.canvas,
-      parent: this.canvas,
-      imagePath: 'assets/Register/sprites/BABW_Register_Background.png',
-      sizeScale: { x: 1, y: 1 }
-    });
-
-    this._loginHUD = new StaticSprite({
-      canvas: this.canvas,
-      parent: this.canvas,
-      imagePath: 'assets/Register/sprites/loginHUD.png',
-      sizeScale: { x: 1, y: 1 },
-      zIndex: 1000, // load this image before the animations but draw it on top
-    });
-
     this._nextButton = new Button({
       canvas: this.canvas,
       parent: this.canvas,
+      text: "NEXT",
       sizeScale: 0.07,
       anchorPoint: { x: 0.5, y: -0.5 },
       positionScale: { x: 0.83, y: 0.85 },
@@ -57,6 +41,23 @@ export default class ChloeIntroScreen extends AbstractScreen {
         void screenHandler.setScreen(CharacterCreatorScreen);
       }
     });
+
+    // const box = new StaticSprite({
+    //   canvas: this.canvas,
+    //   imagePath: './assets/Register/sprites/speechBox.png',
+    //   parent: this.canvas,
+    //   sizeScale: {x: 0.3, y: 0.2},
+    //   positionScale: { x: 0.5, y: 0.4 }
+    // })
+
+    // new StaticSprite({
+    //   canvas: this.canvas,
+    //   imagePath: './assets/Register/sprites/speechArrow.png',
+    //   parent: box,
+    //   sizeScale: 0.4,
+    //   positionScale: { x: -0.06, y: 0.4 },
+    //   rotation: 180,
+    // })
 
     this._chloeAnimation = new AnimatedSprite({
       canvas: this.canvas,

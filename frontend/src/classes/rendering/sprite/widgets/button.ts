@@ -1,4 +1,5 @@
 import { SpriteConstructorOptions } from '../../../../types/common.js';
+import spriteRendererModule from '../../../../modules/sprite-renderer-module.ts';
 import AnimatedSprite, {
   type AnimatedSpriteOptions
 } from '../animated-sprite.js';
@@ -40,8 +41,12 @@ class ButtonAnimatedSprite extends AnimatedSprite {
 
 export default class Button {
   private readonly _text: string;
+  private readonly _canvas: HTMLCanvasElement | undefined;
   private readonly _clickable: Clickable;
   private readonly _onClick: MouseCallback;
+  private readonly _drawTextBound = (): void => {
+    this.drawText();
+  };
   private _isHovered = false;
 
   private _clickAnimation!: ButtonAnimatedSprite;
@@ -50,6 +55,8 @@ export default class Button {
 
   constructor(options: ButtonOptions) {
     const { text, onClick, ...spriteOptions } = options;
+
+    this._canvas = spriteOptions.canvas;
 
     this._clickAnimation = new ButtonAnimatedSprite({
       animationFolder:
@@ -95,6 +102,43 @@ export default class Button {
 
     this.showIdle();
     this.bindEvents();
+
+    if (this._text) {
+      document.fonts.load(`16px 'Funhouse'`);
+      spriteRendererModule
+        .getSpriteRenderer()
+        .addPostRedrawCB(this._drawTextBound);
+    }
+  }
+
+  private drawText(): void {
+    if (!this._text || !this._canvas) {
+      return;
+    }
+
+    const ctx = this._canvas.getContext('2d');
+    if (!ctx) {
+      return;
+    }
+
+    const sprite = this._hoverStartAnimation;
+    const size = sprite.getSize();
+    if (size.x === 0 || size.y === 0) {
+      return;
+    }
+
+    const position = sprite.getPosition();
+    const fontSize = Math.max(size.y * 0.35, 12);
+
+    ctx.font = `${fontSize}px 'Funhouse', sans-serif`;
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(
+      this._text,
+      position.x + size.x / 2,
+      position.y + size.y / 2
+    );
   }
 
   private showIdle(): void {
@@ -148,6 +192,10 @@ export default class Button {
   }
 
   public destroy(): void {
+    spriteRendererModule
+      .getSpriteRenderer()
+      .removePostRedrawCB(this._drawTextBound);
+
     this._clickable.destroy();
     this._clickAnimation.destroy();
     this._hoverStartAnimation.destroy();

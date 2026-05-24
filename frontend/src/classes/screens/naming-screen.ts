@@ -8,11 +8,9 @@ import { AbstractScreen } from '../../types/rendering.ts';
 export default class NamingScreen extends AbstractScreen {
   private _clickable: Clickable;
 
-  private _backgroundImage!: StaticSprite;
   private _testSprite!: StaticSprite;
   private _nextButton!: StaticSprite;
   private _backButton!: StaticSprite;
-  private _loginHUD!: StaticSprite;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
@@ -38,13 +36,6 @@ export default class NamingScreen extends AbstractScreen {
   }
 
   private createSprites(): void {
-    this._backgroundImage = new StaticSprite({
-      canvas: this.canvas,
-      parent: this.canvas,
-      imagePath: 'assets/Register/sprites/BABW_Register_Background.png',
-      sizeScale: { x: 1, y: 1 }
-    });
-
     this._testSprite = new StaticSprite({
       canvas: this.canvas,
       imagePath: 'assets/Register/sprites/NamingScreen.png',
@@ -70,13 +61,6 @@ export default class NamingScreen extends AbstractScreen {
       parent: this.canvas,
       anchorPoint: { x: 5.5, y: -1 },
       positionScale: { x: 0.83, y: 0.85 }
-    });
-
-    this._loginHUD = new StaticSprite({
-      canvas: this.canvas,
-      parent: this.canvas,
-      imagePath: 'assets/Register/sprites/loginHUD.png',
-      sizeScale: { x: 1, y: 1 }
     });
   }
 

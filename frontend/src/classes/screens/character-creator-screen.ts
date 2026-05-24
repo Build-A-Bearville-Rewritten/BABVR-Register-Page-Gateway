@@ -13,10 +13,8 @@ import { AbstractScreen } from '../../types/rendering.ts';
 export default class CharacterCreatorScreen extends AbstractScreen {
   private _clickable: Clickable;
 
-  private _backgroundImage!: StaticSprite;
   private _nextButton!: StaticSprite;
   private _backButton!: StaticSprite;
-  private loginHUD!: StaticSprite;
 
   private characterCreator!: CharacterCreator;
   private colorWheel!: ColorWheel;
@@ -45,13 +43,6 @@ export default class CharacterCreatorScreen extends AbstractScreen {
   }
 
   private createSprites(): void {
-    this._backgroundImage = new StaticSprite({
-      canvas: this.canvas,
-      parent: this.canvas,
-      imagePath: 'assets/Register/sprites/BABW_Register_Background.png',
-      sizeScale: { x: 1, y: 1 }
-    });
-
     this._nextButton = new StaticSprite({
       canvas: this.canvas,
       imagePath: './assets/Register/sprites/emptyButton.png',
@@ -73,13 +64,6 @@ export default class CharacterCreatorScreen extends AbstractScreen {
     this.characterCreator = new CharacterCreator(this.canvas);
     new Character(this.canvas, this.characterCreator.characterContainer);
     this.colorWheel = new ColorWheel(this.canvas);
-
-    this.loginHUD = new StaticSprite({
-      canvas: this.canvas,
-      parent: this.canvas,
-      imagePath: 'assets/Register/sprites/loginHUD.png',
-      sizeScale: { x: 1, y: 1 }
-    });
   }
 
   public destroy(): void {

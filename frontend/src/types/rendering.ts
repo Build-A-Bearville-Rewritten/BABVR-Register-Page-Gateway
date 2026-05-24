@@ -49,6 +49,10 @@ export interface ISpriteRenderer {
   updateAnimations(): void;
   // eslint-disable-next-line no-unused-vars
   addRedrawCB(cb: () => void): void;
+  // eslint-disable-next-line no-unused-vars
+  addPostRedrawCB(cb: () => void): void;
+  // eslint-disable-next-line no-unused-vars
+  removePostRedrawCB(cb: () => void): void;
 }
 
 /**
