@@ -5,9 +5,9 @@ import { AbstractScreen } from '../../types/rendering.ts';
 
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
-import Clickable from '../rendering/sprite/clickable.ts';
 import CharacterCreatorScreen from '../screens/character-creator-screen.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
+import Button from '../rendering/sprite/widgets/button.ts';
 
 /**
  * ChloeIntroScreen draws Chloe's intro art and advances to the
@@ -18,29 +18,13 @@ export default class ChloeIntroScreen extends AbstractScreen {
   private _chloeAnimation!: AnimatedSprite;
   private _chloeSound!: HTMLAudioElement;
   private _chloeSoundTimeoutId: ReturnType<typeof setTimeout> | null = null;
-  private _nextButton!: StaticSprite;
+  private _nextButton!: Button;
   private _loginHUD!: StaticSprite;
-
-  private readonly _clickable: Clickable;
 
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
 
-    this._clickable = new Clickable();
-
     this.createSprites();
-    this.bindEvents();
-  }
-
-  /**
-   * Register click interactions for screen controls.
-   */
-  private bindEvents(): void {
-    this._clickable.onClick(this._nextButton, () => {
-      this._clickable.destroy();
-      const screenHandler = screenHandlerModule.getInstance(this.canvas);
-      void screenHandler.setScreen(CharacterCreatorScreen);
-    });
   }
 
   /**
@@ -54,21 +38,24 @@ export default class ChloeIntroScreen extends AbstractScreen {
       sizeScale: { x: 1, y: 1 }
     });
 
-    this._nextButton = new StaticSprite({
-      canvas: this.canvas,
-      imagePath: './assets/Register/sprites/emptyButton.png',
-      sizeScale: 0.05,
-      parent: this.canvas,
-      anchorPoint: { x: 0.5, y: -1 },
-      positionScale: { x: 0.83, y: 0.85 }
-    });
-
     this._loginHUD = new StaticSprite({
       canvas: this.canvas,
       parent: this.canvas,
       imagePath: 'assets/Register/sprites/loginHUD.png',
       sizeScale: { x: 1, y: 1 },
-      zIndex: 1000, // load this image before the chloe animation but draw it on top
+      zIndex: 1000, // load this image before the animations but draw it on top
+    });
+
+    this._nextButton = new Button({
+      canvas: this.canvas,
+      parent: this.canvas,
+      sizeScale: 0.07,
+      anchorPoint: { x: 0.5, y: -0.5 },
+      positionScale: { x: 0.83, y: 0.85 },
+      onClick: () => {
+        const screenHandler = screenHandlerModule.getInstance(this.canvas);
+        void screenHandler.setScreen(CharacterCreatorScreen);
+      }
     });
 
     this._chloeAnimation = new AnimatedSprite({
@@ -95,6 +82,7 @@ export default class ChloeIntroScreen extends AbstractScreen {
    * Cleanup resources when the screen is replaced.
    */
   public destroy(): void {
+    this._nextButton.destroy();
     this._chloeAnimation.destroy();
     if (this._chloeSoundTimeoutId !== null) {
       clearTimeout(this._chloeSoundTimeoutId);
@@ -102,6 +90,5 @@ export default class ChloeIntroScreen extends AbstractScreen {
     }
     this._chloeSound.pause();
     this._chloeSound.currentTime = 0;
-    this._clickable.destroy();
   }
 }

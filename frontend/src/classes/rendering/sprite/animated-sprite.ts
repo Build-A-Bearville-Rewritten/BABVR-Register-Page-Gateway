@@ -72,6 +72,13 @@ export default class AnimatedSprite extends AbstractSprite {
   }
 
   /**
+   * Resets animation state and shows the first frame
+   */
+  resetAnimation(): void {
+    this._animator.resetToFirstFrame();
+  }
+
+  /**
    * Starts playing the animation
    */
   play(): void {
