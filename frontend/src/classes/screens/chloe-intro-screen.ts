@@ -4,7 +4,6 @@
 import { AbstractScreen } from '../../types/rendering.ts';
 
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
-import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import CharacterCreatorScreen from '../screens/character-creator-screen.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
 import Button from '../rendering/sprite/widgets/button.ts';
@@ -83,6 +82,7 @@ export default class ChloeIntroScreen extends AbstractScreen {
    * Cleanup resources when the screen is replaced.
    */
   public destroy(): void {
+    super.destroy();
     this._nextButton.destroy();
     this._chloeAnimation.destroy();
     if (this._chloeSoundTimeoutId !== null) {

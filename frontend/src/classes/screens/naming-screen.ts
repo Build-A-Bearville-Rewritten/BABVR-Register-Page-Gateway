@@ -65,6 +65,7 @@ export default class NamingScreen extends AbstractScreen {
   }
 
   public destroy(): void {
+    super.destroy();
     this._clickable.destroy();
   }
 }

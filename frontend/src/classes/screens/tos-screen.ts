@@ -30,6 +30,7 @@ export default class TOSScreen extends AbstractScreen {
   }
 
   public destroy(): void {
+    super.destroy();
     this._clickable.destroy();
   }
 }
