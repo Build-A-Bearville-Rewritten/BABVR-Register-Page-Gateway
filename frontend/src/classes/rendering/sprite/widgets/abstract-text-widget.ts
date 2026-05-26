@@ -59,11 +59,17 @@ export default class AbstractTextWidget {
     ctx.fillStyle = this.color;
     ctx.textAlign = this.textAlign;
     ctx.textBaseline = this.textBaseline;
-    ctx.fillText(
-      this.text,
-      this.position().x,
-      this.position().y
-    );
+
+    const lines = this.text.split('\n');
+    const offset = this.fontSize;
+    const startY = this.position().y-((lines.length-1)*offset/2);
+    for(let i = 0; i < lines.length; i++){
+      ctx.fillText(
+        lines[i],
+        this.position().x,
+        startY+i*offset
+      )
+    }
   }
 
   public destroy(): void {

@@ -7,6 +7,56 @@ import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import CharacterCreatorScreen from '../screens/character-creator-screen.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
 import Button from '../rendering/sprite/widgets/button.ts';
+import StaticSprite from '../rendering/sprite/static-sprite.ts';
+import AbstractTextWidget from '../rendering/sprite/widgets/abstract-text-widget.ts';
+
+class ChloeSpeechBox extends AbstractTextWidget {
+  public canvas: HTMLCanvasElement;
+  private _boxSprite!: StaticSprite;
+  private _arrowSprite!: StaticSprite;
+
+  constructor(canvas: HTMLCanvasElement){
+    super({
+      canvas,
+      text: 'Hi, I\'m ChloeRocks, and I\'ll help \nyou get started.',
+      color: '#0e2b59',
+      fontFamily: 'Futura',
+      fontSize: 12,
+      textAlign: 'left',
+      textBaseline: 'middle',
+      position: () => ({
+        x: this._boxSprite.getPosition().x+this._boxSprite.getSize().x/8,
+        y: this._boxSprite.getPosition().y+this._boxSprite.getSize().y/2
+      })
+    });
+
+    this.canvas = canvas;
+    this.createSprites();
+  }
+
+  private createSprites(): void {
+    this._boxSprite = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: './assets/Register/sprites/speechBox.png',
+      parent: this.canvas,
+      sizeScale: {x: 0.3, y: 0.2},
+      positionScale: { x: 0.5, y: 0.4 }
+    })
+
+    this._arrowSprite = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: './assets/Register/sprites/speechArrow.png',
+      parent: this._boxSprite,
+      sizeScale: 0.4,
+      positionScale: { x: -0.06, y: 0.4 },
+      rotation: 180,
+    })
+  }
+
+  public destroy(): void {
+    super.destroy();
+  }
+}
 
 /**
  * ChloeIntroScreen draws Chloe's intro art and advances to the
@@ -16,6 +66,7 @@ export default class ChloeIntroScreen extends AbstractScreen {
   private _chloeAnimation!: AnimatedSprite;
   private _chloeSound!: HTMLAudioElement;
   private _chloeSoundTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private _chloeSpeechBox!: ChloeSpeechBox;
   private _nextButton!: Button;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -31,7 +82,7 @@ export default class ChloeIntroScreen extends AbstractScreen {
     this._nextButton = new Button({
       canvas: this.canvas,
       parent: this.canvas,
-      text: "NEXT",
+      text: 'NEXT',
       sizeScale: 0.07,
       anchorPoint: { x: 0.5, y: -0.5 },
       positionScale: { x: 0.83, y: 0.85 },
@@ -41,22 +92,7 @@ export default class ChloeIntroScreen extends AbstractScreen {
       }
     });
 
-    // const box = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: './assets/Register/sprites/speechBox.png',
-    //   parent: this.canvas,
-    //   sizeScale: {x: 0.3, y: 0.2},
-    //   positionScale: { x: 0.5, y: 0.4 }
-    // })
-
-    // new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: './assets/Register/sprites/speechArrow.png',
-    //   parent: box,
-    //   sizeScale: 0.4,
-    //   positionScale: { x: -0.06, y: 0.4 },
-    //   rotation: 180,
-    // })
+    this._chloeSpeechBox = new ChloeSpeechBox(this.canvas);
 
     this._chloeAnimation = new AnimatedSprite({
       canvas: this.canvas,
@@ -84,6 +120,7 @@ export default class ChloeIntroScreen extends AbstractScreen {
   public destroy(): void {
     super.destroy();
     this._nextButton.destroy();
+    this._chloeSpeechBox.destroy();
     this._chloeAnimation.destroy();
     if (this._chloeSoundTimeoutId !== null) {
       clearTimeout(this._chloeSoundTimeoutId);
