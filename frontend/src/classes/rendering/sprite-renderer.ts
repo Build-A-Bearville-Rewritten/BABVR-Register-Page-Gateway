@@ -45,7 +45,9 @@ export default class SpriteRenderer implements ISpriteRenderer {
   private _sprites: SpriteDictionary;
   private _animatedSprites: IAnimatedSprite[];
   private _isPreloaded: boolean;
+  private _isAnimationLoopRunning: boolean;
   private _preRedrawCBs: PreRedrawCallback[];
+  private _postRedrawCBs: PreRedrawCallback[];
 
   constructor() {
     this.numSprites = 0;
@@ -53,7 +55,9 @@ export default class SpriteRenderer implements ISpriteRenderer {
     this._sprites = {};
     this._animatedSprites = [];
     this._isPreloaded = false;
+    this._isAnimationLoopRunning = false;
     this._preRedrawCBs = [];
+    this._postRedrawCBs = [];
     this.SpriteDrawer = new SpriteDrawer();
   }
 
@@ -94,6 +98,25 @@ export default class SpriteRenderer implements ISpriteRenderer {
   }
 
   /**
+   * Binds a method `callback` to be called after the sprites are redrawn
+   * @param callback - The callback function to call after redraw
+   */
+  addPostRedrawCB(callback: PreRedrawCallback): void {
+    this._postRedrawCBs.push(callback);
+  }
+
+  /**
+   * Removes a post-redraw callback
+   * @param callback - The callback function to remove
+   */
+  removePostRedrawCB(callback: PreRedrawCallback): void {
+    const index = this._postRedrawCBs.indexOf(callback);
+    if (index >= 0) {
+      this._postRedrawCBs.splice(index, 1);
+    }
+  }
+
+  /**
    * Draws the sprites on the screen based on their z-indices and creation order
    * The sprite will get drawn on its specified zIndex. The higher the zindex, the more to the top of the image screen the image will be
    * On each zindex layer, the sprites created most recently will show on top.
@@ -118,16 +141,31 @@ export default class SpriteRenderer implements ISpriteRenderer {
         }
       }
     }
+
+    for (const callback of this._postRedrawCBs) {
+      callback();
+    }
   }
 
   /**
    * Updates animations for all animated sprites
    */
   updateAnimations(): void {
-    globalThis.requestAnimationFrame(() => this.updateAnimations());
+    if (this._isAnimationLoopRunning) {
+      return;
+    }
+
+    this._isAnimationLoopRunning = true;
+    this._runAnimationLoop();
+  }
+
+  /**
+   * Advances animated sprites once per display frame.
+   */
+  private _runAnimationLoop(): void {
+    globalThis.requestAnimationFrame(() => this._runAnimationLoop());
 
     for (const animatedSprite of this._animatedSprites) {
-      // Update animation frames
       animatedSprite.update();
     }
   }

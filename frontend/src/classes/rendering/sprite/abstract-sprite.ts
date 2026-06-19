@@ -331,12 +331,13 @@ export default class AbstractSprite {
    * Updates the sprite's size based on the `_sizeScale` property
    */
   private updateSize(): void {
-    if (this._isFixedSize || !this._image) return;
+    const image = this.getImage();
+    if (this._isFixedSize || !image) return;
 
     const parentSize = this.getParentSize();
 
     if (typeof this._sizeScale === 'number') {
-      const imgAspectRatio = this._image.width / this._image.height;
+      const imgAspectRatio = image.width / image.height;
       const desiredHeight = parentSize.y * this._sizeScale;
 
       this._size.x = desiredHeight * imgAspectRatio;

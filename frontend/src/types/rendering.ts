@@ -1,5 +1,7 @@
 import { HSL, Point2D, Size2D } from './common';
 import AbstractSprite from '../classes/rendering/sprite/abstract-sprite.ts';
+import StaticSprite from '../classes/rendering/sprite/static-sprite.ts';
+import LoginHUD from '../classes/rendering/sprite/widgets/login-hud.ts';
 
 /**
  * Canvas element type
@@ -49,6 +51,10 @@ export interface ISpriteRenderer {
   updateAnimations(): void;
   // eslint-disable-next-line no-unused-vars
   addRedrawCB(cb: () => void): void;
+  // eslint-disable-next-line no-unused-vars
+  addPostRedrawCB(cb: () => void): void;
+  // eslint-disable-next-line no-unused-vars
+  removePostRedrawCB(cb: () => void): void;
 }
 
 /**
@@ -57,16 +63,32 @@ export interface ISpriteRenderer {
  */
 export abstract class AbstractScreen {
   public canvas: HTMLCanvasElement;
+  private _background!: StaticSprite;
+  private _overlay!: LoginHUD;
 
   protected constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
+    this.createBackgroundAndOverlay();
+  }
+
+  private createBackgroundAndOverlay(){
+    this._background = new StaticSprite({
+      canvas: this.canvas,
+      parent: this.canvas,
+      imagePath: 'assets/Register/sprites/BABW_Register_Background.png',
+      sizeScale: { x: 1, y: 1 }
+    });
+    this._overlay = new LoginHUD(this.canvas);
   }
 
   /**
    * Cleanup method called when the screen is being replaced
    * Must be implemented by all screen classes
    */
-  abstract destroy(): void;
+  public destroy(): void {
+    this._background.destroy();
+    this._overlay.destroy();
+  }
 }
 
 /**

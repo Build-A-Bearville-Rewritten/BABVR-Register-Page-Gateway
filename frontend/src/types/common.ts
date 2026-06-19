@@ -60,3 +60,14 @@ export interface AnimationConfig {
   frameBuffer?: number;
   isLooped?: boolean;
 }
+
+export interface TextConstructorOptions {
+  canvas?: HTMLCanvasElement;
+  text?: string;
+  color?: string;
+  fontFamily?: string;
+  fontSize?: number;
+  textAlign?: CanvasTextAlign;
+  textBaseline?: CanvasTextBaseline;
+  position?: () => Point2D;
+}

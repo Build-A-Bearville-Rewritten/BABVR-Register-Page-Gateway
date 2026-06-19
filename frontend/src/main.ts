@@ -1,3 +1,5 @@
+import './main.css';
+
 import type { IScreenHandler, ICanvasRenderer } from './types/rendering.ts';
 
 import ChloeIntro from './classes/screens/chloe-intro-screen.ts';

@@ -1,0 +1,17 @@
+@font-face {
+    font-family: 'Funhouse';
+    src: url('styles/fonts/5_FunhouseBABW_FunhouseBABW.woff') format('woff'),
+         url('styles/fonts/5_FunhouseBABW_FunhouseBABW.ttf') format('truetype');
+}  
+
+@font-face {
+    font-family: 'Arial';
+    src: url('styles/fonts/8_Arial.woff') format('woff'),
+         url('styles/fonts/8_Arial.ttf') format('truetype');
+}  
+
+@font-face {
+    font-family: 'Futura';
+    src: url('styles/fonts/2_FuturaBk_Futura_Bk.woff') format('woff'),
+         url('styles/fonts/2_FuturaBk_Futura_Bk.ttf') format('truetype');
+}  
