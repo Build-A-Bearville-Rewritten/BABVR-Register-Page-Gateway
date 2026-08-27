@@ -68,6 +68,7 @@ export default class CharacterCreatorScreen extends AbstractScreen {
 
   public destroy(): void {
     super.destroy();
+    this.characterCreator.destroy();
     this._clickable.destroy();
     this.colorWheel.destroy();
   }
