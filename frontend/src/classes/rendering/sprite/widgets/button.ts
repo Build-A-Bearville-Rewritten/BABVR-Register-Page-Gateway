@@ -1,12 +1,16 @@
-import { SpriteConstructorOptions } from '../../../../types/common.js';
+import { SpriteConstructorOptions, TextConstructorOptions } from '../../../../types/common.js';
 import AnimatedSprite, {
   type AnimatedSpriteOptions
 } from '../animated-sprite.js';
 import Clickable, { MouseCallback } from '../clickable.js';
 import AbstractTextWidget from './abstract-text-widget.ts';
 
+export interface ButtonAnimatedSpriteOptions extends AnimatedSpriteOptions {
+  display: boolean;
+}
+
 export interface ButtonOptions extends SpriteConstructorOptions {
-  text?: string;
+  textOptions?: TextConstructorOptions;
   onClick?: MouseCallback;
 }
 
@@ -15,10 +19,10 @@ class ButtonAnimatedSprite extends AnimatedSprite {
   private readonly _display: boolean; // true if it is the default (non-animation) sprite
 
   constructor(
-    options: AnimatedSpriteOptions & { display: boolean }
+    options: ButtonAnimatedSpriteOptions
   ) {
-    const { display, ...animatedOptions } = options;
-    super(animatedOptions);
+    const { display, ...animatedSpriteOptions } = options;
+    super(animatedSpriteOptions);
     this._display = display;
   }
 
@@ -39,7 +43,7 @@ class ButtonAnimatedSprite extends AnimatedSprite {
   }
 }
 
-export default class Button extends AbstractTextWidget {
+export default class Button {
   private readonly _clickable: Clickable;
   private readonly _onClick: MouseCallback;
   private _isHovered = false;
@@ -48,19 +52,10 @@ export default class Button extends AbstractTextWidget {
   private _hoverStartAnimation!: ButtonAnimatedSprite;
   private _hoverEndAnimation!: ButtonAnimatedSprite;
 
-  constructor(options: ButtonOptions) {
-    const { text, onClick, ...spriteOptions } = options;
+  private _label?: AbstractTextWidget;
 
-    super({
-      canvas: spriteOptions.canvas,
-      text: 'NEXT',
-      color: '#ffffff',
-      fontFamily: 'Funhouse',
-      fontSize: 12,
-      textAlign: 'center',
-      textBaseline: 'middle',
-      position: () => ({x: this._hoverStartAnimation.getPosition().x + this._hoverStartAnimation.getSize().x/2, y: this._hoverStartAnimation.getPosition().y + this._hoverStartAnimation.getSize().y/2})
-    })
+  constructor(options: ButtonOptions) {
+    const { textOptions, onClick, ...spriteOptions } = options;
 
     this._clickAnimation = new ButtonAnimatedSprite({
       animationFolder:
@@ -102,6 +97,13 @@ export default class Button extends AbstractTextWidget {
       }
     });
     this._hoverEndAnimation.onAnimationEnded(() => this.showIdle());
+
+    if(textOptions){
+      this._label = new AbstractTextWidget({
+        position: () => ({x: this._hoverStartAnimation.getPosition().x + this._hoverStartAnimation.getSize().x/2, y: this._hoverStartAnimation.getPosition().y + this._hoverStartAnimation.getSize().y/2}),
+        ...textOptions
+      });
+    }
 
     this.showIdle();
     this.bindEvents();
@@ -158,11 +160,10 @@ export default class Button extends AbstractTextWidget {
   }
 
   public destroy(): void {
-    super.destroy();
-
     this._clickable.destroy();
     this._clickAnimation.destroy();
     this._hoverStartAnimation.destroy();
     this._hoverEndAnimation.destroy();
+    this._label?.destroy();
   }
 }

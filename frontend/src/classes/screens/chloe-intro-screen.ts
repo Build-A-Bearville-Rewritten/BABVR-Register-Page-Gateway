@@ -82,7 +82,15 @@ export default class ChloeIntroScreen extends AbstractScreen {
     this._nextButton = new Button({
       canvas: this.canvas,
       parent: this.canvas,
-      text: 'NEXT',
+      textOptions: {
+          canvas: this.canvas,
+          text: 'NEXT',
+          color: '#ffffff',
+          fontFamily: 'Funhouse',
+          fontSize: 12,
+          textAlign: 'center',
+          textBaseline: 'middle'
+      },
       sizeScale: 0.07,
       anchorPoint: { x: 0.5, y: -0.5 },
       positionScale: { x: 0.83, y: 0.85 },
