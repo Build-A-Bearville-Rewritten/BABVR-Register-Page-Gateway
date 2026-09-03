@@ -7,14 +7,16 @@ import Clickable from '../rendering/sprite/clickable.ts';
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import NamingScreen from './naming-screen.ts';
 import { AbstractScreen } from '../../types/rendering.ts';
+import PrevButton from '../rendering/sprite/widgets/prev-button.ts';
+import NextButton from '../rendering/sprite/widgets/next-button.ts';
 
 // Color wheel portion of the page
 
 export default class CharacterCreatorScreen extends AbstractScreen {
   private _clickable: Clickable;
 
-  private _nextButton!: StaticSprite;
-  private _backButton!: StaticSprite;
+  private _nextButton!: NextButton;
+  private _backButton!: PrevButton;
 
   private characterCreator!: CharacterCreator;
   private colorWheel!: ColorWheel;
@@ -25,40 +27,23 @@ export default class CharacterCreatorScreen extends AbstractScreen {
     this._clickable = new Clickable();
 
     this.createSprites();
-    this.bindEvents();
-  }
-
-  private bindEvents(): void {
-    this._clickable.onClick(this._backButton, () => {
-      const screenHandler = screenHandlerModule.getInstance(this.canvas);
-
-      void screenHandler.setScreen(ChloeIntroScreen);
-    });
-
-    this._clickable.onClick(this._nextButton, () => {
-      const screenHandler = screenHandlerModule.getInstance(this.canvas);
-
-      void screenHandler.setScreen(NamingScreen);
-    });
   }
 
   private createSprites(): void {
-    this._nextButton = new StaticSprite({
+    this._nextButton = new NextButton({
       canvas: this.canvas,
-      imagePath: './assets/Register/sprites/emptyButton.png',
-      sizeScale: 0.05,
-      parent: this.canvas,
-      anchorPoint: { x: 0.5, y: -1 },
-      positionScale: { x: 0.83, y: 0.85 }
+      onClick: () => {
+        const screenHandler = screenHandlerModule.getInstance(this.canvas);
+        void screenHandler.setScreen(NamingScreen);
+      }
     });
 
-    this._backButton = new StaticSprite({
+    this._backButton = new PrevButton({
       canvas: this.canvas,
-      imagePath: './assets/Register/sprites/emptyButton.png',
-      sizeScale: 0.05,
-      parent: this.canvas,
-      anchorPoint: { x: 5.5, y: -1 },
-      positionScale: { x: 0.83, y: 0.85 }
+      onClick: () => {
+        const screenHandler = screenHandlerModule.getInstance(this.canvas);
+        void screenHandler.setScreen(ChloeIntroScreen);
+      }
     });
 
     this.characterCreator = new CharacterCreator(this.canvas);
@@ -71,5 +56,7 @@ export default class CharacterCreatorScreen extends AbstractScreen {
     this.characterCreator.destroy();
     this._clickable.destroy();
     this.colorWheel.destroy();
+    this._nextButton.destroy();
+    this._backButton.destroy();
   }
 }
