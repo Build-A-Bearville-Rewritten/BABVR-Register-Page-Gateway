@@ -1,4 +1,3 @@
-import type { Point2D } from '../../../types/common.ts';
 import type { IDrawableSprite } from '../../../types/rendering.ts';
 
 /**
@@ -24,9 +23,10 @@ export default class SpriteDrawer {
     if (!hsl) return;
 
     innerCtx.globalCompositeOperation = 'source-over';
+    innerCtx.clearRect(0, 0, spriteSize.x, spriteSize.y);
     innerCtx.drawImage(image, 0, 0, spriteSize.x, spriteSize.y);
 
-    // Add in hue, sat, and lightness
+    // Add in hue, saturation, and lightness
     innerCtx.globalCompositeOperation = 'multiply';
     innerCtx.fillStyle =
       'hsl(' +
@@ -44,71 +44,20 @@ export default class SpriteDrawer {
     // Mask image onto canvas
     innerCtx.globalCompositeOperation = 'destination-in';
     innerCtx.drawImage(image, 0, 0, spriteSize.x, spriteSize.y);
+
+    innerCtx.globalCompositeOperation = 'source-over';
   }
 
   /**
-   * Rotates the image based on its rotation property
-   * @param sprite - The sprite to rotate
-   * @returns The offset position for drawing, or null if rotation cannot be applied
-   */
-  private rotateSprite(sprite: IDrawableSprite): Point2D | null {
-    if (!sprite.canvas) return null;
-
-    const spritePosition = sprite.getPosition();
-    const spriteSize = sprite.getSize();
-    const rotation = sprite.getRotation();
-
-    if (rotation === undefined) return null;
-
-    const ctx = sprite.canvas.getContext('2d');
-    if (!ctx) return null;
-
-    const centerx = spritePosition.x + spriteSize.x / 2;
-    const centery = spritePosition.y + spriteSize.y / 2;
-
-    ctx.translate(centerx, centery);
-    ctx.rotate((rotation * Math.PI) / 180);
-
-    return { x: -spriteSize.x / 2, y: -spriteSize.y / 2 };
-  }
-
-  /**
-   * Flips the image horizontally if the flip: "horizontal" property is set
-   * @param sprite - The sprite to flip
-   * @returns The offset position for drawing, or null if flip cannot be applied
-   */
-  private flipHorizontally(sprite: IDrawableSprite): Point2D | null {
-    if (!sprite.canvas) return null;
-
-    const spriteSize = sprite.getSize();
-    const spritePosition = sprite.getPosition();
-    const ctx = sprite.canvas.getContext('2d');
-
-    if (!ctx) return null;
-
-    const centerX = spritePosition.x + spriteSize.x / 2;
-    const centerY = spritePosition.y + spriteSize.y / 2;
-
-    ctx.translate(centerX, centerY);
-    ctx.scale(-1, 1);
-
-    return { x: -spriteSize.x / 2, y: -spriteSize.y / 2 };
-  }
-
-  /**
-   * Draws the colored image onto the canvas
-   * If the size and position haven't changed since the last frame, uses a cached version of the image
-   * Otherwise, draws a new colored image
+   * Draws the colored image onto the canvas.
+   * The caller is responsible for applying any canvas transformations.
+   *
    * @param sprite - The sprite to recolor and draw
    */
   private recolorSprite(sprite: IDrawableSprite): void {
     if (!sprite.canvas) return;
 
     let imgCanvas = sprite.getImgCanvas();
-    let innerCtx: CanvasRenderingContext2D | null = null;
-
-    const hasSizeChanged = sprite.propertiesChanged.size === true;
-    const hasHSLChanged = sprite.propertiesChanged.hsl === true;
     const outerCtx = sprite.canvas.getContext('2d');
     const spriteSize = sprite.getSize();
 
@@ -119,11 +68,14 @@ export default class SpriteDrawer {
       sprite.setImgCanvas(imgCanvas);
     }
 
-    innerCtx = imgCanvas.getContext('2d');
+    const innerCtx = imgCanvas.getContext('2d');
     if (!innerCtx) return;
 
+    const hasSizeChanged = sprite.propertiesChanged.size === true;
+    const hasHSLChanged = sprite.propertiesChanged.hsl === true;
+
     if (hasSizeChanged) {
-      if (spriteSize.x === 0) return;
+      if (spriteSize.x === 0 || spriteSize.y === 0) return;
 
       imgCanvas.width = Math.max(spriteSize.x, 1);
       imgCanvas.height = Math.max(spriteSize.y, 1);
@@ -133,16 +85,21 @@ export default class SpriteDrawer {
       this.reColorHSL(sprite, innerCtx);
     }
 
+    // Draw relative to the sprite center. drawSprite() has already
+    // translated the context to the center of the sprite.
     outerCtx.drawImage(
       imgCanvas,
-      sprite.getPosition().x,
-      sprite.getPosition().y
+      -spriteSize.x / 2,
+      -spriteSize.y / 2,
+      spriteSize.x,
+      spriteSize.y
     );
-    innerCtx.globalCompositeOperation = 'source-over';
   }
 
   /**
-   * Draws the sprite image onto the canvas
+   * Draws the sprite image onto the canvas.
+   * The caller is responsible for applying any canvas transformations.
+   *
    * @param sprite - The sprite to draw
    */
   private drawImage(sprite: IDrawableSprite): void {
@@ -151,64 +108,80 @@ export default class SpriteDrawer {
     const ctx = sprite.canvas.getContext('2d');
     if (!ctx) return;
 
-    const spritePosition = sprite.getPosition();
     const spriteSize = sprite.getSize();
     const image = sprite.getImage();
+
     if (!image) return;
 
     const croppedX = 0;
     const croppedWidth = image.width;
 
+    // drawImage() is now relative to the sprite center.
+    // drawSprite() translates the context to that center first.
     ctx.drawImage(
       image,
       croppedX,
       0,
       croppedWidth,
       image.height,
-      spritePosition.x,
-      spritePosition.y,
+      -spriteSize.x / 2,
+      -spriteSize.y / 2,
       spriteSize.x,
       spriteSize.y
     );
   }
 
   /**
-   * Draws the sprite onto the screen
+   * Draws the sprite onto the screen.
+   *
+   * Rotation and flipping are applied around the center of the sprite,
+   * allowing them to be combined correctly.
+   *
    * @param sprite - The sprite to draw
    */
   drawSprite(sprite: IDrawableSprite): void {
     if (!sprite.canvas) return;
 
-    let offset: Point2D | null = null;
-
-    const spriteSizePixels = sprite.getSize();
     const ctx = sprite.canvas.getContext('2d');
-
     if (!ctx) return;
 
-    if (sprite.getFlip() === 'horizontal') {
-      offset = this.flipHorizontally(sprite);
-    } else if (sprite.getRotation()) {
-      offset = this.rotateSprite(sprite);
+    const spritePosition = sprite.getPosition();
+    const spriteSize = sprite.getSize();
+
+    const centerX = spritePosition.x + spriteSize.x / 2;
+    const centerY = spritePosition.y + spriteSize.y / 2;
+
+    try {
+      // Move the origin to the center of the sprite.
+      ctx.translate(centerX, centerY);
+
+      // Apply rotation around the sprite center.
+      const rotation = sprite.getRotation();
+
+      if (rotation) {
+        ctx.rotate((rotation * Math.PI) / 180);
+      }
+
+      // Apply the flip around the same center.
+      const flip = sprite.getFlip();
+
+      if (flip === 'horizontal') {
+        ctx.scale(-1, 1);
+      } else if (flip === 'vertical') {
+        ctx.scale(1, -1);
+      }
+
+      // Both normal and HSL sprites are now drawn using the same
+      // local coordinate system.
+      if (sprite.getHSL()) {
+        this.recolorSprite(sprite);
+      } else {
+        this.drawImage(sprite);
+      }
+    } finally {
+      // Always restore the canvas transform, including when an
+      // image/context operation exits early or throws.
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
-
-    if (sprite.getHSL()) this.recolorSprite(sprite);
-    else {
-      const image = sprite.getImage();
-
-      if (!image) return;
-
-      if (offset) {
-        ctx.drawImage(
-          image,
-          offset.x,
-          offset.y,
-          spriteSizePixels.x,
-          spriteSizePixels.y
-        );
-      } else this.drawImage(sprite);
-    }
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 }

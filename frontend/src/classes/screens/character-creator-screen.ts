@@ -1,4 +1,3 @@
-import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import ChloeIntroScreen from './chloe-intro-screen.ts';
 import Character from '../screen-objects/character.ts';
 import ColorWheel from '../screen-objects/color-wheel.ts';

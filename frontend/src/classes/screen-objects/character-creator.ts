@@ -1,15 +1,17 @@
 // Character creator UI component - responsible for drawing the selection frame
 // and related controls on the registration screen
 
+import { MouseCallback } from '../rendering/sprite/clickable.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
+import Arrow from '../rendering/sprite/widgets/arrow.ts';
 import GenderBar from './gender-bar.ts';
 
 /**
  * Convenience type describing the arrow sprites that appear in pairs
  */
 type ArrowSprites = {
-  left: StaticSprite;
-  right: StaticSprite;
+  left: Arrow;
+  right: Arrow;
 };
 
 /**
@@ -50,28 +52,29 @@ export default class CharacterCreator {
   private createArrows(
     heightScale: number,
     spaceBetweenScale: number,
-    parent: StaticSprite
+    parent: StaticSprite,
+    onLeft: MouseCallback,
+    onRight: MouseCallback
   ): ArrowSprites {
-    const leftArrow = new StaticSprite({
+    const leftArrow = new Arrow({
       canvas: this.canvas,
-      imagePath: 'assets/Register/color-wheel/sprites/upDownArrowColored.png',
       parent,
       sizeScale: 0.18,
       anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.13, y: heightScale }
+      positionScale: { x: 0.13, y: heightScale },
+      isAnimated: true,
+      onClick: onLeft
     });
 
-    const rightArrow = new StaticSprite({
+    const rightArrow = new Arrow({
       canvas: this.canvas,
-      imagePath: leftArrow.getImagePath(),
       parent: parent,
-      sizeScale: leftArrow.getSizeScale(),
-      anchorPoint: leftArrow.getAnchorPoint(),
-      positionScale: {
-        x: leftArrow.getPositionScale().x + spaceBetweenScale,
-        y: heightScale
-      },
-      flip: 'horizontal'
+      sizeScale: 0.18,
+      anchorPoint: { x: 0, y: 0.5 },
+      positionScale: { x: 0.13 + spaceBetweenScale, y: heightScale },
+      flip: 'horizontal',
+      isAnimated: true,
+      onClick: onRight
     });
 
     return { left: leftArrow, right: rightArrow };
@@ -194,10 +197,51 @@ export default class CharacterCreator {
       positionScale: { x: 0.83, y: 0.475 }
     });
 
-    this.hairArrows = this.createArrows(0.35, 0.4, this.headContainer);
-    this.headArrows = this.createArrows(0.85, 0.4, this.headContainer);
-    this.eyeArrows = this.createArrows(0.3, 0.5, this.skinContainer);
-    this.skinArrows = this.createArrows(0.83, 0.5, this.skinContainer);
+    // TODO: update arrow onClicks
+    this.hairArrows = this.createArrows(
+      0.35,
+      0.4,
+      this.headContainer,
+      () => {
+        console.log('hair left');
+      },
+      () => {
+        console.log('hair right');
+      }
+    );
+    this.headArrows = this.createArrows(
+      0.85,
+      0.4,
+      this.headContainer,
+      () => {
+        console.log('head left');
+      },
+      () => {
+        console.log('head right');
+      }
+    );
+    this.eyeArrows = this.createArrows(
+      0.3,
+      0.48,
+      this.skinContainer,
+      () => {
+        console.log('eye left');
+      },
+      () => {
+        console.log('eye right');
+      }
+    );
+    this.skinArrows = this.createArrows(
+      0.83,
+      0.48,
+      this.skinContainer,
+      () => {
+        console.log('skin left');
+      },
+      () => {
+        console.log('skin right');
+      }
+    );
   }
 
   /**

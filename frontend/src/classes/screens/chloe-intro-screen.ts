@@ -6,7 +6,6 @@ import { AbstractScreen } from '../../types/rendering.ts';
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import CharacterCreatorScreen from '../screens/character-creator-screen.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
-import Button from '../rendering/sprite/widgets/button.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import AbstractTextWidget from '../rendering/sprite/widgets/abstract-text-widget.ts';
 import NextButton from '../rendering/sprite/widgets/next-button.ts';
