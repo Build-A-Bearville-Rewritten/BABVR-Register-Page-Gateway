@@ -8,6 +8,8 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
   public middle!: StaticSprite;
   public bottom!: StaticSprite;
   public header!: StaticSprite;
+  public leftPaw!: StaticSprite;
+  public rightPaw!: StaticSprite;
 
   public headerText: string;
   public headerTextWidget!: AbstractTextWidget;
@@ -69,6 +71,27 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
       positionScale: { x: 0.225, y: 0.32 }
     });
 
+    this.leftPaw = new StaticSprite({
+      canvas: this.canvas,
+      parent: this.header,
+      imagePath: 'assets/Register/sprites/bluePaw3.png',
+      sizeScale: 0.4,
+      positionScale: { x: 0.08, y: 0.3 },
+      flip: 'horizontal',
+      rotation: 30,
+      hsl: { h: 216, s: 80, l: 80 }
+    });
+
+    this.rightPaw = new StaticSprite({
+      canvas: this.canvas,
+      parent: this.header,
+      imagePath: 'assets/Register/sprites/bluePaw3.png',
+      sizeScale: 0.4,
+      positionScale: { x: 0.85, y: 0.3 },
+      rotation: -30,
+      hsl: { h: 216, s: 80, l: 80 }
+    });
+
     this.headerTextWidget = new AbstractTextWidget({
       canvas: this.canvas,
       text: this.headerText,
@@ -78,7 +101,7 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
       textAlign: 'center',
       textBaseline: 'middle',
       position: () => ({
-        x: 160,
+        x: 161,
         y: 157
       })
     });

@@ -189,6 +189,40 @@ export default class SpriteRenderer implements ISpriteRenderer {
     this._animatedSprites = [];
   }
 
+  /**
+   * Removes a specific sprite from the renderer
+   * @param spriteId - The ID of the sprite to remove
+   * @returns true if the sprite was found and removed, false otherwise
+   */
+  removeSprite(spriteId: number): boolean {
+    for (const zIndexStr in this._sprites) {
+      const zIndex = Number(zIndexStr);
+      const spritesAtZIndex = this._sprites[zIndex];
+
+      for (const spriteKey in spritesAtZIndex) {
+        const sprite = spritesAtZIndex[spriteKey];
+
+        if (sprite?.id === spriteId) {
+          delete spritesAtZIndex[spriteKey];
+
+          // Remove from animated sprites if applicable
+          this._animatedSprites = this._animatedSprites.filter(
+            (animatedSprite) => animatedSprite.id !== spriteId
+          );
+
+          // Remove empty z-index layer
+          if (Object.keys(spritesAtZIndex).length === 0) {
+            delete this._sprites[zIndex];
+          }
+
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   // -------------------------------------------
   // PRIVATE METHODS
   // -------------------------------------------

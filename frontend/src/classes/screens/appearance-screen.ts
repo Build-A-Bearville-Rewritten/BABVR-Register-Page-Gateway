@@ -42,7 +42,9 @@ export default class AppearanceScreen extends AbstractScreen {
   public characterFrame!: StaticSprite;
   public genderBar!: GenderBar;
   public genderButton!: StaticSprite;
+  public eyeColorSquareBorder!: StaticSprite;
   public eyeColorSquare!: StaticSprite;
+  public skinColorSquareBorder!: StaticSprite;
   public skinColorSquare!: StaticSprite;
   public characterContainer!: StaticSprite;
 
@@ -211,6 +213,15 @@ export default class AppearanceScreen extends AbstractScreen {
       positionScale: { x: 0.385, y: 0.3 }
     });
 
+    this.eyeColorSquareBorder = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/sprites/colorSquareBorder.png',
+      parent: this.skinContainer,
+      sizeScale: this.eyeColorSquare.getSizeScale(),
+      anchorPoint: this.eyeColorSquare.getAnchorPoint(),
+      positionScale: this.eyeColorSquare.getPositionScale()
+    });
+
     this.skinColorSquare = new StaticSprite({
       canvas: this.canvas,
       imagePath: this.eyeColorSquare.getImagePath(),
@@ -218,6 +229,15 @@ export default class AppearanceScreen extends AbstractScreen {
       sizeScale: this.eyeColorSquare.getSizeScale(),
       anchorPoint: { x: 0, y: 0.5 },
       positionScale: { x: 0.385, y: 0.83 }
+    });
+
+    this.skinColorSquareBorder = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/sprites/colorSquareBorder.png',
+      parent: this.skinContainer,
+      sizeScale: this.skinColorSquare.getSizeScale(),
+      anchorPoint: this.skinColorSquare.getAnchorPoint(),
+      positionScale: this.skinColorSquare.getPositionScale()
     });
 
     this.characterContainer = new StaticSprite({

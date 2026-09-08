@@ -47,6 +47,7 @@ export interface ISpriteRenderer {
   // eslint-disable-next-line no-unused-vars
   addSpriteToScreen(sprite: IRenderableSprite): Promise<void>;
   removeAllSprites(): void;
+  removeSprite(spriteId: number): void;
   drawSprites(): void;
   updateAnimations(): void;
   // eslint-disable-next-line no-unused-vars
