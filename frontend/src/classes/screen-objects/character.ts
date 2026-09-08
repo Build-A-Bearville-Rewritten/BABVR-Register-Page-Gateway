@@ -4,6 +4,7 @@ import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import spriteRendererModule from '../../modules/sprite-renderer-module.ts';
 import svgHandler from '../../modules/svg-handler.ts';
 import type { SpriteParent } from '../../types/rendering.ts';
+import CharacterState from '../../modules/character-state.ts';
 
 /**
  * Dictionary type for storing SVG URLs by key
@@ -16,6 +17,8 @@ type SVGDictionary = {
  * Character class for rendering character sprites with SVG handling
  */
 export default class Character {
+  private state: CharacterState;
+
   public canvas: HTMLCanvasElement;
   public parent: SpriteParent;
   // Head sprites
@@ -44,6 +47,8 @@ export default class Character {
   constructor(canvas: HTMLCanvasElement, parent: SpriteParent) {
     this.canvas = canvas;
     this.parent = parent;
+
+    this.state = CharacterState.getInstance();
 
     // splits the default character _svgs, then draws the sprites with those _svgs
     // this.splitSvgs()

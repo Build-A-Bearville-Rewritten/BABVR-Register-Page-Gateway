@@ -6,6 +6,7 @@ import PrevButton from '../rendering/sprite/widgets/prev-button.ts';
 import ColorWheel from '../screen-objects/color-wheel.ts';
 import NamingScreen from './naming-screen.ts';
 import AppearanceScreen from './appearance-screen.ts';
+import CharacterDesignInstructions from '../rendering/sprite/widgets/character-design-instructions.ts';
 
 /**
  * CharacterCreator renders the UI container, color squares, and selection arrows
@@ -17,6 +18,8 @@ export default class ClothingScreen extends AbstractScreen {
   private _nextButton!: NextButton;
   private _backButton!: PrevButton;
   private colorWheel!: ColorWheel;
+
+  public instructions!: CharacterDesignInstructions;
 
   public step1Sprite!: StaticSprite;
   public step2Sprite!: StaticSprite;
@@ -33,42 +36,12 @@ export default class ClothingScreen extends AbstractScreen {
    * Create all sprites that compose the character creator UI component.
    */
   private createSprites(): void {
-
-    new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/instructionsTop.png',
-      parent: this.canvas,
-      sizeScale: 0.144,
-      anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.225, y: 0.29 }
-    });
-
-    new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/instructionsMiddle.png',
-      parent: this.canvas,
-      sizeScale: {x: 0.348, y: 0.3},
-      anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.225, y: 0.5 }
-    });
-
-    new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/instructionsTopBottom.png',
-      parent: this.canvas,
-      sizeScale: 0.144,
-      anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.225, y: 0.63 }
-    });
-
-    new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/instructionsHeader.png',
-      parent: this.canvas,
-      sizeScale: { x: 0.21, y: 0.04 },
-      anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.225, y: 0.32 }
-    });
+    this.instructions = new CharacterDesignInstructions(
+      this.canvas,
+      'Click the arrows to see the cool looks.\n\nUse the color wheel to change your\nclothing color!\n\nWhen you\'re done, click "Next".',
+      'Clothing',
+      10
+    );
 
     this.step1Sprite = new StaticSprite({
       canvas: this.canvas,
@@ -127,6 +100,7 @@ export default class ClothingScreen extends AbstractScreen {
 
   public destroy(): void {
     super.destroy();
+    this.instructions.destroy();
     this.step1Sprite.destroy();
     this.step2Sprite.destroy();
     this.step3Sprite.destroy();
