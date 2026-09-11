@@ -14,6 +14,10 @@ import ChloeIntroScreen from './chloe-intro-screen.ts';
 import Character from '../screen-objects/character.ts';
 import ClothingScreen from './clothing-screen.ts';
 import CharacterDesignInstructions from '../rendering/sprite/widgets/character-design-instructions.ts';
+import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
+import { EyeColor, EyeColorId, SkinColor, SkinColorId } from '../../types/character.ts';
+import { Observer } from '../../types/observer.ts';
+import CharacterState from '../../modules/character-state.ts';
 
 /**
  * Convenience type describing the arrow sprites that appear in pairs
@@ -27,8 +31,10 @@ type ArrowSprites = {
  * CharacterCreator renders the UI container, color squares, and selection arrows
  * that surround the character preview on the registration screen.
  */
-export default class AppearanceScreen extends AbstractScreen {
+export default class AppearanceScreen extends AbstractScreen implements Observer {
   public canvas: HTMLCanvasElement;
+  public character!: Character;
+  public characterState: CharacterState;
 
   private _nextButton!: NextButton;
   private _backButton!: PrevButton;
@@ -43,9 +49,9 @@ export default class AppearanceScreen extends AbstractScreen {
   public genderBar!: GenderBar;
   public genderButton!: StaticSprite;
   public eyeColorSquareBorder!: StaticSprite;
-  public eyeColorSquare!: StaticSprite;
+  public eyeColorSquare?: StaticSprite;
   public skinColorSquareBorder!: StaticSprite;
-  public skinColorSquare!: StaticSprite;
+  public skinColorSquare?: StaticSprite;
   public characterContainer!: StaticSprite;
 
   public headContainer!: StaticSprite;
@@ -60,10 +66,24 @@ export default class AppearanceScreen extends AbstractScreen {
   public eyeArrows!: ArrowSprites;
   public skinArrows!: ArrowSprites;
 
+  private _chloeAnimation!: AnimatedSprite;
+
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
     this.canvas = canvas;
+    this.characterState = CharacterState.getInstance();
+    this.characterState.addObserver(this);
     this.createSprites();
+  }
+
+  onSubjectUpdate(): void {
+    if(this.eyeColorSquare?.getHSL() != EyeColor[this.characterState.eyeColorId].hsl){
+      this.eyeColorSquare?.setHSL(EyeColor[this.characterState.eyeColorId].hsl);
+    }
+
+    if(this.skinColorSquare?.getHSL() != SkinColor[this.characterState.skinColorId].hsl){
+      this.skinColorSquare?.setHSL(SkinColor[this.characterState.skinColorId].hsl);
+    }
   }
 
   /**
@@ -204,42 +224,6 @@ export default class AppearanceScreen extends AbstractScreen {
       parent: this.characterFrame
     });
 
-    this.eyeColorSquare = new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/colorSquare.png',
-      parent: this.skinContainer,
-      sizeScale: 0.18,
-      anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.385, y: 0.3 }
-    });
-
-    this.eyeColorSquareBorder = new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/colorSquareBorder.png',
-      parent: this.skinContainer,
-      sizeScale: this.eyeColorSquare.getSizeScale(),
-      anchorPoint: this.eyeColorSquare.getAnchorPoint(),
-      positionScale: this.eyeColorSquare.getPositionScale()
-    });
-
-    this.skinColorSquare = new StaticSprite({
-      canvas: this.canvas,
-      imagePath: this.eyeColorSquare.getImagePath(),
-      parent: this.skinContainer,
-      sizeScale: this.eyeColorSquare.getSizeScale(),
-      anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.385, y: 0.83 }
-    });
-
-    this.skinColorSquareBorder = new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Register/sprites/colorSquareBorder.png',
-      parent: this.skinContainer,
-      sizeScale: this.skinColorSquare.getSizeScale(),
-      anchorPoint: this.skinColorSquare.getAnchorPoint(),
-      positionScale: this.skinColorSquare.getPositionScale()
-    });
-
     this.characterContainer = new StaticSprite({
       canvas: this.canvas,
       imagePath: 'assets/Character/container.png',
@@ -247,6 +231,47 @@ export default class AppearanceScreen extends AbstractScreen {
       sizeScale: 0.65,
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.68, y: 0.475 }
+    });
+
+    this.character = new Character(this.canvas, this.characterContainer);
+
+    this.eyeColorSquareBorder = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/sprites/colorSquareBorder.png',
+      parent: this.skinContainer,
+      sizeScale: 0.18,
+      anchorPoint: { x: 0, y: 0.5 },
+      positionScale: { x: 0.385, y: 0.3 },
+    });
+
+    this.eyeColorSquare = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/sprites/colorSquare.png',
+      parent: this.skinContainer,
+      sizeScale: 0.16,
+      anchorPoint: { x: 0, y: 0.5 },
+      positionScale: { x: 0.4, y: 0.3 },
+      hsl: EyeColor[this.character.state.eyeColorId].hsl
+    });
+
+    this.skinColorSquareBorder = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/sprites/colorSquareBorder.png',
+      parent: this.skinContainer,
+      sizeScale: 0.18,
+      anchorPoint: { x: 0, y: 0.5 },
+      positionScale: { x: 0.385, y: 0.83 },
+      hsl: SkinColor[this.character.state.skinColorId].hsl
+    });
+
+    this.skinColorSquare = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/sprites/colorSquare.png',
+      parent: this.skinContainer,
+      sizeScale: 0.16,
+      anchorPoint: { x: 0, y: 0.5 },
+      positionScale: { x: 0.4, y: 0.83 },
+      hsl: SkinColor[1].hsl
     });
 
     // TODO: update arrow onClicks
@@ -277,10 +302,10 @@ export default class AppearanceScreen extends AbstractScreen {
       0.48,
       this.skinContainer,
       () => {
-        console.log('eye left');
+        this.character.state.eyeColorId = this.character.state.eyeColorId === 1 ? 8 : this.character.state.eyeColorId - 1 as EyeColorId;
       },
       () => {
-        console.log('eye right');
+        this.character.state.eyeColorId = this.character.state.eyeColorId === 8 ? 1 : this.character.state.eyeColorId + 1 as EyeColorId;
       }
     );
     this.skinArrows = this.createArrows(
@@ -288,14 +313,13 @@ export default class AppearanceScreen extends AbstractScreen {
       0.48,
       this.skinContainer,
       () => {
-        console.log('skin left');
+        this.character.state.skinColorId = this.character.state.skinColorId === 1 ? 6 : this.character.state.skinColorId - 1 as SkinColorId;
       },
       () => {
-        console.log('skin right');
+        this.character.state.skinColorId = this.character.state.skinColorId === 6 ? 1 : this.character.state.skinColorId + 1 as SkinColorId;
       }
     );
 
-    new Character(this.canvas, this.characterContainer);
     this.colorWheel = new ColorWheel(this.canvas);
 
     this._nextButton = new NextButton({
@@ -312,11 +336,26 @@ export default class AppearanceScreen extends AbstractScreen {
         const screenHandler = screenHandlerModule.getInstance(this.canvas);
         void screenHandler.setScreen(ChloeIntroScreen);
       }
-    })
+    });
+
+    // TODO: need new asset
+    // this._chloeAnimation = new AnimatedSprite({
+    //   canvas: this.canvas,
+    //   parent: this.canvas,
+    //   sizeScale: { x: 1, y: 1 },
+    //   numFrames: 553, // the number of frames in the animation
+    //   frameBuffer: 3, // the amount of times the canvas should draw before loading the next frames
+    //   animationFolder: 'assets/Register/chloe/talk8/frames/' // folder containing the animations
+    // });
+
+    // this._chloeAnimation.play();
   }
 
   public destroy(): void {
     super.destroy();
+    this.characterState.removeObserver(this);
+    // this._chloeAnimation.destroy();
+
     this.instructions.destroy();
     this.step1Sprite.destroy();
     this.step2Sprite.destroy();

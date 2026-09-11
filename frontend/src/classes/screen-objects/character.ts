@@ -5,6 +5,7 @@ import spriteRendererModule from '../../modules/sprite-renderer-module.ts';
 import svgHandler from '../../modules/svg-handler.ts';
 import type { SpriteParent } from '../../types/rendering.ts';
 import CharacterState from '../../modules/character-state.ts';
+import { Observer } from '../../types/observer.ts';
 
 /**
  * Dictionary type for storing SVG URLs by key
@@ -16,8 +17,8 @@ type SVGDictionary = {
 /**
  * Character class for rendering character sprites with SVG handling
  */
-export default class Character {
-  private state: CharacterState;
+export default class Character implements Observer {
+  public state: CharacterState;
 
   public canvas: HTMLCanvasElement;
   public parent: SpriteParent;
@@ -49,6 +50,7 @@ export default class Character {
     this.parent = parent;
 
     this.state = CharacterState.getInstance();
+    this.state.addObserver(this);
 
     // splits the default character _svgs, then draws the sprites with those _svgs
     // this.splitSvgs()
@@ -62,6 +64,10 @@ export default class Character {
         .getSpriteRenderer()
         .addRedrawCB(this.onPreRedraw.bind(this));
     });
+  }
+
+  onSubjectUpdate(): void {
+    // TODO: this gets called every time the character state updates
   }
 
   /**
@@ -286,5 +292,9 @@ export default class Character {
     //   positionScale: { x: 0.5, y: 0.7 },
     //   hsl: this.leftUpLeg.getHSL()
     // });
+  }
+
+  public destroy(): void {
+    this.state.removeObserver(this);
   }
 }

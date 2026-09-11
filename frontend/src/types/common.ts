@@ -34,6 +34,19 @@ export type HSL = {
   l?: number;
 };
 
+export type RGB = {
+  r: number;
+  g: number;
+  b: number;
+};
+
+export type Color = {
+  id?: number;
+  hsl?: HSL;
+  hex?: string;
+  rgb?: RGB;
+};
+
 /**
  * Options for sprite constructors
  */
