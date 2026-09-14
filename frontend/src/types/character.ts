@@ -207,3 +207,37 @@ export const SkinColor = {
 export type SkinColorId = keyof typeof SkinColor;
 
 export type Gender = 'girl' | 'boy';
+
+export const basePath = 'assets/Character';
+export const paths = {
+  'hair': {
+    'gender': {
+      'boy': [
+        'hair1',
+        'hair2',
+        'hair3',
+        'hair5',
+        'hair6'
+      ],
+      'girl': [
+        'hair7',
+        'hair8',
+        'hair10',
+        'hair12',
+        'hair13'
+      ]
+    }
+  },
+  'head': {
+    'gender': {
+      'boy': [
+        'head1',
+        'head4'
+      ],
+      'girl': [
+        'head0',
+        'head18'
+      ]
+    }
+  }
+}

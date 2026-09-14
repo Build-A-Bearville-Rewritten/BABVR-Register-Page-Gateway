@@ -15,7 +15,7 @@ import Character from '../screen-objects/character.ts';
 import ClothingScreen from './clothing-screen.ts';
 import CharacterDesignInstructions from '../rendering/sprite/widgets/character-design-instructions.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
-import { EyeColor, EyeColorId, SkinColor, SkinColorId } from '../../types/character.ts';
+import { basePath, EyeColor, EyeColorId, paths, SkinColor, SkinColorId } from '../../types/character.ts';
 import { Observer } from '../../types/observer.ts';
 import CharacterState from '../../modules/character-state.ts';
 
@@ -52,7 +52,6 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
   public eyeColorSquare?: StaticSprite;
   public skinColorSquareBorder!: StaticSprite;
   public skinColorSquare?: StaticSprite;
-  public characterContainer!: StaticSprite;
 
   public headContainer!: StaticSprite;
   public skinContainer!: StaticSprite;
@@ -224,16 +223,7 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       parent: this.characterFrame
     });
 
-    this.characterContainer = new StaticSprite({
-      canvas: this.canvas,
-      imagePath: 'assets/Character/container.png',
-      parent: this.characterFrame,
-      sizeScale: 0.65,
-      anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.68, y: 0.475 }
-    });
-
-    this.character = new Character(this.canvas, this.characterContainer);
+    this.character = new Character(this.canvas, this.characterFrame);
 
     this.eyeColorSquareBorder = new StaticSprite({
       canvas: this.canvas,
@@ -280,10 +270,10 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       0.4,
       this.headContainer,
       () => {
-        console.log('hair left');
+        this.characterState.hairPath = this.characterState.getNewPath('hair', this.characterState.hairPath, 'left');
       },
       () => {
-        console.log('hair right');
+        this.characterState.hairPath = this.characterState.getNewPath('hair', this.characterState.hairPath, 'right');
       }
     );
     this.headArrows = this.createArrows(
@@ -291,10 +281,10 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       0.4,
       this.headContainer,
       () => {
-        console.log('head left');
+        this.characterState.headPath = this.characterState.getNewPath('head', this.characterState.headPath, 'left');
       },
       () => {
-        console.log('head right');
+        this.characterState.headPath = this.characterState.getNewPath('head', this.characterState.headPath, 'right');
       }
     );
     this.eyeArrows = this.createArrows(

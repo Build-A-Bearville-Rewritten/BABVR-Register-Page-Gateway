@@ -104,31 +104,27 @@ export default class Character implements Observer {
    * @returns Promise that resolves when head sprites are created
    */
   async createHeadSprites(): Promise<void> {
-    const characterFolder = 'assets/Character';
-
-    // Split SVG layers - returns array of blob URLs
-    const headSVGs: string[] = await svgHandler.splitLayers(
-      characterFolder + '/head/testHead.svg'
-    );
+    const headNoColorPath = `${this.state.headPath}/8.svg`;
+    const headColorPath =  `${this.state.headPath}/10.svg`;
 
     this.headNoColor = new StaticSprite({
       canvas: this.canvas,
-      imagePath: headSVGs[0],
+      imagePath: headNoColorPath,
       parent: this.parent,
-      sizeScale: 0.22,
+      sizeScale: 0.18,
       anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0.05 },
+      positionScale: { x: 0.7, y: 0.17 },
       hsl: { h: 30, s: 100, l: 93 },
       zIndex: 15
     });
 
     this.headColored = new StaticSprite({
       canvas: this.canvas,
-      imagePath: headSVGs[1],
+      imagePath: headColorPath,
       parent: this.headNoColor,
-      sizeScale: 1,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.5, y: 0 },
+      sizeScale: 0.6,
+      anchorPoint: { x: 0.8, y: 0.3 },
+      positionScale: { x: 0.5, y: 0.5 },
       zIndex: this.headNoColor.getZIndex()
     });
   }
@@ -138,12 +134,7 @@ export default class Character implements Observer {
    * @returns Promise that resolves when hair sprites are created
    */
   async createHairSprites(): Promise<void> {
-    const characterFolder = 'assets/Character';
-
-    // Split SVG layers - returns array of blob URLs
-    const hairSVGs: string[] = await svgHandler.splitLayers(
-      characterFolder + '/hair/womenHair5.svg'
-    );
+    const hairPath = `${this.state.hairPath}/4.svg`;
 
     if (!this.headNoColor) {
       throw new Error('headNoColor must be created before hair sprites');
@@ -151,26 +142,14 @@ export default class Character implements Observer {
 
     this.hairNoColor = new StaticSprite({
       canvas: this.canvas,
-      imagePath: hairSVGs[1],
+      imagePath: hairPath,
       parent: this.headNoColor,
-      sizeScale: 1.15,
-      anchorPoint: { x: 0.5, y: 0 },
-      positionScale: { x: 0.575, y: -0.175 },
+      sizeScale: 1.25,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.65, y: 0.31 },
       hsl: { h: 38, s: 91, l: 78 },
       zIndex: this.headNoColor.getZIndex()
     });
-
-    if (hairSVGs[2]) {
-      this.hairColored = new StaticSprite({
-        canvas: this.canvas,
-        imagePath: hairSVGs[2],
-        parent: this.hairNoColor,
-        sizeScale: 1,
-        anchorPoint: { x: 0.5, y: 0 },
-        positionScale: { x: 0.5, y: 0 },
-        zIndex: this.hairNoColor.getZIndex()
-      });
-    }
   }
 
   /**
@@ -178,11 +157,8 @@ export default class Character implements Observer {
    * @returns Promise that resolves when all sprites are created
    */
   async createSprites(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
-    const characterFolder = 'assets/Character';
-
-    // await this.createHeadSprites();
-    // await this.createHairSprites();
+    await this.createHeadSprites();
+    await this.createHairSprites();
 
     // Example sprite creation (commented out in original):
     // if (!this.headNoColor) {
