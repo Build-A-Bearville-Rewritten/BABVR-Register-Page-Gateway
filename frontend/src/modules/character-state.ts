@@ -1,5 +1,6 @@
 import { Subject } from "../types/observer";
 import { basePath, EyeColorId, Gender, paths, SkinColorId } from "../types/character";
+import { HSL } from "../types/common";
 
 export default class CharacterState extends Subject {
   private static _instance: CharacterState;
@@ -11,6 +12,9 @@ export default class CharacterState extends Subject {
   private _headPath: string;
   private _hairPath: string;
 
+  private _hairColorHsl: HSL;
+  private _hairSecondColorHsl: HSL;
+
   private constructor(){
     super();
     this._eyeColorId = 1;
@@ -18,6 +22,9 @@ export default class CharacterState extends Subject {
     this._gender = 'girl';
     this._headPath = this.getDefaultGenderedHeadPath();
     this._hairPath = this.getDefaultGenderedHairPath();
+
+    this._hairColorHsl = { h: 38, s: 91, l: 78 };
+    this._hairSecondColorHsl = { h: 0, s: 0, l: 0 };
   }
 
   static getInstance(): CharacterState {
@@ -90,5 +97,23 @@ export default class CharacterState extends Subject {
 
   private getDefaultGenderedHairPath(): string {
     return `${basePath}/hair/${this._gender}/${paths['hair'].gender[this._gender][0]}`;
+  }
+
+  public get hairColor(): HSL {
+    return this._hairColorHsl;
+  }
+
+  public set hairColor(hsl: HSL) {
+    this._hairColorHsl = hsl;
+    this.notifyObservers();
+  }
+
+  public get hairSecondColor(): HSL {
+    return this._hairSecondColorHsl;
+  }
+
+  public set hairSecondColor(hsl: HSL) {
+    this._hairSecondColorHsl = hsl;
+    this.notifyObservers();
   }
 }

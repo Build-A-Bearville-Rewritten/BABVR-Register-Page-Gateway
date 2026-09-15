@@ -1,18 +1,12 @@
 // Character instance
 
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
-import spriteRendererModule from '../../modules/sprite-renderer-module.ts';
-import svgHandler from '../../modules/svg-handler.ts';
 import type { SpriteParent } from '../../types/rendering.ts';
 import CharacterState from '../../modules/character-state.ts';
 import { Observer } from '../../types/observer.ts';
-
-/**
- * Dictionary type for storing SVG URLs by key
- */
-type SVGDictionary = {
-  [key: string]: string | undefined;
-};
+import { EyeColor, SkinColor } from '../../types/character.ts';
+import { SpriteConstructorOptions } from '../../types/common.ts';
+import Clickable from '../rendering/sprite/clickable.ts';
 
 /**
  * Character class for rendering character sprites with SVG handling
@@ -22,13 +16,11 @@ export default class Character implements Observer {
 
   public canvas: HTMLCanvasElement;
   public parent: SpriteParent;
-  // Head sprites
   public headNoColor?: StaticSprite;
   public headColored?: StaticSprite;
-  // Hair sprites
+  public eyes?: StaticSprite;
   public hairNoColor?: StaticSprite;
   public hairColored?: StaticSprite;
-  // Torso and body sprites (commented out in original, but typed for future use)
   public torso?: StaticSprite;
   public rightUpperArm?: StaticSprite;
   public rightLowerArm?: StaticSprite;
@@ -40,10 +32,7 @@ export default class Character implements Observer {
   public leftUpLeg?: StaticSprite;
   public leftLowLeg?: StaticSprite;
 
-  private _isCharacterLoaded: boolean = false;
-
-  // SVG storage - maps SVG part names to their blob URLs
-  private readonly _svgs: SVGDictionary = {};
+  private _clickable?: Clickable;
 
   constructor(canvas: HTMLCanvasElement, parent: SpriteParent) {
     this.canvas = canvas;
@@ -52,60 +41,59 @@ export default class Character implements Observer {
     this.state = CharacterState.getInstance();
     this.state.addObserver(this);
 
-    // splits the default character _svgs, then draws the sprites with those _svgs
-    // this.splitSvgs()
-    //   .then(this.createSprites.bind(this))
-    //   .catch(error => {
-    //     throw error;
-    //   });
-
-    this.createSprites().then(() => {
-      spriteRendererModule
-        .getSpriteRenderer()
-        .addRedrawCB(this.onPreRedraw.bind(this));
-    });
+    // Do not call createSprites
+    // Adding the observer will trigger onSubjectUpdate already
   }
 
   onSubjectUpdate(): void {
-    // TODO: this gets called every time the character state updates
+    this.removeSprites();
+    this.createSprites();
+    this.bindEvents();
+  }
+
+  private removeSprites(): void {
+    this.headNoColor?.removeFromScreen();
+    this.headColored?.removeFromScreen();
+    this.eyes?.removeFromScreen();
+    this.hairNoColor?.removeFromScreen();
+    this.hairColored?.removeFromScreen();
+    this.torso?.removeFromScreen();
+    this.rightUpperArm?.removeFromScreen();
+    this.rightLowerArm?.removeFromScreen();
+    this.leftUpperArm?.removeFromScreen();
+    this.leftLowerArm?.removeFromScreen();
+    this.hips?.removeFromScreen();
+    this.rightUpLeg?.removeFromScreen();
+    this.rightLowLeg?.removeFromScreen();
+    this.leftUpLeg?.removeFromScreen();
+    this.leftLowLeg?.removeFromScreen();
+  }
+
+  private bindEvents(): void {
+    this._clickable?.destroy();
+    this._clickable = new Clickable();
+
+    if (this.hairNoColor) {
+      this._clickable.onClick(this.hairNoColor, () => {
+        console.log('hair clicked');
+        // TODO: update color
+      });
+    }
+
+    if (this.hairColored) {
+      this._clickable.onClick(this.hairColored, () => {
+        console.log('hair secondary clicked');
+        // TODO: update color
+      })
+    }
   }
 
   /**
-   * Pre-redraw callback - called before sprites are redrawn
+   * Creates head sprites from state
    */
-  onPreRedraw(): void {
-    // Override in subclasses or add logic here
-  }
-
-  /**
-   * Splits SVGs where each layer of the SVG is turned into a new SVG
-   * and saves the SVGs in the _svgs dictionary
-   * @returns Promise that resolves when all SVGs are split
-   */
-  async splitSvgs(): Promise<void> {
-    // Example implementation (commented out in original):
-    // const assetsFolder = 'assets/Character/';
-    // let urls = await svgHandler.splitLayers(assetsFolder + 'Character/torsoWomen.svg');
-    // this._svgs['torsoWomen'] = urls[0];
-    // urls = await svgHandler.splitLayers(assetsFolder + 'Character/arms/upArmTemp.svg');
-    // this._svgs['upArmTemp'] = urls[0];
-    // urls = await svgHandler.splitLayers(assetsFolder + 'Character/arms/lowArmTemp.svg');
-    // this._svgs['lowArmTemp'] = urls[0];
-    // urls = await svgHandler.splitLayers(assetsFolder + '/Character/hips/testHips.svg');
-    // this._svgs['hips'] = urls[0];
-    // urls = await svgHandler.splitLayers(assetsFolder + 'Character/legs/upLeg.svg');
-    // this._svgs['upLeg'] = urls[0];
-    // urls = await svgHandler.splitLayers(assetsFolder + 'Character/legs/lowLeg.svg');
-    // this._svgs['lowLeg'] = urls[0];
-  }
-
-  /**
-   * Creates head sprites from SVG layers
-   * @returns Promise that resolves when head sprites are created
-   */
-  async createHeadSprites(): Promise<void> {
+  private createHeadSprites(): void {
     const headNoColorPath = `${this.state.headPath}/8.svg`;
-    const headColorPath =  `${this.state.headPath}/10.svg`;
+    const headColorPath = `${this.state.headPath}/10.svg`;
 
     this.headNoColor = new StaticSprite({
       canvas: this.canvas,
@@ -114,51 +102,227 @@ export default class Character implements Observer {
       sizeScale: 0.18,
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.7, y: 0.17 },
-      hsl: { h: 30, s: 100, l: 93 },
+      hsl: SkinColor[this.state.skinColorId].hsl,
       zIndex: 15
     });
+
+    const headColoredProps = this.getHeadColoredProps(headNoColorPath);
 
     this.headColored = new StaticSprite({
       canvas: this.canvas,
       imagePath: headColorPath,
       parent: this.headNoColor,
-      sizeScale: 0.6,
-      anchorPoint: { x: 0.8, y: 0.3 },
-      positionScale: { x: 0.5, y: 0.5 },
+      sizeScale: headColoredProps.sizeScale,
+      anchorPoint: headColoredProps.anchorPoint,
+      positionScale: headColoredProps.positionScale,
       zIndex: this.headNoColor.getZIndex()
+    });
+
+    const eyesPath = `${this.state.headPath}/12.svg`;
+
+    const eyesProps = this.getEyesProps(headNoColorPath);
+
+    this.eyes = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: eyesPath,
+      parent: this.headNoColor,
+      sizeScale: eyesProps.sizeScale,
+      anchorPoint: eyesProps.anchorPoint,
+      positionScale: eyesProps.positionScale,
+      zIndex: this.headNoColor.getZIndex(),
+      hsl: EyeColor[this.state.eyeColorId].hsl
     });
   }
 
+  private getHeadColoredProps(headNoColorPath: string): Partial<SpriteConstructorOptions> {
+    if (headNoColorPath.includes('head4')) {
+      return {
+        sizeScale: 0.57,
+        anchorPoint: { x: 0.8, y: 0.25 },
+        positionScale: { x: 0.5, y: 0.5 },
+      };
+    } else if (headNoColorPath.includes('head18')) {
+      return {
+        sizeScale: 0.63,
+        anchorPoint: { x: 0.8, y: 0.3 },
+        positionScale: { x: 0.52, y: 0.5 },
+      }
+    } else {
+      return {
+        sizeScale: 0.58,
+        anchorPoint: { x: 0.8, y: 0.3 },
+        positionScale: { x: 0.52, y: 0.5 },
+      }
+    }
+  }
+
+  private getEyesProps(headNoColorPath: string): Partial<SpriteConstructorOptions> {
+    if (headNoColorPath.includes('head4')) {
+      return {
+        sizeScale: 0.135,
+        anchorPoint: { x: 0, y: 0.5 },
+        positionScale: { x: 0.07, y: 0.59 }
+      }
+    } else if (headNoColorPath.includes('head1')) {
+      return {
+        sizeScale: 0.235,
+        anchorPoint: { x: 0, y: 0.5 },
+        positionScale: { x: 0.05, y: 0.56 }
+      }
+    } else {
+      return {
+        sizeScale: 0.235,
+        anchorPoint: { x: 0, y: 0.5 },
+        positionScale: { x: 0.04, y: 0.56 }
+      }
+    }
+  }
+
   /**
-   * Creates hair sprites from SVG layers
-   * @returns Promise that resolves when hair sprites are created
+   * Creates hair sprites from state
    */
-  async createHairSprites(): Promise<void> {
-    const hairPath = `${this.state.hairPath}/4.svg`;
+  private createHairSprites(): void {
+    const hairPath = `${this.state.hairPath}/1.svg`;
 
     if (!this.headNoColor) {
       throw new Error('headNoColor must be created before hair sprites');
     }
 
+    const hairProps = this.getHairProps(hairPath);
+
     this.hairNoColor = new StaticSprite({
       canvas: this.canvas,
       imagePath: hairPath,
       parent: this.headNoColor,
-      sizeScale: 1.25,
-      anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.65, y: 0.31 },
-      hsl: { h: 38, s: 91, l: 78 },
+      sizeScale: hairProps.sizeScale,
+      anchorPoint: hairProps.anchorPoint,
+      positionScale: hairProps.positionScale,
+      hsl: this.state.hairColor,
       zIndex: this.headNoColor.getZIndex()
     });
+
+    if (this.hasHairColored(hairPath)) {
+      const hairColoredPath = `${this.state.hairPath}/2.svg`;
+      const hairColoredProps = this.getHairColoredProps(this.state.hairPath);
+
+      this.hairColored = new StaticSprite({
+        canvas: this.canvas,
+        imagePath: hairColoredPath,
+        parent: this.hairNoColor,
+        sizeScale: hairColoredProps.sizeScale,
+        anchorPoint: hairColoredProps.anchorPoint,
+        positionScale: hairColoredProps.positionScale,
+        hsl: this.state.hairSecondColor,
+        zIndex: this.headNoColor.getZIndex()
+      });
+    }
+  }
+
+  private getHairProps(hairPath: string): Partial<SpriteConstructorOptions> {
+    if (hairPath.includes('hair7')) {
+      return {
+        sizeScale: 1.25,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.65, y: 0.31 }
+      };
+    } else if (hairPath.includes('hair8')) {
+      return {
+        sizeScale: 1.2,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.6, y: 0.35 }
+      };
+    } else if (hairPath.includes('hair10')) {
+      return {
+        sizeScale: 1.4,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.55, y: 0.55 }
+      };
+    } else if (hairPath.includes('hair12')) {
+      return {
+        sizeScale: 1,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.63, y: 0.39 }
+      };
+    } else if (hairPath.includes('hair13')) {
+      return {
+        sizeScale: 1.32,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.67, y: 0.31 }
+      };
+    } else if (hairPath.includes('hair1')) {
+      return {
+        sizeScale: 0.7,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.3 }
+      };
+    } else if (hairPath.includes('hair2')) {
+      return {
+        sizeScale: 0.85,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.38, y: 0.28 }
+      };
+    } else if (hairPath.includes('hair3')) {
+      return {
+        sizeScale: 0.63,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.55, y: 0.32 }
+      };
+    } else if (hairPath.includes('hair5')) {
+      return {
+        sizeScale: 0.78,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.45, y: 0.3 }
+      };
+    } else if (hairPath.includes('hair6')) {
+      return {
+        sizeScale: 0.82,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.53, y: 0.28 }
+      };
+    }
+
+    // this should never happen
+    return {
+      sizeScale: 0,
+      anchorPoint: { x: 0, y: 0 },
+      positionScale: { x: 0, y: 0 }
+    };
+  }
+
+  private getHairColoredProps(hairPath: string): Partial<SpriteConstructorOptions> {
+    if (hairPath.includes('hair10')) {
+      return {
+        sizeScale: 0.28,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.225 }
+      };
+    } else if (hairPath.includes('hair12')) {
+      return {
+        sizeScale: 0.3,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.6, y: 0.1 }
+      };
+    }
+
+    // this should never happen
+    return {
+      sizeScale: 0,
+      anchorPoint: { x: 0, y: 0 },
+      positionScale: { x: 0, y: 0 }
+    };
+  }
+
+  private hasHairColored(hairPath: string): boolean {
+    return hairPath.includes('hair10') || hairPath.includes('hair12');
   }
 
   /**
    * Creates all character sprites
    * @returns Promise that resolves when all sprites are created
    */
-  async createSprites(): Promise<void> {
-    await this.createHeadSprites();
-    await this.createHairSprites();
+  private createSprites(): void {
+    this.createHeadSprites();
+    this.createHairSprites();
 
     // Example sprite creation (commented out in original):
     // if (!this.headNoColor) {
@@ -272,5 +436,6 @@ export default class Character implements Observer {
 
   public destroy(): void {
     this.state.removeObserver(this);
+    this._clickable?.destroy();
   }
 }

@@ -251,7 +251,6 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       sizeScale: 0.18,
       anchorPoint: { x: 0, y: 0.5 },
       positionScale: { x: 0.385, y: 0.83 },
-      hsl: SkinColor[this.character.state.skinColorId].hsl
     });
 
     this.skinColorSquare = new StaticSprite({
@@ -261,10 +260,9 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       sizeScale: 0.16,
       anchorPoint: { x: 0, y: 0.5 },
       positionScale: { x: 0.4, y: 0.83 },
-      hsl: SkinColor[1].hsl
+      hsl: SkinColor[this.character.state.skinColorId].hsl
     });
 
-    // TODO: update arrow onClicks
     this.hairArrows = this.createArrows(
       0.35,
       0.4,
