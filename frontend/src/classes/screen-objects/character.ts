@@ -4,7 +4,7 @@ import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import type { SpriteParent } from '../../types/rendering.ts';
 import CharacterState from '../../modules/character-state.ts';
 import { Observer } from '../../types/observer.ts';
-import { EyeColor, SkinColor } from '../../types/character.ts';
+import { basePath, EyeColor, SkinColor } from '../../types/character.ts';
 import { SpriteConstructorOptions } from '../../types/common.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
 
@@ -22,15 +22,15 @@ export default class Character implements Observer {
   public hairNoColor?: StaticSprite;
   public hairColored?: StaticSprite;
   public torso?: StaticSprite;
-  public rightUpperArm?: StaticSprite;
-  public rightLowerArm?: StaticSprite;
-  public leftUpperArm?: StaticSprite;
-  public leftLowerArm?: StaticSprite;
-  public hips?: StaticSprite;
-  public rightUpLeg?: StaticSprite;
-  public rightLowLeg?: StaticSprite;
-  public leftUpLeg?: StaticSprite;
-  public leftLowLeg?: StaticSprite;
+  public rightArm?: StaticSprite;
+  public leftArm?: StaticSprite;
+  public rightHand?: StaticSprite;
+  public leftHand?: StaticSprite;
+  public rightLeg?: StaticSprite;
+  public leftLeg?: StaticSprite;
+
+  public shirtColored?: StaticSprite;
+  public shirtNoColor?: StaticSprite;
 
   private _clickable?: Clickable;
 
@@ -58,15 +58,15 @@ export default class Character implements Observer {
     this.hairNoColor?.removeFromScreen();
     this.hairColored?.removeFromScreen();
     this.torso?.removeFromScreen();
-    this.rightUpperArm?.removeFromScreen();
-    this.rightLowerArm?.removeFromScreen();
-    this.leftUpperArm?.removeFromScreen();
-    this.leftLowerArm?.removeFromScreen();
-    this.hips?.removeFromScreen();
-    this.rightUpLeg?.removeFromScreen();
-    this.rightLowLeg?.removeFromScreen();
-    this.leftUpLeg?.removeFromScreen();
-    this.leftLowLeg?.removeFromScreen();
+    this.rightArm?.removeFromScreen();
+    this.leftArm?.removeFromScreen();
+    this.rightHand?.removeFromScreen();
+    this.leftHand?.removeFromScreen();
+    this.rightLeg?.removeFromScreen();
+    this.leftLeg?.removeFromScreen();
+
+    this.shirtColored?.removeFromScreen();
+    this.shirtNoColor?.removeFromScreen();
   }
 
   private bindEvents(): void {
@@ -86,6 +86,8 @@ export default class Character implements Observer {
         // TODO: update color
       })
     }
+
+    // TODO: create clickables for clothing items
   }
 
   /**
@@ -316,6 +318,152 @@ export default class Character implements Observer {
     return hairPath.includes('hair10') || hairPath.includes('hair12');
   }
 
+  private createBodySprites(): void {
+    const torsoPath = `${basePath}/body/torso.svg`;
+    const handPath = `${basePath}/body/hand.svg`;
+    const armLegPath = `${basePath}/body/arm_leg.svg`;
+
+    if (!this.headNoColor) {
+      throw new Error('headNoColor must be created before body sprites');
+    }
+
+    this.torso = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: torsoPath,
+      parent: this.headNoColor,
+      sizeScale: 1.7,
+      anchorPoint: { x: 0.5, y: 0.11 },
+      positionScale: { x: 0.5, y: 1 },
+      // hsl: {h:0,s:0,l:0},
+      hsl: SkinColor[this.state.skinColorId].hsl,
+      zIndex: this.headNoColor.getZIndex() - 4
+    });
+
+    this.rightArm = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: armLegPath,
+      parent: this.torso,
+      sizeScale: { x: 0.3, y: 0.7 },
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: 0.2, y: 0.1 },
+      hsl: SkinColor[this.state.skinColorId].hsl,
+      zIndex: this.torso.getZIndex() - 1
+    });
+
+    this.leftArm = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: armLegPath,
+      parent: this.torso,
+      sizeScale: { x: 0.3, y: 0.7 },
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: 0.85, y: 0.18 },
+      hsl: SkinColor[this.state.skinColorId].hsl,
+      zIndex: this.torso.getZIndex() + 2
+    });
+
+    this.rightHand = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: handPath,
+      parent: this.torso, // parent is torso because arm is unevenly scaled
+      sizeScale: { x: 0.5, y: 0.25 },
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: 0.1, y: 0.7 },
+      hsl: SkinColor[this.state.skinColorId].hsl,
+      zIndex: this.rightArm.getZIndex()
+    });
+
+    this.leftHand = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: handPath,
+      parent: this.torso, // parent is torso because arm is unevenly scaled
+      sizeScale: { x: 0.5, y: 0.25 },
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: 0.8, y: 0.78 },
+      hsl: SkinColor[this.state.skinColorId].hsl,
+      zIndex: this.leftArm.getZIndex()
+    });
+
+    this.leftLeg = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: armLegPath,
+      parent: this.torso,
+      sizeScale: {x: 0.3, y: 0.7 },
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: 0.3, y: 0.72 },
+      hsl: SkinColor[this.state.skinColorId].hsl,
+      zIndex: this.torso.getZIndex() - 1
+    });
+
+    this.rightLeg = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: armLegPath,
+      parent: this.torso,
+      sizeScale: {x: 0.3, y: 0.7 },
+      anchorPoint: { x: 0.5, y: 0 },
+      positionScale: { x: 0.7, y: 0.8 },
+      hsl: SkinColor[this.state.skinColorId].hsl,
+      zIndex: this.torso.getZIndex() - 1
+    });
+
+    // TODO: find a foot sprite (for shoes that show feet)
+  }
+
+  private createClothingSprites(): void {
+    const shirtColoredPath = `${this.state.shirtPath}/2.svg`;
+
+    if (!this.torso) {
+      throw new Error('torso must be created before clothing sprites');
+    }
+
+    this.shirtColored = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: shirtColoredPath,
+      parent: this.torso,
+      sizeScale: 1,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.5 },
+      hsl: this.state.shirtColor,
+      zIndex: this.torso.getZIndex() + 1
+    });
+
+    // TODO: import shirt sleeve sprites
+
+    if (this.hasShirtNoColor(shirtColoredPath)) {
+      const shirtNoColorPath = `${this.state.shirtPath}/1.svg`;
+      this.shirtNoColor = new StaticSprite({
+        canvas: this.canvas,
+        imagePath: shirtNoColorPath,
+        parent: this.shirtColored,
+        sizeScale: 0.73,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.56, y: 0.65 },
+        zIndex: this.shirtColored.getZIndex()
+      });
+    }
+
+    // TODO: import pants sprites
+
+    // <cargopants id="1" gender="m" xml="6" itemid="7"/>
+		// <jeans id="2" gender="f" xml="7" itemid="8"/>
+		// <bermudas id="3" gender="f" xml="8" itemid="37"/>
+		// <shortskirt id="4" gender="f" xml="11" itemid="40"/>
+		// <shorts id="5" gender="f" xml="9" itemid="38"/>
+		// <sportpants id="6" gender="m" xml="10" itemid="39"/>
+
+    // TODO: import shoes sprites
+
+    // <skateshoes id="1" gender="x" xml="12" itemid="41"/>
+		// <runningshoes id="2" gender="x" xml="13" itemid="42"/>
+		// <comfortshoes id="3" gender="x" xml="14" itemid="43"/>
+		// <cocktailshoes id="4" gender="f" xml="15" itemid="44"/>
+		// <tongs id="5" gender="x" xml="16" itemid="45"/>
+		// <clogs id="6" gender="x" xml="17" itemid="18"/>
+  }
+
+  private hasShirtNoColor(shirtColoredPath: string): boolean {
+    return shirtColoredPath.includes('tcloth0') || shirtColoredPath.includes('tcloth1') || shirtColoredPath.includes('tcloth3') || shirtColoredPath.includes('tcloth4');
+  }
+
   /**
    * Creates all character sprites
    * @returns Promise that resolves when all sprites are created
@@ -323,115 +471,8 @@ export default class Character implements Observer {
   private createSprites(): void {
     this.createHeadSprites();
     this.createHairSprites();
-
-    // Example sprite creation (commented out in original):
-    // if (!this.headNoColor) {
-    //   throw new Error('headNoColor must be created first');
-    // }
-
-    // this.torso = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: './Test.svg',
-    //   parent: this.headNoColor,
-    //   sizeScale: 1.4,
-    //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.5, y: 0.85 },
-    //   hsl: this.headNoColor.getHSL(),
-    //   zIndex: this.headNoColor.getZIndex() - 1
-    // });
-
-    // this.rightUpperArm = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: this._svgs.upArmTemp,
-    //   parent: this.torso,
-    //   sizeScale: 0.5,
-    //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.2, y: 0.1 },
-    //   hsl: { h: 0, s: 100, l: 50 }
-    // });
-
-    // this.rightLowerArm = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: characterFolder + '/arms/upArmTemp.svg',
-    //   parent: this.rightUpperArm,
-    //   sizeScale: 1,
-    //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.5, y: 0.9 },
-    //   hsl: { h: 200, s: 100, l: 50 }
-    // });
-
-    // this.leftUpperArm = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: this._svgs.upArmTemp,
-    //   parent: this.torso,
-    //   sizeScale: 0.5,
-    //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 1, y: 0.2 },
-    //   hsl: { h: 0, s: 100, l: 50 },
-    //   zIndex: this.torso.getZIndex()
-    // });
-
-    // this.leftLowerArm = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: this._svgs.upArmTemp,
-    //   parent: this.leftUpperArm,
-    //   sizeScale: 1,
-    //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.5, y: 0.9 },
-    //   hsl: { h: 200, s: 100, l: 50 },
-    //   zIndex: this.torso.getZIndex()
-    // });
-
-    // this.hips = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: this._svgs.hips,
-    //   parent: this.torso,
-    //   sizeScale: 0.45,
-    //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.5, y: 0.9 },
-    //   hsl: { h: 170, s: 100, l: 50 },
-    //   zIndex: this.torso.getZIndex() - 1
-    // });
-
-    // this.rightUpLeg = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: this._svgs.upLeg,
-    //   parent: this.hips,
-    //   sizeScale: 1.1,
-    //   anchorPoint: { x: 0, y: 0 },
-    //   positionScale: { x: 0.1, y: 0.7 },
-    //   hsl: { h: 150, s: 100, l: 50 }
-    // });
-
-    // this.rightLowLeg = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: this._svgs.lowLeg,
-    //   parent: this.rightUpLeg,
-    //   sizeScale: 1,
-    //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.5, y: 0.7 },
-    //   hsl: this.rightUpLeg.getHSL()
-    // });
-
-    // this.leftUpLeg = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: this._svgs.upLeg,
-    //   parent: this.hips,
-    //   sizeScale: this.rightUpLeg.getSizeScale(),
-    //   anchorPoint: { x: 1, y: 0 },
-    //   positionScale: { x: 1, y: 0.7 },
-    //   hsl: { h: 140, s: 100, l: 50 }
-    // });
-
-    // this.leftLowLeg = new StaticSprite({
-    //   canvas: this.canvas,
-    //   imagePath: this._svgs.lowLeg,
-    //   parent: this.leftUpLeg,
-    //   sizeScale: this.rightLowLeg.getSizeScale(),
-    //   anchorPoint: { x: 0.5, y: 0 },
-    //   positionScale: { x: 0.5, y: 0.7 },
-    //   hsl: this.leftUpLeg.getHSL()
-    // });
+    this.createBodySprites();
+    this.createClothingSprites();
   }
 
   public destroy(): void {

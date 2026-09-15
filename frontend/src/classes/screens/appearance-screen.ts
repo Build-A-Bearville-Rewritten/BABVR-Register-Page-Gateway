@@ -3,9 +3,7 @@
 
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import { AbstractScreen } from '../../types/rendering.ts';
-import { MouseCallback } from '../rendering/sprite/clickable.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
-import Arrow from '../rendering/sprite/widgets/arrow.ts';
 import NextButton from '../rendering/sprite/widgets/next-button.ts';
 import PrevButton from '../rendering/sprite/widgets/prev-button.ts';
 import ColorWheel from '../screen-objects/color-wheel.ts';
@@ -15,17 +13,10 @@ import Character from '../screen-objects/character.ts';
 import ClothingScreen from './clothing-screen.ts';
 import CharacterDesignInstructions from '../rendering/sprite/widgets/character-design-instructions.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
-import { basePath, EyeColor, EyeColorId, paths, SkinColor, SkinColorId } from '../../types/character.ts';
+import { EyeColor, EyeColorId, SkinColor, SkinColorId } from '../../types/character.ts';
 import { Observer } from '../../types/observer.ts';
 import CharacterState from '../../modules/character-state.ts';
-
-/**
- * Convenience type describing the arrow sprites that appear in pairs
- */
-type ArrowSprites = {
-  left: Arrow;
-  right: Arrow;
-};
+import { ArrowSprites, createArrows } from '../rendering/sprite/widgets/arrow.ts';
 
 /**
  * CharacterCreator renders the UI container, color squares, and selection arrows
@@ -83,40 +74,6 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
     if(this.skinColorSquare?.getHSL() != SkinColor[this.characterState.skinColorId].hsl){
       this.skinColorSquare?.setHSL(SkinColor[this.characterState.skinColorId].hsl);
     }
-  }
-
-  /**
-   * Draw arrow sprites at a specific vertical scale and horizontal spacing.
-   */
-  private createArrows(
-    heightScale: number,
-    spaceBetweenScale: number,
-    parent: StaticSprite,
-    onLeft: MouseCallback,
-    onRight: MouseCallback
-  ): ArrowSprites {
-    const leftArrow = new Arrow({
-      canvas: this.canvas,
-      parent,
-      sizeScale: 0.18,
-      anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.13, y: heightScale },
-      isAnimated: true,
-      onClick: onLeft
-    });
-
-    const rightArrow = new Arrow({
-      canvas: this.canvas,
-      parent: parent,
-      sizeScale: 0.18,
-      anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.13 + spaceBetweenScale, y: heightScale },
-      flip: 'horizontal',
-      isAnimated: true,
-      onClick: onRight
-    });
-
-    return { left: leftArrow, right: rightArrow };
   }
 
   /**
@@ -179,8 +136,8 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       imagePath: 'assets/Register/character-creator/hairIcon.png',
       parent: this.headContainer,
       sizeScale: 0.17,
-      anchorPoint: { x: -1.5, y: 0 },
-      positionScale: { x: 0, y: 0.05 }
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.15 }
     });
 
     this.headIcon = new StaticSprite({
@@ -188,8 +145,8 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       imagePath: 'assets/Register/character-creator/headIcon.png',
       parent: this.headContainer,
       sizeScale: 0.17,
-      anchorPoint: { x: -1.5, y: -3 },
-      positionScale: { x: 0, y: 0.05 }
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.65 }
     });
 
     this.skinContainer = new StaticSprite({
@@ -205,8 +162,8 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       imagePath: 'assets/Register/character-creator/eyeColorIcon.png',
       parent: this.skinContainer,
       sizeScale: 0.1,
-      anchorPoint: { x: -2, y: 0 },
-      positionScale: { x: 0, y: 0.07 }
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.12 }
     });
 
     this.skinIcon = new StaticSprite({
@@ -214,8 +171,8 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       imagePath: 'assets/Register/character-creator/skinToneIcon.png',
       parent: this.skinContainer,
       sizeScale: 0.15,
-      anchorPoint: { x: -4, y: -3.5 },
-      positionScale: { x: 0, y: 0.03 }
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.62 }
     });
 
     this.genderBar = new GenderBar({
@@ -230,8 +187,8 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       imagePath: 'assets/Register/sprites/colorSquareBorder.png',
       parent: this.skinContainer,
       sizeScale: 0.18,
-      anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.385, y: 0.3 },
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.3 },
     });
 
     this.eyeColorSquare = new StaticSprite({
@@ -239,8 +196,8 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       imagePath: 'assets/Register/sprites/colorSquare.png',
       parent: this.skinContainer,
       sizeScale: 0.16,
-      anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.4, y: 0.3 },
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.3 },
       hsl: EyeColor[this.character.state.eyeColorId].hsl
     });
 
@@ -249,8 +206,8 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       imagePath: 'assets/Register/sprites/colorSquareBorder.png',
       parent: this.skinContainer,
       sizeScale: 0.18,
-      anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.385, y: 0.83 },
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.83 },
     });
 
     this.skinColorSquare = new StaticSprite({
@@ -258,14 +215,17 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       imagePath: 'assets/Register/sprites/colorSquare.png',
       parent: this.skinContainer,
       sizeScale: 0.16,
-      anchorPoint: { x: 0, y: 0.5 },
-      positionScale: { x: 0.4, y: 0.83 },
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.83 },
       hsl: SkinColor[this.character.state.skinColorId].hsl
     });
 
-    this.hairArrows = this.createArrows(
+    this.hairArrows = createArrows(
+      this.canvas,
+      0.09,
       0.35,
-      0.4,
+      0.21,
+      0.45,
       this.headContainer,
       () => {
         this.characterState.hairPath = this.characterState.getNewPath('hair', this.characterState.hairPath, 'left');
@@ -274,9 +234,12 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
         this.characterState.hairPath = this.characterState.getNewPath('hair', this.characterState.hairPath, 'right');
       }
     );
-    this.headArrows = this.createArrows(
-      0.85,
-      0.4,
+    this.headArrows = createArrows(
+      this.canvas,
+      0.09,
+      0.83,
+      0.21,
+      0.45,
       this.headContainer,
       () => {
         this.characterState.headPath = this.characterState.getNewPath('head', this.characterState.headPath, 'left');
@@ -285,9 +248,12 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
         this.characterState.headPath = this.characterState.getNewPath('head', this.characterState.headPath, 'right');
       }
     );
-    this.eyeArrows = this.createArrows(
+    this.eyeArrows = createArrows(
+      this.canvas,
+      0.09,
       0.3,
-      0.48,
+      0.21,
+      0.53,
       this.skinContainer,
       () => {
         this.character.state.eyeColorId = this.character.state.eyeColorId === 1 ? 8 : this.character.state.eyeColorId - 1 as EyeColorId;
@@ -296,9 +262,12 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
         this.character.state.eyeColorId = this.character.state.eyeColorId === 8 ? 1 : this.character.state.eyeColorId + 1 as EyeColorId;
       }
     );
-    this.skinArrows = this.createArrows(
-      0.83,
-      0.48,
+    this.skinArrows = createArrows(
+      this.canvas,
+      0.09,
+      0.82,
+      0.21,
+      0.53,
       this.skinContainer,
       () => {
         this.character.state.skinColorId = this.character.state.skinColorId === 1 ? 6 : this.character.state.skinColorId - 1 as SkinColorId;

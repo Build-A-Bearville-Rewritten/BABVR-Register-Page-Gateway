@@ -209,7 +209,7 @@ export type SkinColorId = keyof typeof SkinColor;
 export type Gender = 'girl' | 'boy';
 
 export const basePath = 'assets/Character';
-export const paths = {
+export const headPaths = {
   'hair': {
     'gender': {
       'boy': [
@@ -240,4 +240,16 @@ export const paths = {
       ]
     }
   }
+}
+export const clothingPaths = {
+  'shirt': [
+    'tcloth0',
+    'tcloth1',
+    'tcloth2',
+    'tcloth3',
+    'tcloth4',
+    'tcloth5'
+  ],
+  'bottoms': [],
+  'shoes': []
 }

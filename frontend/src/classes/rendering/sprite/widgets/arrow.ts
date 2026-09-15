@@ -175,3 +175,48 @@ export default class Arrow {
     this._staticSprite?.destroy();
   }
 }
+
+/**
+ * Convenience type describing the arrow sprites that appear in pairs
+ */
+export type ArrowSprites = {
+  left: Arrow;
+  right: Arrow;
+};
+
+/**
+   * Draw arrow sprites at a specific vertical scale and horizontal spacing.
+   */
+export function createArrows(
+  canvas: HTMLCanvasElement,
+  xOffset: number,
+  yOffset: number,
+  sizeScale: number,
+  spaceBetweenScale: number,
+  parent: StaticSprite,
+  onLeft: MouseCallback,
+  onRight: MouseCallback
+): ArrowSprites {
+  const leftArrow = new Arrow({
+    canvas,
+    parent,
+    sizeScale,
+    anchorPoint: { x: 0, y: 0.5 },
+    positionScale: { x: xOffset, y: yOffset },
+    isAnimated: true,
+    onClick: onLeft
+  });
+
+  const rightArrow = new Arrow({
+    canvas,
+    parent: parent,
+    sizeScale,
+    anchorPoint: { x: 0, y: 0.5 },
+    positionScale: { x: xOffset + spaceBetweenScale, y: yOffset },
+    flip: 'horizontal',
+    isAnimated: true,
+    onClick: onRight
+  });
+
+  return { left: leftArrow, right: rightArrow };
+}

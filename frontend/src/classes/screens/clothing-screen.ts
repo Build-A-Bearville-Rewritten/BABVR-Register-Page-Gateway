@@ -7,13 +7,20 @@ import ColorWheel from '../screen-objects/color-wheel.ts';
 import NamingScreen from './naming-screen.ts';
 import AppearanceScreen from './appearance-screen.ts';
 import CharacterDesignInstructions from '../rendering/sprite/widgets/character-design-instructions.ts';
+import { Observer } from '../../types/observer.ts';
+import Character from '../screen-objects/character.ts';
+import CharacterState from '../../modules/character-state.ts';
+import { ArrowSprites, createArrows } from '../rendering/sprite/widgets/arrow.ts';
+import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
 
 /**
  * CharacterCreator renders the UI container, color squares, and selection arrows
  * that surround the character preview on the registration screen.
  */
-export default class ClothingScreen extends AbstractScreen {
+export default class ClothingScreen extends AbstractScreen implements Observer {
   public canvas: HTMLCanvasElement;
+  public character!: Character;
+  public characterState: CharacterState;
 
   private _nextButton!: NextButton;
   private _backButton!: PrevButton;
@@ -26,10 +33,27 @@ export default class ClothingScreen extends AbstractScreen {
   public step3Sprite!: StaticSprite;
   public characterFrame!: StaticSprite;
 
+  public clothingContainer!: StaticSprite;
+  public shirtIcon!: StaticSprite;
+  public bottomsIcon!: StaticSprite;
+  public shoesIcon!: StaticSprite;
+
+  public shirtArrows!: ArrowSprites;
+  public bottomsArrows!: ArrowSprites;
+  public shoesArrows!: ArrowSprites;
+
+  private _chloeAnimation!: AnimatedSprite;
+
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
     this.canvas = canvas;
+    this.characterState = CharacterState.getInstance();
+    this.characterState.addObserver(this);
     this.createSprites();
+  }
+
+  onSubjectUpdate(): void {
+    // TODO: this gets called every time the state updates
   }
 
   /**
@@ -79,6 +103,89 @@ export default class ClothingScreen extends AbstractScreen {
       positionScale: { x: 0.6, y: 0.5 }
     });
 
+    this.clothingContainer = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/character-creator/clothingSelectorsContainer.png',
+      parent: this.characterFrame,
+      sizeScale: 0.4,
+      anchorPoint: { x: 0, y: 0.5 },
+      positionScale: { x: 0.15, y: 0.5 }
+    });
+
+    this.shirtIcon = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/character-creator/shirtIcon.png',
+      parent: this.clothingContainer,
+      sizeScale: 0.12,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.1 }
+    });
+
+    this.bottomsIcon = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/character-creator/bottomsIcon.png',
+      parent: this.clothingContainer,
+      sizeScale: 0.12,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.42 }
+    });
+
+    this.shoesIcon = new StaticSprite({
+      canvas: this.canvas,
+      imagePath: 'assets/Register/character-creator/shoesIcon.png',
+      parent: this.clothingContainer,
+      sizeScale: 0.11,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.73 }
+    });
+
+    this.shirtArrows = createArrows(
+      this.canvas,
+      0.08,
+      0.25,
+      0.15,
+      0.45,
+      this.clothingContainer,
+      () => {
+        // TODO: change clothing
+      },
+      () => {
+        // TODO: change clothing
+      }
+    );
+
+    this.bottomsArrows = createArrows(
+      this.canvas,
+      0.08,
+      0.57,
+      0.15,
+      0.45,
+      this.clothingContainer,
+      () => {
+        // TODO: change clothing
+      },
+      () => {
+        // TODO: change clothing
+      }
+    );
+
+    this.shoesArrows = createArrows(
+      this.canvas,
+      0.08,
+      0.88,
+      0.15,
+      0.45,
+      this.clothingContainer,
+      () => {
+        // TODO: change clothing
+      },
+      () => {
+        // TODO: change clothing
+      }
+    );
+
+    this.character = new Character(this.canvas, this.characterFrame);
+
     this.colorWheel = new ColorWheel(this.canvas);
 
     this._nextButton = new NextButton({
@@ -100,10 +207,18 @@ export default class ClothingScreen extends AbstractScreen {
 
   public destroy(): void {
     super.destroy();
+    this.characterState.removeObserver(this);
+
     this.instructions.destroy();
     this.step1Sprite.destroy();
     this.step2Sprite.destroy();
     this.step3Sprite.destroy();
+    this.shirtArrows.left.destroy();
+    this.shirtArrows.right.destroy();
+    this.bottomsArrows.left.destroy();
+    this.bottomsArrows.right.destroy();
+    this.shoesArrows.left.destroy();
+    this.shoesArrows.right.destroy();
 
     this.colorWheel.destroy();
     this._nextButton.destroy();
