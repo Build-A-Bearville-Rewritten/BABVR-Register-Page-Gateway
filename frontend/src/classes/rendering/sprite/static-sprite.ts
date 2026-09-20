@@ -7,5 +7,7 @@ export default class StaticSprite extends AbstractSprite {
     super(options);
   }
 
-  destroy(): void {}
+  destroy(): void {
+    super.destroy();
+  }
 }

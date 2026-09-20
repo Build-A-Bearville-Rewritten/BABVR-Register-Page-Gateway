@@ -255,12 +255,6 @@ export default class AbstractSprite {
     this._imgCanvas = imgCanvas;
   }
 
-  removeFromScreen(): void {
-    if (this.id) {
-      spriteRendererModule.getSpriteRenderer().removeSprite(this.id);
-    }
-  }
-
   /**
    * Loads an image from the given URL
    * @param url - The URL of the image to load
@@ -354,5 +348,15 @@ export default class AbstractSprite {
     }
 
     this.propertiesChanged.size = true;
+  }
+
+  public destroy(): void {
+    if (this.id !== null) {
+      spriteRendererModule.getSpriteRenderer().removeSprite(this.id);
+      this.id = null;
+    }
+
+    this.canvas = undefined;
+    this.parent = undefined;
   }
 }

@@ -17,9 +17,7 @@ export interface ArrowOptions extends SpriteConstructorOptions {
 class ArrowAnimatedSprite extends AnimatedSprite {
   private _suppressed = false;
   private readonly _display: boolean; // true if it is the default (non-animation) sprite
-  constructor(
-    options: ArrowAnimatedSpriteOptions
-  ) {
+  constructor(options: ArrowAnimatedSpriteOptions) {
     const { display, ...animatedSpriteOptions } = options;
     super(animatedSpriteOptions);
     this._display = display;
@@ -97,7 +95,8 @@ export default class Arrow {
       this._hoverEndAnimation.onAnimationEnded(() => this.showIdle());
     } else {
       this._staticSprite = new StaticSprite({
-        imagePath: 'assets/Register/sprites/animationFrames/arrowHoverStartAnimation/1.png',
+        imagePath:
+          'assets/Register/sprites/animationFrames/arrowHoverStartAnimation/1.png',
         ...spriteOptions
       });
     }
@@ -185,8 +184,8 @@ export type ArrowSprites = {
 };
 
 /**
-   * Draw arrow sprites at a specific vertical scale and horizontal spacing.
-   */
+ * Draw arrow sprites at a specific vertical scale and horizontal spacing.
+ */
 export function createArrows(
   canvas: HTMLCanvasElement,
   xOffset: number,

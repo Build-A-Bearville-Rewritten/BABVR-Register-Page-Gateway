@@ -147,10 +147,10 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
       0.45,
       this.clothingContainer,
       () => {
-        // TODO: change clothing
+        this.characterState.shirtPath = this.characterState.getNewClothingPath('shirt', this.characterState.shirtPath, 'left');
       },
       () => {
-        // TODO: change clothing
+        this.characterState.shirtPath = this.characterState.getNewClothingPath('shirt', this.characterState.shirtPath, 'right');
       }
     );
 
@@ -163,9 +163,11 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
       this.clothingContainer,
       () => {
         // TODO: change clothing
+        console.log('bottoms left');
       },
       () => {
         // TODO: change clothing
+        console.log('bottoms right');
       }
     );
 
@@ -178,9 +180,11 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
       this.clothingContainer,
       () => {
         // TODO: change clothing
+        console.log('shoes left');
       },
       () => {
         // TODO: change clothing
+        console.log('shoes right');
       }
     );
 
@@ -223,5 +227,7 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
     this.colorWheel.destroy();
     this._nextButton.destroy();
     this._backButton.destroy();
+
+    this.character.destroy();
   }
 }

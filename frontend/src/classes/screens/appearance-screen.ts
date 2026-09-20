@@ -228,10 +228,10 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       0.45,
       this.headContainer,
       () => {
-        this.characterState.hairPath = this.characterState.getNewPath('hair', this.characterState.hairPath, 'left');
+        this.characterState.hairPath = this.characterState.getNewHeadPath('hair', this.characterState.hairPath, 'left');
       },
       () => {
-        this.characterState.hairPath = this.characterState.getNewPath('hair', this.characterState.hairPath, 'right');
+        this.characterState.hairPath = this.characterState.getNewHeadPath('hair', this.characterState.hairPath, 'right');
       }
     );
     this.headArrows = createArrows(
@@ -242,10 +242,10 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       0.45,
       this.headContainer,
       () => {
-        this.characterState.headPath = this.characterState.getNewPath('head', this.characterState.headPath, 'left');
+        this.characterState.headPath = this.characterState.getNewHeadPath('head', this.characterState.headPath, 'left');
       },
       () => {
-        this.characterState.headPath = this.characterState.getNewPath('head', this.characterState.headPath, 'right');
+        this.characterState.headPath = this.characterState.getNewHeadPath('head', this.characterState.headPath, 'right');
       }
     );
     this.eyeArrows = createArrows(
@@ -330,5 +330,7 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
     this.colorWheel.destroy();
     this._nextButton.destroy();
     this._backButton.destroy();
+
+    this.character.destroy();
   }
 }

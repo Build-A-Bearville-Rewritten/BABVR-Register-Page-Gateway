@@ -6,18 +6,19 @@ import Clickable from "../rendering/sprite/clickable";
 import { Observer } from "../../types/observer";
 import CharacterState from "../../modules/character-state";
 import { Gender } from "../../types/character";
+import AnimatedSprite from "../rendering/sprite/animated-sprite";
 
 export default class GenderBar implements Observer {
-  private canvas: HTMLCanvasElement | undefined;
-  private parent: HTMLCanvasElement | AbstractSprite | undefined;
+  public canvas: HTMLCanvasElement | undefined;
+  public parent: HTMLCanvasElement | AbstractSprite | undefined;
   public characterState: CharacterState;
 
-  private bar!: StaticSprite;
-  private genderLabel!: GenderLabel;
-  private girlButton?: GenderButton;
-  private boyButton?: GenderButton;
+  private _bar!: StaticSprite;
+  private _genderLabel!: GenderLabel;
+  private _girlButton?: GenderButton;
+  private _boyButton?: GenderButton;
 
-  private gender!: Gender; // private copy of characterState.gender to prevent unnecessary duplicate calls, should not be exposed
+  private _gender!: Gender; // private copy of characterState.gender to prevent unnecessary duplicate calls, should not be exposed
 
   constructor({ canvas, parent }: SpriteConstructorOptions) {
     this.canvas = canvas;
@@ -28,34 +29,34 @@ export default class GenderBar implements Observer {
   }
 
   onSubjectUpdate(): void {
-    if (this.characterState.gender !== this.gender) {
-      this.gender = this.characterState.gender;
-      this.toggleGender(this.gender);
+    if (this.characterState.gender !== this._gender) {
+      this._gender = this.characterState.gender;
+      this.toggleGender(this._gender);
     }
   }
 
   private createSprites(): void {
-    this.bar = new StaticSprite({
+    this._bar = new StaticSprite({
       canvas: this.canvas,
       parent: this.parent,
       imagePath: 'assets/Register/character-creator/gender-selector/251.png',
       sizeScale: 0.08,
       positionScale: { x: 0.165, y: 0.85 }
     });
-    this.genderLabel = new GenderLabel({canvas: this.canvas, parent: this.bar});
+    this._genderLabel = new GenderLabel({canvas: this.canvas, parent: this._bar});
 
-    this.girlButton = new GenderButton({
+    this._girlButton = new GenderButton({
       canvas: this.canvas,
-      parent: this.bar,
+      parent: this._bar,
       positionScale: { x: 0.4, y: 0.1 },
       text: 'Girl',
       genderBar: this,
       gender: 'girl'
     });
 
-    this.boyButton = new GenderButton({
+    this._boyButton = new GenderButton({
       canvas: this.canvas,
-      parent: this.bar,
+      parent: this._bar,
       positionScale: { x: 0.68, y: 0.1 },
       text: 'Boy',
       genderBar: this,
@@ -65,27 +66,27 @@ export default class GenderBar implements Observer {
 
   toggleGender(newGender: Gender) {
     if (newGender === 'girl') {
-      this.girlButton?.toggle();
-      this.boyButton?.untoggle();
+      this._girlButton?.toggle();
+      this._boyButton?.untoggle();
     }
 
     if (newGender === 'boy') {
-      this.boyButton?.toggle();
-      this.girlButton?.untoggle();
+      this._boyButton?.toggle();
+      this._girlButton?.untoggle();
     }
   }
 
   public destroy(): void {
     this.characterState.removeObserver(this);
-    this.genderLabel.destroy();
-    this.girlButton?.destroy();
-    this.boyButton?.destroy();
+    this._genderLabel.destroy();
+    this._girlButton?.destroy();
+    this._boyButton?.destroy();
   }
 }
 
 class GenderLabel extends AbstractTextWidget {
-  private parent: HTMLCanvasElement | AbstractSprite | undefined;
-  private genderLabel!: StaticSprite;
+  public parent: HTMLCanvasElement | AbstractSprite | undefined;
+  private _genderLabel!: StaticSprite;
   constructor({canvas, parent}: SpriteConstructorOptions) {
     super({
       canvas,
@@ -96,8 +97,8 @@ class GenderLabel extends AbstractTextWidget {
       textAlign: 'left',
       textBaseline: 'middle',
       position: () => ({
-        x: this.genderLabel.getPosition().x+this.genderLabel.getSize().x/12,
-        y: this.genderLabel.getPosition().y+this.genderLabel.getSize().y/2
+        x: this._genderLabel.getPosition().x+this._genderLabel.getSize().x/12,
+        y: this._genderLabel.getPosition().y+this._genderLabel.getSize().y/2
       })
     });
     this.canvas = canvas;
@@ -106,7 +107,7 @@ class GenderLabel extends AbstractTextWidget {
   }
 
   private createSprites(): void {
-    this.genderLabel = new StaticSprite({
+    this._genderLabel = new StaticSprite({
       canvas: this.canvas,
       parent: this.parent,
       imagePath: 'assets/Register/character-creator/gender-selector/252.png',
@@ -121,15 +122,15 @@ class GenderLabel extends AbstractTextWidget {
 }
 
 class GenderButton extends AbstractTextWidget {
-  private genderBar!: GenderBar;
-  private gender!: Gender;
-  private parent: HTMLCanvasElement | AbstractSprite | undefined;
+  public parent: HTMLCanvasElement | AbstractSprite | undefined;
 
-  //TODO: instead of the two static sprites, use genderButtonAnimation
-  private genderSelectedSprite?: StaticSprite;
-  private genderRadioSprite!: StaticSprite;
+  private _genderBar!: GenderBar;
+  private _gender!: Gender;
+
+  private _genderSelectedSprite?: AnimatedSprite;
+  private _genderRadioSprite!: AnimatedSprite;
   private readonly _clickable: Clickable;
-  private positionScale?: Point2D;
+  private _positionScale?: Point2D;
 
   private _isToggled: boolean;
   private _isHovered: boolean;
@@ -150,18 +151,18 @@ class GenderButton extends AbstractTextWidget {
       textAlign: 'left',
       textBaseline: 'middle',
       position: () => ({
-        x: this.genderRadioSprite.getPosition().x+this.genderRadioSprite.getSize().x+1,
-        y: this.genderRadioSprite.getPosition().y+this.genderRadioSprite.getSize().y/2
+        x: this._genderRadioSprite.getPosition().x+this._genderRadioSprite.getSize().x-31,
+        y: this._genderRadioSprite.getPosition().y+this._genderRadioSprite.getSize().y/2
       })
     });
     this.canvas = canvas;
     this.parent = parent;
-    this.genderBar = genderBar;
-    this.gender = gender;
-    this.positionScale = positionScale;
+    this._genderBar = genderBar;
+    this._gender = gender;
+    this._positionScale = positionScale;
 
     this._clickable = new Clickable();
-    this._isToggled = this.gender === this.genderBar.characterState.gender;
+    this._isToggled = this._gender === this._genderBar.characterState.gender;
     this._isHovered = false;
 
     this.createSprites();
@@ -169,12 +170,22 @@ class GenderButton extends AbstractTextWidget {
   }
 
   private createSprites(): void {
-    this.genderRadioSprite = new StaticSprite({
+    this._genderSelectedSprite = new AnimatedSprite({
       canvas: this.canvas,
       parent: this.parent,
-      imagePath: 'assets/Register/character-creator/gender-selector/256.png',
+      animationFolder: 'assets/Register/sprites/animationFrames/genderButtonHoverEndAnimation/',
       sizeScale: 0.8,
-      positionScale: this.positionScale
+      positionScale: this._positionScale,
+      numFrames: 6
+    });
+
+    this._genderRadioSprite = new AnimatedSprite({
+      canvas: this.canvas,
+      parent: this.parent,
+      animationFolder: 'assets/Register/sprites/animationFrames/genderButtonHoverStartAnimation/',
+      sizeScale: 0.8,
+      positionScale: this._positionScale,
+      numFrames: 6
     });
 
     if (this._isToggled) {
@@ -183,28 +194,37 @@ class GenderButton extends AbstractTextWidget {
   }
 
   private createToggledSprites(): void {
-    this.genderSelectedSprite = new StaticSprite({
-      canvas: this.canvas,
-      parent: this.parent,
-      imagePath: 'assets/Register/character-creator/gender-selector/259.png',
-      sizeScale: 0.6,
-      anchorPoint: { x: -0.15, y: -0.13 },
-      positionScale: this.positionScale
+    this._genderSelectedSprite?.destroy();
+
+    this._genderRadioSprite?.onAnimationEnded(() => {
+      this._genderRadioSprite?.resetAnimation();
+      this._genderSelectedSprite = new AnimatedSprite({
+        canvas: this.canvas,
+        parent: this.parent,
+        animationFolder: 'assets/Register/sprites/animationFrames/genderButtonHoverEndAnimation/',
+        sizeScale: 0.8,
+        positionScale: this._positionScale,
+        numFrames: 6
+      });
     });
+
+    this._genderRadioSprite?.play();
   }
 
   private bindEvents(): void {
-    this._clickable.onClick(this.genderRadioSprite, () => {
-      this.genderBar.characterState.gender = this.gender;
-    });
+    if (this._genderRadioSprite) {
+      this._clickable.onClick(this._genderRadioSprite, () => {
+        this._genderBar.characterState.gender = this._gender;
+      });
 
-    this._clickable.onHoverStart(this.genderRadioSprite, () => {
-      this.hover();
-    });
+      this._clickable.onHoverStart(this._genderRadioSprite, () => {
+        this.hover();
+      });
 
-    this._clickable.onHoverEnd(this.genderRadioSprite, () => {
-      this.unhover();
-    });
+      this._clickable.onHoverEnd(this._genderRadioSprite, () => {
+        this.unhover();
+      });
+    }
   }
 
   public toggle(): void {
@@ -216,7 +236,8 @@ class GenderButton extends AbstractTextWidget {
 
   public untoggle(): void {
     this._isToggled = false;
-    this.genderSelectedSprite?.removeFromScreen();
+    this._genderRadioSprite.resetAnimation();
+    this._genderSelectedSprite?.play();
   }
 
   private hover(): void {
@@ -235,6 +256,8 @@ class GenderButton extends AbstractTextWidget {
 
   public destroy(): void {
     super.destroy();
+    this._genderSelectedSprite?.destroy();
+    this._genderRadioSprite.destroy();
     this._clickable.destroy();
   }
 }

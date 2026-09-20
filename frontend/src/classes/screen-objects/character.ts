@@ -5,7 +5,7 @@ import type { SpriteParent } from '../../types/rendering.ts';
 import CharacterState from '../../modules/character-state.ts';
 import { Observer } from '../../types/observer.ts';
 import { basePath, EyeColor, SkinColor } from '../../types/character.ts';
-import { SpriteConstructorOptions } from '../../types/common.ts';
+import { HSL, SpriteConstructorOptions } from '../../types/common.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
 
 /**
@@ -41,53 +41,63 @@ export default class Character implements Observer {
     this.state = CharacterState.getInstance();
     this.state.addObserver(this);
 
-    // Do not call createSprites
+    // Do not call any functions to create sprites
     // Adding the observer will trigger onSubjectUpdate already
   }
 
   onSubjectUpdate(): void {
-    this.removeSprites();
-    this.createSprites();
-    this.bindEvents();
-  }
+    const headPath = `${this.state.headPath}/8.svg`;
+    const hairPath = `${this.state.hairPath}/1.svg`;
+    const shirtPath = `${this.state.shirtPath}/2.svg`;
 
-  private removeSprites(): void {
-    this.headNoColor?.removeFromScreen();
-    this.headColored?.removeFromScreen();
-    this.eyes?.removeFromScreen();
-    this.hairNoColor?.removeFromScreen();
-    this.hairColored?.removeFromScreen();
-    this.torso?.removeFromScreen();
-    this.rightArm?.removeFromScreen();
-    this.leftArm?.removeFromScreen();
-    this.rightHand?.removeFromScreen();
-    this.leftHand?.removeFromScreen();
-    this.rightLeg?.removeFromScreen();
-    this.leftLeg?.removeFromScreen();
-
-    this.shirtColored?.removeFromScreen();
-    this.shirtNoColor?.removeFromScreen();
-  }
-
-  private bindEvents(): void {
-    this._clickable?.destroy();
-    this._clickable = new Clickable();
-
-    if (this.hairNoColor) {
-      this._clickable.onClick(this.hairNoColor, () => {
-        console.log('hair clicked');
-        // TODO: update color
-      });
+    if (!this._clickable) {
+      this._clickable = new Clickable();
     }
 
-    if (this.hairColored) {
-      this._clickable.onClick(this.hairColored, () => {
-        console.log('hair secondary clicked');
-        // TODO: update color
-      })
+    if (this.headNoColor?.getImagePath() !== headPath || !this.headNoColor) {
+      this.headNoColor?.destroy();
+      this.headColored?.destroy();
+      this.createHeadSprites();
+
+      this.hairNoColor?.destroy();
+      this.hairColored?.destroy();
+      this.createHairSprites();
     }
 
-    // TODO: create clickables for clothing items
+    if (this.eyes?.getHSL() !== EyeColor[this.state.eyeColorId].hsl) {
+      this.eyes?.setHSL(EyeColor[this.state.eyeColorId].hsl);
+    }
+
+    if (this.headNoColor?.getHSL() !== SkinColor[this.state.skinColorId].hsl) {
+      this.updateSkinTone(SkinColor[this.state.skinColorId].hsl);
+    }
+
+    if (this.hairNoColor?.getImagePath() !== hairPath || !this.hairNoColor) {
+      this.hairNoColor?.destroy();
+      this.hairColored?.destroy();
+      this.createHairSprites();
+    }
+
+    if (!this.torso) {
+      this.createBodySprites();
+    }
+
+    if (this.shirtColored?.getImagePath() !== shirtPath || !this.shirtColored) {
+      this.shirtColored?.destroy();
+      this.shirtNoColor?.destroy();
+      this.createShirtSprites();
+    }
+  }
+
+  private updateSkinTone(hsl: HSL) {
+    this.headNoColor?.setHSL(hsl);
+    this.torso?.setHSL(hsl);
+    this.rightArm?.setHSL(hsl);
+    this.leftArm?.setHSL(hsl);
+    this.rightHand?.setHSL(hsl);
+    this.leftHand?.setHSL(hsl);
+    this.leftLeg?.setHSL(hsl);
+    this.rightLeg?.setHSL(hsl);
   }
 
   /**
@@ -136,47 +146,51 @@ export default class Character implements Observer {
     });
   }
 
-  private getHeadColoredProps(headNoColorPath: string): Partial<SpriteConstructorOptions> {
+  private getHeadColoredProps(
+    headNoColorPath: string
+  ): Partial<SpriteConstructorOptions> {
     if (headNoColorPath.includes('head4')) {
       return {
         sizeScale: 0.57,
         anchorPoint: { x: 0.8, y: 0.25 },
-        positionScale: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.5 }
       };
     } else if (headNoColorPath.includes('head18')) {
       return {
         sizeScale: 0.63,
         anchorPoint: { x: 0.8, y: 0.3 },
-        positionScale: { x: 0.52, y: 0.5 },
-      }
+        positionScale: { x: 0.52, y: 0.5 }
+      };
     } else {
       return {
         sizeScale: 0.58,
         anchorPoint: { x: 0.8, y: 0.3 },
-        positionScale: { x: 0.52, y: 0.5 },
-      }
+        positionScale: { x: 0.52, y: 0.5 }
+      };
     }
   }
 
-  private getEyesProps(headNoColorPath: string): Partial<SpriteConstructorOptions> {
+  private getEyesProps(
+    headNoColorPath: string
+  ): Partial<SpriteConstructorOptions> {
     if (headNoColorPath.includes('head4')) {
       return {
         sizeScale: 0.135,
         anchorPoint: { x: 0, y: 0.5 },
         positionScale: { x: 0.07, y: 0.59 }
-      }
+      };
     } else if (headNoColorPath.includes('head1')) {
       return {
         sizeScale: 0.235,
         anchorPoint: { x: 0, y: 0.5 },
         positionScale: { x: 0.05, y: 0.56 }
-      }
+      };
     } else {
       return {
         sizeScale: 0.235,
         anchorPoint: { x: 0, y: 0.5 },
         positionScale: { x: 0.04, y: 0.56 }
-      }
+      };
     }
   }
 
@@ -203,6 +217,11 @@ export default class Character implements Observer {
       zIndex: this.headNoColor.getZIndex()
     });
 
+    this._clickable?.onClick(this.hairNoColor, () => {
+      console.log('hair clicked');
+      // TODO: update color
+    });
+
     if (this.hasHairColored(hairPath)) {
       const hairColoredPath = `${this.state.hairPath}/2.svg`;
       const hairColoredProps = this.getHairColoredProps(this.state.hairPath);
@@ -216,6 +235,11 @@ export default class Character implements Observer {
         positionScale: hairColoredProps.positionScale,
         hsl: this.state.hairSecondColor,
         zIndex: this.headNoColor.getZIndex()
+      });
+
+      this._clickable?.onClick(this.hairColored, () => {
+        console.log('hair secondary clicked');
+        // TODO: update color
       });
     }
   }
@@ -291,7 +315,9 @@ export default class Character implements Observer {
     };
   }
 
-  private getHairColoredProps(hairPath: string): Partial<SpriteConstructorOptions> {
+  private getHairColoredProps(
+    hairPath: string
+  ): Partial<SpriteConstructorOptions> {
     if (hairPath.includes('hair10')) {
       return {
         sizeScale: 0.28,
@@ -387,7 +413,7 @@ export default class Character implements Observer {
       canvas: this.canvas,
       imagePath: armLegPath,
       parent: this.torso,
-      sizeScale: {x: 0.3, y: 0.7 },
+      sizeScale: { x: 0.3, y: 0.7 },
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.3, y: 0.72 },
       hsl: SkinColor[this.state.skinColorId].hsl,
@@ -398,7 +424,7 @@ export default class Character implements Observer {
       canvas: this.canvas,
       imagePath: armLegPath,
       parent: this.torso,
-      sizeScale: {x: 0.3, y: 0.7 },
+      sizeScale: { x: 0.3, y: 0.7 },
       anchorPoint: { x: 0.5, y: 0 },
       positionScale: { x: 0.7, y: 0.8 },
       hsl: SkinColor[this.state.skinColorId].hsl,
@@ -408,75 +434,179 @@ export default class Character implements Observer {
     // TODO: find a foot sprite (for shoes that show feet)
   }
 
-  private createClothingSprites(): void {
+  private createShirtSprites(): void {
     const shirtColoredPath = `${this.state.shirtPath}/2.svg`;
 
     if (!this.torso) {
-      throw new Error('torso must be created before clothing sprites');
+      throw new Error('torso must be created before shirt sprites');
     }
+
+    const shirtProps = this.getShirtProps(this.state.shirtPath);
 
     this.shirtColored = new StaticSprite({
       canvas: this.canvas,
       imagePath: shirtColoredPath,
       parent: this.torso,
-      sizeScale: 1,
-      anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.5, y: 0.5 },
+      sizeScale: shirtProps.sizeScale,
+      anchorPoint: shirtProps.anchorPoint,
+      positionScale: shirtProps.positionScale,
       hsl: this.state.shirtColor,
       zIndex: this.torso.getZIndex() + 1
+    });
+
+    this._clickable?.onClick(this.shirtColored, () => {
+      console.log('shirt clicked');
+      // TODO: update color
     });
 
     // TODO: import shirt sleeve sprites
 
     if (this.hasShirtNoColor(shirtColoredPath)) {
       const shirtNoColorPath = `${this.state.shirtPath}/1.svg`;
+      const shirtNoColorProps = this.getShirtNoColorProps(this.state.shirtPath);
       this.shirtNoColor = new StaticSprite({
         canvas: this.canvas,
         imagePath: shirtNoColorPath,
         parent: this.shirtColored,
-        sizeScale: 0.73,
-        anchorPoint: { x: 0.5, y: 0.5 },
-        positionScale: { x: 0.56, y: 0.65 },
+        sizeScale: shirtNoColorProps.sizeScale,
+        anchorPoint: shirtNoColorProps.anchorPoint,
+        positionScale: shirtNoColorProps.positionScale,
         zIndex: this.shirtColored.getZIndex()
       });
     }
+  }
 
-    // TODO: import pants sprites
+  private getShirtProps(shirtPath: string): Partial<SpriteConstructorOptions> {
+    if (shirtPath.includes('tcloth0')) {
+      return {
+        sizeScale: 0.9,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.45 }
+      };
+    } else if (shirtPath.includes('tcloth1')) {
+      return {
+        sizeScale: 0.5,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.53, y: 0.25 }
+      };
+    } else if (shirtPath.includes('tcloth2')) {
+      return {
+        sizeScale: 0.9,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.45 }
+      };
+    } else if (shirtPath.includes('tcloth3')) {
+      return {
+        sizeScale: 0.9,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.45 }
+      };
+    } else if (shirtPath.includes('tcloth4')) {
+      return {
+        sizeScale: 0.7,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.51 }
+      };
+    } else if (shirtPath.includes('tcloth5')) {
+      return {
+        sizeScale: 0.75,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.5 }
+      };
+    }
 
-    // <cargopants id="1" gender="m" xml="6" itemid="7"/>
-		// <jeans id="2" gender="f" xml="7" itemid="8"/>
-		// <bermudas id="3" gender="f" xml="8" itemid="37"/>
-		// <shortskirt id="4" gender="f" xml="11" itemid="40"/>
-		// <shorts id="5" gender="f" xml="9" itemid="38"/>
-		// <sportpants id="6" gender="m" xml="10" itemid="39"/>
+    // this should never happen
+    return {
+      sizeScale: 1,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.5 }
+    };
+  }
 
-    // TODO: import shoes sprites
+  private getShirtNoColorProps(
+    shirtPath: string
+  ): Partial<SpriteConstructorOptions> {
+    if (shirtPath.includes('tcloth0')) {
+      return {
+        sizeScale: 0.73,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.56, y: 0.65 }
+      };
+    } else if (shirtPath.includes('tcloth1')) {
+      return {
+        sizeScale: 1.2,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.48, y: 1.05 }
+      };
+    } else if (shirtPath.includes('tcloth3')) {
+      return {
+        sizeScale: 0.57,
+        anchorPoint: { x: 0, y: 0.5 },
+        positionScale: { x: 0.03, y: 0.65 }
+      };
+    } else if (shirtPath.includes('tcloth4')) {
+      return {
+        sizeScale: 1.1,
+        anchorPoint: { x: 0.5, y: 0.5 },
+        positionScale: { x: 0.5, y: 0.35 }
+      };
+    }
 
-    // <skateshoes id="1" gender="x" xml="12" itemid="41"/>
-		// <runningshoes id="2" gender="x" xml="13" itemid="42"/>
-		// <comfortshoes id="3" gender="x" xml="14" itemid="43"/>
-		// <cocktailshoes id="4" gender="f" xml="15" itemid="44"/>
-		// <tongs id="5" gender="x" xml="16" itemid="45"/>
-		// <clogs id="6" gender="x" xml="17" itemid="18"/>
+    // this should never happen
+    return {
+      sizeScale: 1,
+      anchorPoint: { x: 0.5, y: 0.5 },
+      positionScale: { x: 0.5, y: 0.5 }
+    };
   }
 
   private hasShirtNoColor(shirtColoredPath: string): boolean {
-    return shirtColoredPath.includes('tcloth0') || shirtColoredPath.includes('tcloth1') || shirtColoredPath.includes('tcloth3') || shirtColoredPath.includes('tcloth4');
+    return (
+      shirtColoredPath.includes('tcloth0') ||
+      shirtColoredPath.includes('tcloth1') ||
+      shirtColoredPath.includes('tcloth3') ||
+      shirtColoredPath.includes('tcloth4')
+    );
   }
 
-  /**
-   * Creates all character sprites
-   * @returns Promise that resolves when all sprites are created
-   */
-  private createSprites(): void {
-    this.createHeadSprites();
-    this.createHairSprites();
-    this.createBodySprites();
-    this.createClothingSprites();
+  private createBottomsSprites(): void {
+    // TODO: import pants sprites
+    // <cargopants id="1" gender="m" xml="6" itemid="7"/>
+    // <jeans id="2" gender="f" xml="7" itemid="8"/>
+    // <bermudas id="3" gender="f" xml="8" itemid="37"/>
+    // <shortskirt id="4" gender="f" xml="11" itemid="40"/>
+    // <shorts id="5" gender="f" xml="9" itemid="38"/>
+    // <sportpants id="6" gender="m" xml="10" itemid="39"/>
+  }
+
+  private createShoesSprites(): void {
+    // TODO: import shoes sprites
+    // <skateshoes id="1" gender="x" xml="12" itemid="41"/>
+    // <runningshoes id="2" gender="x" xml="13" itemid="42"/>
+    // <comfortshoes id="3" gender="x" xml="14" itemid="43"/>
+    // <cocktailshoes id="4" gender="f" xml="15" itemid="44"/>
+    // <tongs id="5" gender="x" xml="16" itemid="45"/>
+    // <clogs id="6" gender="x" xml="17" itemid="18"/>
   }
 
   public destroy(): void {
     this.state.removeObserver(this);
     this._clickable?.destroy();
+
+    this.headNoColor?.destroy();
+    this.headColored?.destroy();
+    this.eyes?.destroy();
+    this.hairNoColor?.destroy();
+    this.hairColored?.destroy();
+    this.torso?.destroy();
+    this.rightArm?.destroy();
+    this.leftArm?.destroy();
+    this.rightHand?.destroy();
+    this.leftHand?.destroy();
+    this.rightLeg?.destroy();
+    this.leftLeg?.destroy();
+
+    this.shirtColored?.destroy();
+    this.shirtNoColor?.destroy();
   }
 }

@@ -82,7 +82,7 @@ export default class CharacterState extends Subject {
     }
   }
 
-  public getNewPath (item: keyof typeof headPaths, pathObject: string, direction: 'left' | 'right'): string {
+  public getNewHeadPath (item: keyof typeof headPaths, pathObject: string, direction: 'left' | 'right'): string {
     const allItemPaths = headPaths[item].gender[this.gender];
     const currentItemIndex = allItemPaths.findIndex((v) => { return pathObject.includes(v); });
     const newItemIndex = direction === 'left' ? (currentItemIndex - 1 + allItemPaths.length) % allItemPaths.length : (currentItemIndex + 1) % allItemPaths.length;
@@ -131,6 +131,13 @@ export default class CharacterState extends Subject {
   public set hairSecondColor(hsl: HSL) {
     this._hairSecondColorHsl = hsl;
     this.notifyObservers();
+  }
+
+  public getNewClothingPath (item: keyof typeof clothingPaths, pathObject: string, direction: 'left' | 'right'): string {
+    const allItemPaths = clothingPaths[item];
+    const currentItemIndex = allItemPaths.findIndex((v) => { return pathObject.includes(v); });
+    const newItemIndex = direction === 'left' ? (currentItemIndex - 1 + allItemPaths.length) % allItemPaths.length : (currentItemIndex + 1) % allItemPaths.length;
+    return `${basePath}/${item}/${clothingPaths[item][newItemIndex]}`;
   }
 
   public get shirtPath(): string {
@@ -183,7 +190,8 @@ export default class CharacterState extends Subject {
   }
 
   private getDefaultBottomsPath(): string {
-    return `${basePath}/bottoms/${clothingPaths['bottoms'][0]}`;
+    return '';
+    //return `${basePath}/bottoms/${clothingPaths['bottoms'][0]}`;
   }
 
   public get shoesPath(): string {
@@ -196,6 +204,7 @@ export default class CharacterState extends Subject {
   }
 
   private getDefaultShoesPath(): string {
-    return `${basePath}/shoes/${clothingPaths['shoes'][0]}`;
+    return '';
+    //return `${basePath}/shoes/${clothingPaths['shoes'][0]}`;
   }
 }
