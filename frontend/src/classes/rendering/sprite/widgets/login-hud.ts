@@ -1,4 +1,4 @@
-import StaticSprite from "../static-sprite.ts";
+import StaticSprite from '../static-sprite.ts';
 import AbstractTextWidget from './abstract-text-widget.ts';
 
 export default class LoginHUD extends AbstractTextWidget {
@@ -16,8 +16,8 @@ export default class LoginHUD extends AbstractTextWidget {
       textAlign: 'center',
       textBaseline: 'middle',
       position: () => ({
-        x: canvas.width/2,
-        y: canvas.height/20
+        x: canvas.width / 2,
+        y: canvas.height / 20
       })
     });
 
@@ -32,7 +32,7 @@ export default class LoginHUD extends AbstractTextWidget {
       parent: this.canvas,
       imagePath: 'assets/Register/sprites/loginHUD.png',
       sizeScale: { x: 1, y: 1 },
-      zIndex: 1000, // always on top
+      zIndex: 1000 // always on top
     });
   }
 

@@ -49,18 +49,19 @@ in this guide from the root directory of the repository.
 1. Run `pnpm install` to install dependencies
 2. Since this project uses workspaces,
    you can run scripts from the root directory using the command
-   `pnpm run --filter babvr-registration-page-<package-name> <script>`.
+   `pnpm run --filter babvr-register-page-<package-name> <script>`.
 
     In this order of ideas, you can run the following commands:
-    - `pnpm run --filter babvr-registration-page-frontend dev`
+
+    - `pnpm run --filter babvr-register-page-frontend dev`
       to start the client
-    - `pnpm run --filter babvr-registration-page-backend dev`
+    - `pnpm run --filter babvr-register-page-backend dev`
       to start the server
 
 If you prefer, you can start the backend and frontend separately.
 To do so, you can run the following commands:
 
-- `pnpm run --filter babvr-registration-page-frontend dev`
+- `pnpm run --filter babvr-register-page-frontend dev`
   to start the client
-- `pnpm run --filter babvr-registration-page-backend start`
+- `pnpm run --filter babvr-register-page-backend start`
   to start the server

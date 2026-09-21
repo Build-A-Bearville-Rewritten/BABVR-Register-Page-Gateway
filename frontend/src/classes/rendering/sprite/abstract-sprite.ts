@@ -349,4 +349,14 @@ export default class AbstractSprite {
 
     this.propertiesChanged.size = true;
   }
+
+  public destroy(): void {
+    if (this.id !== null) {
+      spriteRendererModule.getSpriteRenderer().removeSprite(this.id);
+      this.id = null;
+    }
+
+    this.canvas = undefined;
+    this.parent = undefined;
+  }
 }
