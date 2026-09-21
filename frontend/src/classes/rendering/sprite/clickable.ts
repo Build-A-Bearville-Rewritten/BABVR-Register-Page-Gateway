@@ -30,6 +30,7 @@ export default class Clickable extends AbstractMouse {
   private hoverStartRegistrations: HoverRegistration[];
   private hoverEndRegistrations: HoverRegistration[];
   private hoveredSprites: Set<IClickableSprite>;
+  // eslint-disable-next-line no-unused-vars
   private boundMouseMoveHandler: (event: MouseEvent) => void;
 
   constructor() {
@@ -106,7 +107,8 @@ export default class Clickable extends AbstractMouse {
         }
       } else if (!isOnSprite && wasHovered) {
         this.hoveredSprites.delete(sprite);
-        for (const { sprite: regSprite, callback } of this.hoverEndRegistrations) {
+        for (const { sprite: regSprite, callback } of this
+          .hoverEndRegistrations) {
           if (regSprite === sprite && callback) {
             callback(event);
           }

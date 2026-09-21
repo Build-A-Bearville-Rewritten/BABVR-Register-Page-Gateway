@@ -115,5 +115,6 @@ export default class AnimatedSprite extends AbstractSprite {
    */
   destroy(): void {
     this._animator.destroy();
+    super.destroy();
   }
 }

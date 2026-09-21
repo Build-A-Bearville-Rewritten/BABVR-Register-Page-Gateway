@@ -1,9 +1,9 @@
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
 import Clickable from '../rendering/sprite/clickable.ts';
-import CharacterCreatorScreen from './character-creator-screen.ts';
 import TOSScreen from './tos-screen.ts';
 import { AbstractScreen } from '../../types/rendering.ts';
+import ClothingScreen from './clothing-screen.ts';
 
 export default class NamingScreen extends AbstractScreen {
   private _clickable: Clickable;
@@ -25,7 +25,7 @@ export default class NamingScreen extends AbstractScreen {
     this._clickable.onClick(this._backButton, () => {
       const screenHandler = screenHandlerModule.getInstance(this.canvas);
 
-      void screenHandler.setScreen(CharacterCreatorScreen);
+      void screenHandler.setScreen(ClothingScreen);
     });
 
     this._clickable.onClick(this._nextButton, () => {
