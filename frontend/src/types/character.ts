@@ -1,9 +1,9 @@
-import { Color } from "./common";
+import { Color } from './common';
 
 export const EyeColor = {
   1: {
     id: 1,
-    hex: "#6bccef",
+    hex: '#6bccef',
     hsl: {
       h: 196,
       s: 80,
@@ -17,7 +17,7 @@ export const EyeColor = {
   },
   2: {
     id: 2,
-    hex: "#4a81d2",
+    hex: '#4a81d2',
     hsl: {
       h: 216,
       s: 60,
@@ -31,7 +31,7 @@ export const EyeColor = {
   },
   3: {
     id: 3,
-    hex: "#759743",
+    hex: '#759743',
     hsl: {
       h: 84,
       s: 39,
@@ -45,7 +45,7 @@ export const EyeColor = {
   },
   4: {
     id: 4,
-    hex: "#446317",
+    hex: '#446317',
     hsl: {
       h: 84,
       s: 62,
@@ -59,7 +59,7 @@ export const EyeColor = {
   },
   5: {
     id: 5,
-    hex: "#7e493e",
+    hex: '#7e493e',
     hsl: {
       h: 10,
       s: 34,
@@ -73,7 +73,7 @@ export const EyeColor = {
   },
   6: {
     id: 6,
-    hex: "#552218",
+    hex: '#552218',
     hsl: {
       h: 10,
       s: 56,
@@ -87,7 +87,7 @@ export const EyeColor = {
   },
   7: {
     id: 7,
-    hex: "#b1b2b4",
+    hex: '#b1b2b4',
     hsl: {
       h: 220,
       s: 2,
@@ -101,7 +101,7 @@ export const EyeColor = {
   },
   8: {
     id: 8,
-    hex: "#6f7177",
+    hex: '#6f7177',
     hsl: {
       h: 225,
       s: 3,
@@ -112,7 +112,7 @@ export const EyeColor = {
       g: 113,
       b: 119
     }
-  },
+  }
 } satisfies Record<number, Color>;
 
 export type EyeColorId = keyof typeof EyeColor;
@@ -120,7 +120,7 @@ export type EyeColorId = keyof typeof EyeColor;
 export const SkinColor = {
   1: {
     id: 1,
-    hex: "#fde8d5",
+    hex: '#fde8d5',
     hsl: {
       h: 28,
       s: 91,
@@ -134,7 +134,7 @@ export const SkinColor = {
   },
   2: {
     id: 2,
-    hex: "#f0e1a8",
+    hex: '#f0e1a8',
     hsl: {
       h: 48,
       s: 71,
@@ -148,7 +148,7 @@ export const SkinColor = {
   },
   3: {
     id: 3,
-    hex: "#f4d09b",
+    hex: '#f4d09b',
     hsl: {
       h: 36,
       s: 80,
@@ -162,7 +162,7 @@ export const SkinColor = {
   },
   4: {
     id: 4,
-    hex: "#d2a057",
+    hex: '#d2a057',
     hsl: {
       h: 36,
       s: 58,
@@ -176,7 +176,7 @@ export const SkinColor = {
   },
   5: {
     id: 5,
-    hex: "#6d4723",
+    hex: '#6d4723',
     hsl: {
       h: 29,
       s: 51,
@@ -190,7 +190,7 @@ export const SkinColor = {
   },
   6: {
     id: 6,
-    hex: "#c3886a",
+    hex: '#c3886a',
     hsl: {
       h: 20,
       s: 43,
@@ -201,7 +201,7 @@ export const SkinColor = {
       g: 136,
       b: 106
     }
-  },
+  }
 } satisfies Record<number, Color>;
 
 export type SkinColorId = keyof typeof SkinColor;
@@ -210,46 +210,21 @@ export type Gender = 'girl' | 'boy';
 
 export const basePath = 'assets/Character';
 export const headPaths = {
-  'hair': {
-    'gender': {
-      'boy': [
-        'hair1',
-        'hair2',
-        'hair3',
-        'hair5',
-        'hair6'
-      ],
-      'girl': [
-        'hair7',
-        'hair8',
-        'hair10',
-        'hair12',
-        'hair13'
-      ]
+  hair: {
+    gender: {
+      boy: ['hair1', 'hair2', 'hair3', 'hair5', 'hair6'],
+      girl: ['hair7', 'hair8', 'hair10', 'hair12', 'hair13']
     }
   },
-  'head': {
-    'gender': {
-      'boy': [
-        'head1',
-        'head4'
-      ],
-      'girl': [
-        'head0',
-        'head18'
-      ]
+  head: {
+    gender: {
+      boy: ['head1', 'head4'],
+      girl: ['head0', 'head18']
     }
   }
-}
+};
 export const clothingPaths = {
-  'shirt': [
-    'tcloth0',
-    'tcloth1',
-    'tcloth2',
-    'tcloth3',
-    'tcloth4',
-    'tcloth5'
-  ],
-  'bottoms': [],
-  'shoes': []
-}
+  shirt: ['tcloth0', 'tcloth1', 'tcloth2', 'tcloth3', 'tcloth4', 'tcloth5'],
+  bottoms: ['pants0', 'pants2', 'skirt0', 'pants3'],
+  shoes: ['shoe1', 'shoe2', 'shoe3', 'shoe4', 'shoe5', 'shoe6']
+};

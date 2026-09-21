@@ -1,6 +1,13 @@
-import { Subject } from "../types/observer";
-import { basePath, clothingPaths, EyeColorId, Gender, headPaths, SkinColorId } from "../types/character";
-import { HSL } from "../types/common";
+import { Subject } from '../types/observer';
+import {
+  basePath,
+  clothingPaths,
+  EyeColorId,
+  Gender,
+  headPaths,
+  SkinColorId
+} from '../types/character';
+import { HSL } from '../types/common';
 
 export default class CharacterState extends Subject {
   private static _instance: CharacterState;
@@ -23,7 +30,7 @@ export default class CharacterState extends Subject {
   private _bottomsColorHsl: HSL;
   private _shoesColorHsl: HSL;
 
-  private constructor(){
+  private constructor() {
     super();
     this._eyeColorId = 1;
     this._skinColorId = 1;
@@ -44,7 +51,7 @@ export default class CharacterState extends Subject {
   }
 
   static getInstance(): CharacterState {
-    if(!CharacterState._instance) {
+    if (!CharacterState._instance) {
       this._instance = new CharacterState();
     }
 
@@ -74,7 +81,8 @@ export default class CharacterState extends Subject {
   }
 
   public set gender(gender: Gender) {
-    if (this._gender !== gender) { // do not update if there is nothing to update
+    if (this._gender !== gender) {
+      // do not update if there is nothing to update
       this._gender = gender;
       this._headPath = this.getDefaultGenderedHeadPath();
       this._hairPath = this.getDefaultGenderedHairPath();
@@ -82,10 +90,19 @@ export default class CharacterState extends Subject {
     }
   }
 
-  public getNewHeadPath (item: keyof typeof headPaths, pathObject: string, direction: 'left' | 'right'): string {
+  public getNewHeadPath(
+    item: keyof typeof headPaths,
+    pathObject: string,
+    direction: 'left' | 'right'
+  ): string {
     const allItemPaths = headPaths[item].gender[this.gender];
-    const currentItemIndex = allItemPaths.findIndex((v) => { return pathObject.includes(v); });
-    const newItemIndex = direction === 'left' ? (currentItemIndex - 1 + allItemPaths.length) % allItemPaths.length : (currentItemIndex + 1) % allItemPaths.length;
+    const currentItemIndex = allItemPaths.findIndex(v => {
+      return pathObject.includes(v);
+    });
+    const newItemIndex =
+      direction === 'left'
+        ? (currentItemIndex - 1 + allItemPaths.length) % allItemPaths.length
+        : (currentItemIndex + 1) % allItemPaths.length;
     return `${basePath}/${item}/${this.gender}/${headPaths[item].gender[this.gender][newItemIndex]}`;
   }
 
@@ -133,10 +150,19 @@ export default class CharacterState extends Subject {
     this.notifyObservers();
   }
 
-  public getNewClothingPath (item: keyof typeof clothingPaths, pathObject: string, direction: 'left' | 'right'): string {
+  public getNewClothingPath(
+    item: keyof typeof clothingPaths,
+    pathObject: string,
+    direction: 'left' | 'right'
+  ): string {
     const allItemPaths = clothingPaths[item];
-    const currentItemIndex = allItemPaths.findIndex((v) => { return pathObject.includes(v); });
-    const newItemIndex = direction === 'left' ? (currentItemIndex - 1 + allItemPaths.length) % allItemPaths.length : (currentItemIndex + 1) % allItemPaths.length;
+    const currentItemIndex = allItemPaths.findIndex(v => {
+      return pathObject.includes(v);
+    });
+    const newItemIndex =
+      direction === 'left'
+        ? (currentItemIndex - 1 + allItemPaths.length) % allItemPaths.length
+        : (currentItemIndex + 1) % allItemPaths.length;
     return `${basePath}/${item}/${clothingPaths[item][newItemIndex]}`;
   }
 
@@ -190,8 +216,7 @@ export default class CharacterState extends Subject {
   }
 
   private getDefaultBottomsPath(): string {
-    return '';
-    //return `${basePath}/bottoms/${clothingPaths['bottoms'][0]}`;
+    return `${basePath}/bottoms/${clothingPaths['bottoms'][0]}`;
   }
 
   public get shoesPath(): string {
@@ -204,7 +229,6 @@ export default class CharacterState extends Subject {
   }
 
   private getDefaultShoesPath(): string {
-    return '';
-    //return `${basePath}/shoes/${clothingPaths['shoes'][0]}`;
+    return `${basePath}/shoes/${clothingPaths['shoes'][0]}`;
   }
 }

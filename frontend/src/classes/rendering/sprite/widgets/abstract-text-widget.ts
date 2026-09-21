@@ -1,5 +1,5 @@
-import spriteRendererModule from "../../../../modules/sprite-renderer-module";
-import { Point2D, TextConstructorOptions } from "../../../../types/common";
+import spriteRendererModule from '../../../../modules/sprite-renderer-module';
+import { Point2D, TextConstructorOptions } from '../../../../types/common';
 
 export default class AbstractTextWidget {
   public canvas: HTMLCanvasElement | undefined;
@@ -8,7 +8,9 @@ export default class AbstractTextWidget {
   private color: string;
   private fontFamily: string;
   private fontSize: number;
+  // eslint-disable-next-line no-undef
   private textAlign: CanvasTextAlign;
+  // eslint-disable-next-line no-undef
   private textBaseline: CanvasTextBaseline;
   private position: () => Point2D;
 
@@ -16,33 +18,32 @@ export default class AbstractTextWidget {
     this.drawText();
   };
 
-  constructor(
-    {
-      canvas,
-      text = '',
-      color = '#ffffff',
-      fontFamily = 'Futura',
-      fontSize = 12,
-      textAlign = 'center',
-      textBaseline = 'middle',
-      position = () => ({
-        x: 0,
-        y: 0
-      })
-    }: TextConstructorOptions) {
-      this.canvas = canvas;
-      this.text = text;
-      this.color = color;
-      this.fontFamily = fontFamily;
-      this.fontSize = fontSize;
-      this.textAlign = textAlign;
-      this.textBaseline = textBaseline;
-      this.position = position;
+  constructor({
+    canvas,
+    text = '',
+    color = '#ffffff',
+    fontFamily = 'Futura',
+    fontSize = 12,
+    textAlign = 'center',
+    textBaseline = 'middle',
+    position = () => ({
+      x: 0,
+      y: 0
+    })
+  }: TextConstructorOptions) {
+    this.canvas = canvas;
+    this.text = text;
+    this.color = color;
+    this.fontFamily = fontFamily;
+    this.fontSize = fontSize;
+    this.textAlign = textAlign;
+    this.textBaseline = textBaseline;
+    this.position = position;
 
-      document.fonts.load(`${this.fontSize}px '${this.fontFamily}'`);
-      spriteRendererModule
-        .getSpriteRenderer()
-        .addPostRedrawCB(this._drawTextBound);
+    document.fonts.load(`${this.fontSize}px '${this.fontFamily}'`);
+    spriteRendererModule
+      .getSpriteRenderer()
+      .addPostRedrawCB(this._drawTextBound);
   }
 
   private drawText(): void {
@@ -62,13 +63,9 @@ export default class AbstractTextWidget {
 
     const lines = this.text.split('\n');
     const offset = this.fontSize;
-    const startY = this.position().y-((lines.length-1)*offset/2);
-    for(let i = 0; i < lines.length; i++){
-      ctx.fillText(
-        lines[i],
-        this.position().x,
-        startY+i*offset
-      )
+    const startY = this.position().y - ((lines.length - 1) * offset) / 2;
+    for (let i = 0; i < lines.length; i++) {
+      ctx.fillText(lines[i], this.position().x, startY + i * offset);
     }
   }
 

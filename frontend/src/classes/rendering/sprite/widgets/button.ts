@@ -1,4 +1,7 @@
-import { SpriteConstructorOptions, TextConstructorOptions } from '../../../../types/common.js';
+import {
+  SpriteConstructorOptions,
+  TextConstructorOptions
+} from '../../../../types/common.js';
 import AnimatedSprite, {
   type AnimatedSpriteOptions
 } from '../animated-sprite.js';
@@ -18,9 +21,7 @@ class ButtonAnimatedSprite extends AnimatedSprite {
   private _suppressed = false;
   private readonly _display: boolean; // true if it is the default (non-animation) sprite
 
-  constructor(
-    options: ButtonAnimatedSpriteOptions
-  ) {
+  constructor(options: ButtonAnimatedSpriteOptions) {
     const { display, ...animatedSpriteOptions } = options;
     super(animatedSpriteOptions);
     this._display = display;
@@ -98,9 +99,16 @@ export default class Button {
     });
     this._hoverEndAnimation.onAnimationEnded(() => this.showIdle());
 
-    if(textOptions){
+    if (textOptions) {
       this._label = new AbstractTextWidget({
-        position: () => ({x: this._hoverStartAnimation.getPosition().x + this._hoverStartAnimation.getSize().x/2, y: this._hoverStartAnimation.getPosition().y + this._hoverStartAnimation.getSize().y/2}),
+        position: () => ({
+          x:
+            this._hoverStartAnimation.getPosition().x +
+            this._hoverStartAnimation.getSize().x / 2,
+          y:
+            this._hoverStartAnimation.getPosition().y +
+            this._hoverStartAnimation.getSize().y / 2
+        }),
         ...textOptions
       });
     }

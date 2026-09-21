@@ -1,11 +1,11 @@
-import Button, { ButtonOptions } from "./button";
+import Button, { ButtonOptions } from './button';
 
 export default class PrevButton {
   public canvas: HTMLCanvasElement;
   private _buttonSprite!: Button;
   constructor(options: ButtonOptions) {
     const { onClick, canvas } = options;
-    if(!canvas) {
+    if (!canvas) {
       throw new Error('Canvas is required');
     }
     this.canvas = canvas;

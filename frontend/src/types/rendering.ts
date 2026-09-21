@@ -47,6 +47,7 @@ export interface ISpriteRenderer {
   // eslint-disable-next-line no-unused-vars
   addSpriteToScreen(sprite: IRenderableSprite): Promise<void>;
   removeAllSprites(): void;
+  // eslint-disable-next-line no-unused-vars
   removeSprite(spriteId: number): void;
   drawSprites(): void;
   updateAnimations(): void;
@@ -72,7 +73,7 @@ export abstract class AbstractScreen {
     this.createBackgroundAndOverlay();
   }
 
-  private createBackgroundAndOverlay(){
+  private createBackgroundAndOverlay() {
     this._background = new StaticSprite({
       canvas: this.canvas,
       parent: this.canvas,

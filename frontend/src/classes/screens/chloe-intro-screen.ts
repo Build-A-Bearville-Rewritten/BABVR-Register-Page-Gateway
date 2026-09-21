@@ -15,18 +15,18 @@ class ChloeSpeechBox extends AbstractTextWidget {
   private _boxSprite!: StaticSprite;
   private _arrowSprite!: StaticSprite;
 
-  constructor(canvas: HTMLCanvasElement){
+  constructor(canvas: HTMLCanvasElement) {
     super({
       canvas,
-      text: 'Hi, I\'m ChloeRocks, and I\'ll help \nyou get started.',
+      text: "Hi, I'm ChloeRocks, and I'll help \nyou get started.",
       color: '#0e2b59',
       fontFamily: 'Futura',
       fontSize: 12,
       textAlign: 'left',
       textBaseline: 'middle',
       position: () => ({
-        x: this._boxSprite.getPosition().x+this._boxSprite.getSize().x/8,
-        y: this._boxSprite.getPosition().y+this._boxSprite.getSize().y/2
+        x: this._boxSprite.getPosition().x + this._boxSprite.getSize().x / 8,
+        y: this._boxSprite.getPosition().y + this._boxSprite.getSize().y / 2
       })
     });
 
@@ -39,9 +39,9 @@ class ChloeSpeechBox extends AbstractTextWidget {
       canvas: this.canvas,
       imagePath: './assets/Register/sprites/speechBox.png',
       parent: this.canvas,
-      sizeScale: {x: 0.3, y: 0.2},
+      sizeScale: { x: 0.3, y: 0.2 },
       positionScale: { x: 0.5, y: 0.4 }
-    })
+    });
 
     this._arrowSprite = new StaticSprite({
       canvas: this.canvas,
@@ -49,8 +49,8 @@ class ChloeSpeechBox extends AbstractTextWidget {
       parent: this._boxSprite,
       sizeScale: 0.4,
       positionScale: { x: -0.06, y: 0.4 },
-      rotation: 180,
-    })
+      rotation: 180
+    });
   }
 
   public destroy(): void {
@@ -98,9 +98,7 @@ export default class ChloeIntroScreen extends AbstractScreen {
       animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations
     });
 
-    this._chloeSound = new Audio(
-      'assets/Register/chloe/talk1/sounds/162.mp3'
-    );
+    this._chloeSound = new Audio('assets/Register/chloe/talk1/sounds/162.mp3');
 
     this._chloeAnimation.play();
     this._chloeSoundTimeoutId = setTimeout(() => {

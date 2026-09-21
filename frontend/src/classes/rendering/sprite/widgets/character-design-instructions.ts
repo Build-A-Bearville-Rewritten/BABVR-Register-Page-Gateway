@@ -1,5 +1,5 @@
-import StaticSprite from "../static-sprite";
-import AbstractTextWidget from "./abstract-text-widget";
+import StaticSprite from '../static-sprite';
+import AbstractTextWidget from './abstract-text-widget';
 
 export default class CharacterDesignInstructions extends AbstractTextWidget {
   public canvas: HTMLCanvasElement;
@@ -14,7 +14,12 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
   public headerText: string;
   public headerTextWidget!: AbstractTextWidget;
 
-  constructor(canvas: HTMLCanvasElement, text: string, headerText: string, yOffset = 0) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    text: string,
+    headerText: string,
+    yOffset = 0
+  ) {
     super({
       canvas,
       text: text,
@@ -25,7 +30,7 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
       textBaseline: 'middle',
       position: () => ({
         x: 65,
-        y: 240-yOffset
+        y: 240 - yOffset
       })
     });
 
@@ -48,7 +53,7 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
       canvas: this.canvas,
       imagePath: 'assets/Register/sprites/instructionsMiddle.png',
       parent: this.canvas,
-      sizeScale: {x: 0.348, y: 0.3},
+      sizeScale: { x: 0.348, y: 0.3 },
       anchorPoint: { x: 0.5, y: 0.5 },
       positionScale: { x: 0.225, y: 0.5 }
     });

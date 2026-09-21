@@ -80,7 +80,9 @@ export interface TextConstructorOptions {
   color?: string;
   fontFamily?: string;
   fontSize?: number;
+  // eslint-disable-next-line no-undef
   textAlign?: CanvasTextAlign;
+  // eslint-disable-next-line no-undef
   textBaseline?: CanvasTextBaseline;
   position?: () => Point2D;
 }

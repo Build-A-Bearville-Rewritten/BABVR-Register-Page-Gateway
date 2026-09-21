@@ -207,7 +207,7 @@ export default class SpriteRenderer implements ISpriteRenderer {
 
           // Remove from animated sprites if applicable
           this._animatedSprites = this._animatedSprites.filter(
-            (animatedSprite) => animatedSprite.id !== spriteId
+            animatedSprite => animatedSprite.id !== spriteId
           );
 
           // Remove empty z-index layer

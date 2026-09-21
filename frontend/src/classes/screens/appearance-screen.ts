@@ -13,16 +13,27 @@ import Character from '../screen-objects/character.ts';
 import ClothingScreen from './clothing-screen.ts';
 import CharacterDesignInstructions from '../rendering/sprite/widgets/character-design-instructions.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
-import { EyeColor, EyeColorId, SkinColor, SkinColorId } from '../../types/character.ts';
+import {
+  EyeColor,
+  EyeColorId,
+  SkinColor,
+  SkinColorId
+} from '../../types/character.ts';
 import { Observer } from '../../types/observer.ts';
 import CharacterState from '../../modules/character-state.ts';
-import { ArrowSprites, createArrows } from '../rendering/sprite/widgets/arrow.ts';
+import {
+  ArrowSprites,
+  createArrows
+} from '../rendering/sprite/widgets/arrow.ts';
 
 /**
  * CharacterCreator renders the UI container, color squares, and selection arrows
  * that surround the character preview on the registration screen.
  */
-export default class AppearanceScreen extends AbstractScreen implements Observer {
+export default class AppearanceScreen
+  extends AbstractScreen
+  implements Observer
+{
   public canvas: HTMLCanvasElement;
   public character!: Character;
   public characterState: CharacterState;
@@ -67,12 +78,20 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
   }
 
   onSubjectUpdate(): void {
-    if(this.eyeColorSquare?.getHSL() != EyeColor[this.characterState.eyeColorId].hsl){
+    if (
+      this.eyeColorSquare?.getHSL() !=
+      EyeColor[this.characterState.eyeColorId].hsl
+    ) {
       this.eyeColorSquare?.setHSL(EyeColor[this.characterState.eyeColorId].hsl);
     }
 
-    if(this.skinColorSquare?.getHSL() != SkinColor[this.characterState.skinColorId].hsl){
-      this.skinColorSquare?.setHSL(SkinColor[this.characterState.skinColorId].hsl);
+    if (
+      this.skinColorSquare?.getHSL() !=
+      SkinColor[this.characterState.skinColorId].hsl
+    ) {
+      this.skinColorSquare?.setHSL(
+        SkinColor[this.characterState.skinColorId].hsl
+      );
     }
   }
 
@@ -80,7 +99,6 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
    * Create all sprites that compose the character creator UI component.
    */
   private createSprites(): void {
-
     this.instructions = new CharacterDesignInstructions(
       this.canvas,
       'Choose "Girl" or "Boy".\n\nClick the arrows to see the cool looks.\n\nUse the color wheel to change your hair\ncolor!\n\nWhen you\'re done, click "Next".',
@@ -188,7 +206,7 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       parent: this.skinContainer,
       sizeScale: 0.18,
       anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.5, y: 0.3 },
+      positionScale: { x: 0.5, y: 0.3 }
     });
 
     this.eyeColorSquare = new StaticSprite({
@@ -207,7 +225,7 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       parent: this.skinContainer,
       sizeScale: 0.18,
       anchorPoint: { x: 0.5, y: 0.5 },
-      positionScale: { x: 0.5, y: 0.83 },
+      positionScale: { x: 0.5, y: 0.83 }
     });
 
     this.skinColorSquare = new StaticSprite({
@@ -228,10 +246,18 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       0.45,
       this.headContainer,
       () => {
-        this.characterState.hairPath = this.characterState.getNewHeadPath('hair', this.characterState.hairPath, 'left');
+        this.characterState.hairPath = this.characterState.getNewHeadPath(
+          'hair',
+          this.characterState.hairPath,
+          'left'
+        );
       },
       () => {
-        this.characterState.hairPath = this.characterState.getNewHeadPath('hair', this.characterState.hairPath, 'right');
+        this.characterState.hairPath = this.characterState.getNewHeadPath(
+          'hair',
+          this.characterState.hairPath,
+          'right'
+        );
       }
     );
     this.headArrows = createArrows(
@@ -242,10 +268,18 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       0.45,
       this.headContainer,
       () => {
-        this.characterState.headPath = this.characterState.getNewHeadPath('head', this.characterState.headPath, 'left');
+        this.characterState.headPath = this.characterState.getNewHeadPath(
+          'head',
+          this.characterState.headPath,
+          'left'
+        );
       },
       () => {
-        this.characterState.headPath = this.characterState.getNewHeadPath('head', this.characterState.headPath, 'right');
+        this.characterState.headPath = this.characterState.getNewHeadPath(
+          'head',
+          this.characterState.headPath,
+          'right'
+        );
       }
     );
     this.eyeArrows = createArrows(
@@ -256,10 +290,16 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       0.53,
       this.skinContainer,
       () => {
-        this.character.state.eyeColorId = this.character.state.eyeColorId === 1 ? 8 : this.character.state.eyeColorId - 1 as EyeColorId;
+        this.character.state.eyeColorId =
+          this.character.state.eyeColorId === 1
+            ? 8
+            : ((this.character.state.eyeColorId - 1) as EyeColorId);
       },
       () => {
-        this.character.state.eyeColorId = this.character.state.eyeColorId === 8 ? 1 : this.character.state.eyeColorId + 1 as EyeColorId;
+        this.character.state.eyeColorId =
+          this.character.state.eyeColorId === 8
+            ? 1
+            : ((this.character.state.eyeColorId + 1) as EyeColorId);
       }
     );
     this.skinArrows = createArrows(
@@ -270,10 +310,16 @@ export default class AppearanceScreen extends AbstractScreen implements Observer
       0.53,
       this.skinContainer,
       () => {
-        this.character.state.skinColorId = this.character.state.skinColorId === 1 ? 6 : this.character.state.skinColorId - 1 as SkinColorId;
+        this.character.state.skinColorId =
+          this.character.state.skinColorId === 1
+            ? 6
+            : ((this.character.state.skinColorId - 1) as SkinColorId);
       },
       () => {
-        this.character.state.skinColorId = this.character.state.skinColorId === 6 ? 1 : this.character.state.skinColorId + 1 as SkinColorId;
+        this.character.state.skinColorId =
+          this.character.state.skinColorId === 6
+            ? 1
+            : ((this.character.state.skinColorId + 1) as SkinColorId);
       }
     );
 

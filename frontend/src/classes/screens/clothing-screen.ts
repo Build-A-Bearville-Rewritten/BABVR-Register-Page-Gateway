@@ -10,7 +10,10 @@ import CharacterDesignInstructions from '../rendering/sprite/widgets/character-d
 import { Observer } from '../../types/observer.ts';
 import Character from '../screen-objects/character.ts';
 import CharacterState from '../../modules/character-state.ts';
-import { ArrowSprites, createArrows } from '../rendering/sprite/widgets/arrow.ts';
+import {
+  ArrowSprites,
+  createArrows
+} from '../rendering/sprite/widgets/arrow.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
 
 /**
@@ -52,9 +55,7 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
     this.createSprites();
   }
 
-  onSubjectUpdate(): void {
-    // TODO: this gets called every time the state updates
-  }
+  onSubjectUpdate(): void {}
 
   /**
    * Create all sprites that compose the character creator UI component.
@@ -105,7 +106,8 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
 
     this.clothingContainer = new StaticSprite({
       canvas: this.canvas,
-      imagePath: 'assets/Register/character-creator/clothingSelectorsContainer.png',
+      imagePath:
+        'assets/Register/character-creator/clothingSelectorsContainer.png',
       parent: this.characterFrame,
       sizeScale: 0.4,
       anchorPoint: { x: 0, y: 0.5 },
@@ -147,10 +149,18 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
       0.45,
       this.clothingContainer,
       () => {
-        this.characterState.shirtPath = this.characterState.getNewClothingPath('shirt', this.characterState.shirtPath, 'left');
+        this.characterState.shirtPath = this.characterState.getNewClothingPath(
+          'shirt',
+          this.characterState.shirtPath,
+          'left'
+        );
       },
       () => {
-        this.characterState.shirtPath = this.characterState.getNewClothingPath('shirt', this.characterState.shirtPath, 'right');
+        this.characterState.shirtPath = this.characterState.getNewClothingPath(
+          'shirt',
+          this.characterState.shirtPath,
+          'right'
+        );
       }
     );
 
@@ -162,12 +172,20 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
       0.45,
       this.clothingContainer,
       () => {
-        // TODO: change clothing
-        console.log('bottoms left');
+        this.characterState.bottomsPath =
+          this.characterState.getNewClothingPath(
+            'bottoms',
+            this.characterState.bottomsPath,
+            'left'
+          );
       },
       () => {
-        // TODO: change clothing
-        console.log('bottoms right');
+        this.characterState.bottomsPath =
+          this.characterState.getNewClothingPath(
+            'bottoms',
+            this.characterState.bottomsPath,
+            'right'
+          );
       }
     );
 
@@ -179,12 +197,18 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
       0.45,
       this.clothingContainer,
       () => {
-        // TODO: change clothing
-        console.log('shoes left');
+        this.characterState.shoesPath = this.characterState.getNewClothingPath(
+          'shoes',
+          this.characterState.shoesPath,
+          'left'
+        );
       },
       () => {
-        // TODO: change clothing
-        console.log('shoes right');
+        this.characterState.shoesPath = this.characterState.getNewClothingPath(
+          'shoes',
+          this.characterState.shoesPath,
+          'right'
+        );
       }
     );
 
@@ -206,7 +230,7 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
         const screenHandler = screenHandlerModule.getInstance(this.canvas);
         void screenHandler.setScreen(AppearanceScreen);
       }
-    })
+    });
   }
 
   public destroy(): void {
