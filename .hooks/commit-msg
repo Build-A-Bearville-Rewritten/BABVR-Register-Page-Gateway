@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+# Git commit-message hook for BABVR commit standards.
+#
+# Install as:
+#   .git/hooks/commit-msg
+#
+# Or configure a shared hooks directory with:
+#   git config core.hooksPath .githooks
+
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG="$(head -n 1 "$COMMIT_MSG_FILE")"
+
+# Allowed commit types from the project's main repository standard.
+TYPES="CHORE|DOCS|ENHANCEMENT|FEATURE|FIX|GITIGNORE|HOTFIX|MERGE|REFACTOR|SECURITY|STYLE|TEST"
+
+# The description must:
+# - follow "<TYPE> - <description>"
+# - begin with a capital letter
+# - be 50 characters or fewer
+# - not be empty
+if ! [[ "$COMMIT_MSG" =~ ^($TYPES)\ -\ ([A-Z].{0,49})$ ]]; then
+    cat >&2 <<'EOF'
+
+ERROR: Invalid commit message.
+
+Expected format:
+  <TYPE> - <Commit description>
+
+Allowed types:
+  CHORE
+  DOCS
+  ENHANCEMENT
+  FEATURE
+  FIX
+  GITIGNORE
+  HOTFIX
+  MERGE
+  REFACTOR
+  SECURITY
+  STYLE
+  TEST
+
+The description must:
+  - start with a capital letter
+  - be 50 characters or fewer
+  - not be empty
+  - not use a past-tense verb
+
+Examples:
+  FEATURE - Add user verification
+  FIX - Handle invalid registration data
+  DOCS - Update installation instructions
+
+EOF
+    exit 1
+fi
+
+# Extract the description and enforce the 50-character limit
+# specifically on the description rather than the entire subject.
+DESCRIPTION="${COMMIT_MSG#* - }"
+
+if [ "${#DESCRIPTION}" -gt 50 ]; then
+    echo "ERROR: Commit description must be 50 characters or fewer." >&2
+    echo "Description: $DESCRIPTION" >&2
+    exit 1
+fi
+
+exit 0
+
