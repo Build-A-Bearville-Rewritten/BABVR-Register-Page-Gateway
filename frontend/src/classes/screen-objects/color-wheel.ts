@@ -5,6 +5,7 @@ import Clickable from '../rendering/sprite/clickable.ts';
 import Draggable from '../rendering/sprite/draggable.ts';
 import type { HSL, Point2D } from '../../types/common.ts';
 import AbstractSprite from '../rendering/sprite/abstract-sprite.ts';
+import Arrow from '../rendering/sprite/widgets/arrow.ts';
 
 /**
  * Helper type to bridge StaticSprite (which has canvas: HTMLCanvasElement | undefined)
@@ -29,8 +30,8 @@ export default class ColorWheel {
   private sliderArrow!: StaticSprite;
   private blueColorArrow!: StaticSprite;
   private colorCircleInner!: StaticSprite;
-  private topArrow!: StaticSprite;
-  private bottomArrow!: StaticSprite;
+  private topArrow!: Arrow;
+  private bottomArrow!: Arrow;
 
   private _spriteBeingDragged: StaticSprite | null = null;
 
@@ -74,17 +75,6 @@ export default class ColorWheel {
    */
   private bindEvents(): void {
     // All sprites have canvas at this point (created in createSprites() with canvas: this.canvas)
-    this._clickable.onClick(this.bottomArrow as SpriteWithCanvas, () => {
-      const nearestAngle = this.roundToNearestAngle(15);
-      this.colorWheelColors.setRotation(nearestAngle);
-      this.moveWheel(15);
-    });
-
-    this._clickable.onClick(this.topArrow as SpriteWithCanvas, () => {
-      const nearestAngle = this.roundToNearestAngle(15);
-      this.colorWheelColors.setRotation(nearestAngle);
-      this.moveWheel(-15);
-    });
 
     this._draggable.onDrag(
       this.sliderContainer as SpriteWithCanvas,
@@ -231,7 +221,7 @@ export default class ColorWheel {
    * @param rotationAmount - The rotation amount to round
    * @returns The nearest angle rounded to 15 degrees
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
   private roundToNearestAngle(rotationAmount: number): number {
     const currentRotationValue = this.colorWheelColors.getRotation() ?? 0;
     return Math.round(currentRotationValue / 15) * 15;
@@ -326,22 +316,33 @@ export default class ColorWheel {
       hsl: { ...sliderHSL }
     });
 
-    this.topArrow = new StaticSprite({
+    this.topArrow = new Arrow({
       canvas: this.canvas,
-      imagePath: './assets/Register/color-wheel/sprites/upDownArrowColored.png',
-      sizeScale: 1,
+      sizeScale: 1.1,
       parent: this.colorCircleInner,
-      positionScale: { x: 0, y: -1.8 },
-      rotation: 110
+      positionScale: { x: 0, y: -1.6 },
+      rotation: 110,
+      flip: 'vertical',
+      isAnimated: false,
+      onClick: () => {
+        const nearestAngle = this.roundToNearestAngle(15);
+        this.colorWheelColors.setRotation(nearestAngle);
+        this.moveWheel(-15);
+      }
     });
 
-    this.bottomArrow = new StaticSprite({
+    this.bottomArrow = new Arrow({
       canvas: this.canvas,
-      imagePath: this.topArrow.getImagePath(),
-      sizeScale: this.topArrow.getSizeScale(),
+      sizeScale: 1.1,
       parent: this.colorCircleInner,
-      positionScale: { x: 0, y: 2.1 },
-      rotation: 250
+      positionScale: { x: 0, y: 1.7 },
+      rotation: 250,
+      isAnimated: false,
+      onClick: () => {
+        const nearestAngle = this.roundToNearestAngle(15);
+        this.colorWheelColors.setRotation(nearestAngle);
+        this.moveWheel(15);
+      }
     });
   }
 }

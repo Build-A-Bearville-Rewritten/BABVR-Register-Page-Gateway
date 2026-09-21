@@ -63,7 +63,7 @@ class SVGHandler implements ISVGHandler {
     viewBox = svg.getAttribute('viewBox');
 
     if (viewBox) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
       const [_x, _y, width, height] = viewBox.split(' ');
       vWidth = width || null;
       vHeight = height || null;
@@ -125,6 +125,5 @@ class SVGHandler implements ISVGHandler {
   }
 }
 
-// Export singleton instance
 const svgHandler = new SVGHandler();
 export default svgHandler;

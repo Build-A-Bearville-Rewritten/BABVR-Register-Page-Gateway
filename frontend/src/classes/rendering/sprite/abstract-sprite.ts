@@ -1,5 +1,3 @@
-import spriteRendererModule from '../../../modules/sprite-renderer-module.ts';
-import screenHandlerModule from '../../../modules/screen-handler-module.ts';
 import type {
   HSL,
   Point2D,
@@ -9,10 +7,8 @@ import type {
 } from '../../../types/common.js';
 import type { SpriteParent } from '../../../types/rendering.js';
 
-/*
-Class for drawing a Sprite onto the screen
-Sprites are images with extra properties and methods to make it easier to use on the canvas
-*/
+import screenHandlerModule from '../../../modules/screen-handler-module.ts';
+import spriteRendererModule from '../../../modules/sprite-renderer-module.ts';
 
 /**
  * Properties that can be changed in the current frame
@@ -29,22 +25,23 @@ export default class AbstractSprite {
   public canvas: HTMLCanvasElement | undefined;
   public parent: SpriteParent | undefined;
   public propertiesChanged: PropertiesChanged;
-  public id: string | null;
+  public id: number | null;
 
   // Private properties
   private _image: HTMLImageElement | null;
   private _rotation: number | undefined;
   private _hsl: HSL | undefined;
   private _imgCanvas: HTMLCanvasElement | undefined;
+
+  private readonly _anchorPoint: Point2D;
+  private readonly _flip: 'horizontal' | 'vertical' | undefined;
+  private readonly _imagePath: string | undefined;
+  private readonly _isFixedSize: boolean;
   private readonly _position: Point2D;
   private readonly _positionScale: Point2D;
   private readonly _size: Size2D;
   private readonly _sizeScale: Scale2D;
-  private readonly _anchorPoint: Point2D;
   private readonly _zIndex: number;
-  private readonly _isFixedSize: boolean;
-  private readonly _imagePath: string | undefined;
-  private readonly _flip: 'horizontal' | 'vertical' | undefined;
 
   constructor({
     imagePath,
@@ -164,6 +161,7 @@ export default class AbstractSprite {
    */
   setHSL({ h, s, l }: Partial<HSL>): void {
     if (!this.canvas) return;
+
     const screenHandler = screenHandlerModule.getInstance(this.canvas);
 
     this._hsl = {
@@ -257,10 +255,6 @@ export default class AbstractSprite {
     this._imgCanvas = imgCanvas;
   }
 
-  // -------------------------------------------------------------------------
-  //  Private methods
-  // -------------------------------------------------------------------------
-
   /**
    * Loads an image from the given URL
    * @param url - The URL of the image to load
@@ -337,12 +331,13 @@ export default class AbstractSprite {
    * Updates the sprite's size based on the `_sizeScale` property
    */
   private updateSize(): void {
-    if (this._isFixedSize || !this._image) return;
+    const image = this.getImage();
+    if (this._isFixedSize || !image) return;
 
     const parentSize = this.getParentSize();
 
     if (typeof this._sizeScale === 'number') {
-      const imgAspectRatio = this._image.width / this._image.height;
+      const imgAspectRatio = image.width / image.height;
       const desiredHeight = parentSize.y * this._sizeScale;
 
       this._size.x = desiredHeight * imgAspectRatio;
@@ -353,5 +348,15 @@ export default class AbstractSprite {
     }
 
     this.propertiesChanged.size = true;
+  }
+
+  public destroy(): void {
+    if (this.id !== null) {
+      spriteRendererModule.getSpriteRenderer().removeSprite(this.id);
+      this.id = null;
+    }
+
+    this.canvas = undefined;
+    this.parent = undefined;
   }
 }

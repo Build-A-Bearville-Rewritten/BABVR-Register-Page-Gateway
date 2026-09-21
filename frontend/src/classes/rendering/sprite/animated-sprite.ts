@@ -20,7 +20,10 @@ export interface AnimatedSpriteOptions
  * Animated sprite class that extends AbstractSprite and uses Animator for animation management
  */
 export default class AnimatedSprite extends AbstractSprite {
-  public readonly isAnimation: boolean = true;
+  /** Getter so this is true during super() when the sprite is registered. */
+  get isAnimation(): boolean {
+    return true;
+  }
 
   private readonly _animator: Animator;
 
@@ -69,6 +72,13 @@ export default class AnimatedSprite extends AbstractSprite {
   }
 
   /**
+   * Resets animation state and shows the first frame
+   */
+  resetAnimation(): void {
+    this._animator.resetToFirstFrame();
+  }
+
+  /**
    * Starts playing the animation
    */
   play(): void {
@@ -105,5 +115,6 @@ export default class AnimatedSprite extends AbstractSprite {
    */
   destroy(): void {
     this._animator.destroy();
+    super.destroy();
   }
 }

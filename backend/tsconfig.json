@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "rootDir": "./src",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
 
     "allowSyntheticDefaultImports": true,
 
@@ -9,7 +10,5 @@
 
     "outDir": "./dist"
   },
-  "extends": [
-    "../tsconfig.json"
-  ]
+  "extends": "../tsconfig.json"
 }

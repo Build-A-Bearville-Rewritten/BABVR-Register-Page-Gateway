@@ -1,20 +1,11 @@
 // Loads in sprites onto their in specified loading order.
 
-import SpriteDrawer from './sprite/sprite-drawer.ts';
 import type {
-  IDrawableSprite,
+  IRenderableSprite,
   ISpriteRenderer
 } from '../../types/rendering.ts';
 
-/**
- * Interface for sprites that can be rendered
- */
-interface IRenderableSprite extends IDrawableSprite {
-  id: number | null;
-  getZIndex(): number;
-  update(): void;
-  isAnimation?: boolean;
-}
+import SpriteDrawer from './sprite/sprite-drawer.ts';
 
 /**
  * Interface for animated sprites
@@ -48,11 +39,15 @@ type SpriteDictionary = {
 export default class SpriteRenderer implements ISpriteRenderer {
   public numSprites: number;
   public preloadCB: PreloadCallback | null;
+
+  public readonly SpriteDrawer: SpriteDrawer;
+
   private _sprites: SpriteDictionary;
   private _animatedSprites: IAnimatedSprite[];
   private _isPreloaded: boolean;
+  private _isAnimationLoopRunning: boolean;
   private _preRedrawCBs: PreRedrawCallback[];
-  public readonly SpriteDrawer: SpriteDrawer;
+  private _postRedrawCBs: PreRedrawCallback[];
 
   constructor() {
     this.numSprites = 0;
@@ -60,7 +55,9 @@ export default class SpriteRenderer implements ISpriteRenderer {
     this._sprites = {};
     this._animatedSprites = [];
     this._isPreloaded = false;
+    this._isAnimationLoopRunning = false;
     this._preRedrawCBs = [];
+    this._postRedrawCBs = [];
     this.SpriteDrawer = new SpriteDrawer();
   }
 
@@ -74,10 +71,12 @@ export default class SpriteRenderer implements ISpriteRenderer {
    */
   async addSpriteToScreen(sprite: IRenderableSprite): Promise<void> {
     let spriteKey: string | null = null;
+
     const zIndex = sprite.getZIndex();
 
     sprite.id = ++this.numSprites;
-    spriteKey = 'sprite' + sprite.id;
+
+    spriteKey = `sprite${sprite.id}`;
 
     if (!this._sprites[zIndex]) {
       this._sprites[zIndex] = {};
@@ -99,6 +98,25 @@ export default class SpriteRenderer implements ISpriteRenderer {
   }
 
   /**
+   * Binds a method `callback` to be called after the sprites are redrawn
+   * @param callback - The callback function to call after redraw
+   */
+  addPostRedrawCB(callback: PreRedrawCallback): void {
+    this._postRedrawCBs.push(callback);
+  }
+
+  /**
+   * Removes a post-redraw callback
+   * @param callback - The callback function to remove
+   */
+  removePostRedrawCB(callback: PreRedrawCallback): void {
+    const index = this._postRedrawCBs.indexOf(callback);
+    if (index >= 0) {
+      this._postRedrawCBs.splice(index, 1);
+    }
+  }
+
+  /**
    * Draws the sprites on the screen based on their z-indices and creation order
    * The sprite will get drawn on its specified zIndex. The higher the zindex, the more to the top of the image screen the image will be
    * On each zindex layer, the sprites created most recently will show on top.
@@ -116,11 +134,16 @@ export default class SpriteRenderer implements ISpriteRenderer {
 
       for (const spriteKey in spritesAtZIndex) {
         const sprite = spritesAtZIndex[spriteKey];
-        if (sprite && sprite.getImage()) {
+
+        if (sprite?.getImage()) {
           sprite.update();
           this.SpriteDrawer.drawSprite(sprite);
         }
       }
+    }
+
+    for (const callback of this._postRedrawCBs) {
+      callback();
     }
   }
 
@@ -128,10 +151,21 @@ export default class SpriteRenderer implements ISpriteRenderer {
    * Updates animations for all animated sprites
    */
   updateAnimations(): void {
-    window.requestAnimationFrame(() => this.updateAnimations());
+    if (this._isAnimationLoopRunning) {
+      return;
+    }
+
+    this._isAnimationLoopRunning = true;
+    this._runAnimationLoop();
+  }
+
+  /**
+   * Advances animated sprites once per display frame.
+   */
+  private _runAnimationLoop(): void {
+    globalThis.requestAnimationFrame(() => this._runAnimationLoop());
 
     for (const animatedSprite of this._animatedSprites) {
-      // Update animation frames
       animatedSprite.update();
     }
   }
@@ -153,6 +187,40 @@ export default class SpriteRenderer implements ISpriteRenderer {
 
     this._sprites = {};
     this._animatedSprites = [];
+  }
+
+  /**
+   * Removes a specific sprite from the renderer
+   * @param spriteId - The ID of the sprite to remove
+   * @returns true if the sprite was found and removed, false otherwise
+   */
+  removeSprite(spriteId: number): boolean {
+    for (const zIndexStr in this._sprites) {
+      const zIndex = Number(zIndexStr);
+      const spritesAtZIndex = this._sprites[zIndex];
+
+      for (const spriteKey in spritesAtZIndex) {
+        const sprite = spritesAtZIndex[spriteKey];
+
+        if (sprite?.id === spriteId) {
+          delete spritesAtZIndex[spriteKey];
+
+          // Remove from animated sprites if applicable
+          this._animatedSprites = this._animatedSprites.filter(
+            animatedSprite => animatedSprite.id !== spriteId
+          );
+
+          // Remove empty z-index layer
+          if (Object.keys(spritesAtZIndex).length === 0) {
+            delete this._sprites[zIndex];
+          }
+
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   // -------------------------------------------
