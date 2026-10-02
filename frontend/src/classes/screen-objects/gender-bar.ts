@@ -1,5 +1,5 @@
 import StaticSprite from '../rendering/sprite/static-sprite';
-import AbstractTextWidget from '../rendering/sprite/widgets/abstract-text-widget';
+import TextSprite from '../rendering/sprite/widgets/text-sprite';
 import { Point2D, SpriteConstructorOptions } from '../../types/common';
 import AbstractSprite from '../rendering/sprite/abstract-sprite';
 import Clickable from '../rendering/sprite/clickable';
@@ -84,28 +84,17 @@ export default class GenderBar implements Observer {
     this._genderLabel.destroy();
     this._girlButton?.destroy();
     this._boyButton?.destroy();
+    this._bar.destroy();
   }
 }
 
-class GenderLabel extends AbstractTextWidget {
+class GenderLabel {
+  public canvas: HTMLCanvasElement | undefined;
   public parent: HTMLCanvasElement | AbstractSprite | undefined;
   private _genderLabel!: StaticSprite;
+  private _textSprite!: TextSprite;
+
   constructor({ canvas, parent }: SpriteConstructorOptions) {
-    super({
-      canvas,
-      text: 'Gender',
-      color: '#ffffff',
-      fontFamily: 'Funhouse',
-      fontSize: 12,
-      textAlign: 'left',
-      textBaseline: 'middle',
-      position: () => ({
-        x:
-          this._genderLabel.getPosition().x +
-          this._genderLabel.getSize().x / 12,
-        y: this._genderLabel.getPosition().y + this._genderLabel.getSize().y / 2
-      })
-    });
     this.canvas = canvas;
     this.parent = parent;
     this.createSprites();
@@ -119,14 +108,31 @@ class GenderLabel extends AbstractTextWidget {
       sizeScale: 0.75,
       positionScale: { x: 0.02, y: 0.13 }
     });
+
+    this._textSprite = new TextSprite({
+      canvas: this.canvas,
+      text: 'Gender',
+      color: '#ffffff',
+      fontFamily: 'Funhouse',
+      fontSize: 12,
+      textAlign: 'left',
+      textBaseline: 'middle',
+      zIndex: this._genderLabel.getZIndex() + 1,
+      position: {
+        relativeTo: this._genderLabel,
+        anchor: { x: 1 / 12, y: 1 / 2 }
+      }
+    });
   }
 
   public destroy(): void {
-    super.destroy();
+    this._genderLabel.destroy();
+    this._textSprite.destroy();
   }
 }
 
-class GenderButton extends AbstractTextWidget {
+class GenderButton {
+  public canvas: HTMLCanvasElement | undefined;
   public parent: HTMLCanvasElement | AbstractSprite | undefined;
 
   private _genderBar!: GenderBar;
@@ -134,6 +140,7 @@ class GenderButton extends AbstractTextWidget {
 
   private _genderSelectedSprite?: AnimatedSprite;
   private _genderRadioSprite!: AnimatedSprite;
+  private _textSprite!: TextSprite;
   private readonly _clickable: Clickable;
   private _positionScale?: Point2D;
 
@@ -151,24 +158,6 @@ class GenderButton extends AbstractTextWidget {
     genderBar: GenderBar;
     gender: Gender;
   }) {
-    super({
-      canvas,
-      text,
-      color: '#966121',
-      fontFamily: 'Futura',
-      fontSize: 14,
-      textAlign: 'left',
-      textBaseline: 'middle',
-      position: () => ({
-        x:
-          this._genderRadioSprite.getPosition().x +
-          this._genderRadioSprite.getSize().x -
-          31,
-        y:
-          this._genderRadioSprite.getPosition().y +
-          this._genderRadioSprite.getSize().y / 2
-      })
-    });
     this.canvas = canvas;
     this.parent = parent;
     this._genderBar = genderBar;
@@ -179,11 +168,11 @@ class GenderButton extends AbstractTextWidget {
     this._isToggled = this._gender === this._genderBar.characterState.gender;
     this._isHovered = false;
 
-    this.createSprites();
+    this.createSprites(text);
     this.bindEvents();
   }
 
-  private createSprites(): void {
+  private createSprites(text: string): void {
     this._genderSelectedSprite = new AnimatedSprite({
       canvas: this.canvas,
       parent: this.parent,
@@ -202,6 +191,21 @@ class GenderButton extends AbstractTextWidget {
       sizeScale: 0.8,
       positionScale: this._positionScale,
       numFrames: 6
+    });
+
+    this._textSprite = new TextSprite({
+      canvas: this.canvas,
+      text,
+      color: '#966121',
+      fontFamily: 'Futura',
+      fontSize: 14,
+      textAlign: 'left',
+      textBaseline: 'middle',
+      zIndex: this._genderRadioSprite.getZIndex() + 1,
+      position: {
+        relativeTo: this._genderRadioSprite,
+        anchor: { x: 1 / 2, y: 1 / 2 }
+      }
     });
 
     if (this._isToggled) {
@@ -272,7 +276,7 @@ class GenderButton extends AbstractTextWidget {
   }
 
   public destroy(): void {
-    super.destroy();
+    this._textSprite.destroy();
     this._genderSelectedSprite?.destroy();
     this._genderRadioSprite.destroy();
     this._clickable.destroy();

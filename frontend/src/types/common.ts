@@ -74,8 +74,15 @@ export interface AnimationConfig {
   isLooped?: boolean;
 }
 
-export interface TextConstructorOptions {
-  canvas?: HTMLCanvasElement;
+export interface RelativeTextPosition {
+  relativeTo: HTMLCanvasElement | AbstractSprite;
+  anchor?: Point2D;
+  offset?: Point2D;
+}
+
+export type TextPosition = Point2D | RelativeTextPosition;
+
+export interface TextConstructorOptions extends SpriteConstructorOptions {
   text?: string;
   color?: string;
   fontFamily?: string;
@@ -84,5 +91,5 @@ export interface TextConstructorOptions {
   textAlign?: CanvasTextAlign;
   // eslint-disable-next-line no-undef
   textBaseline?: CanvasTextBaseline;
-  position?: () => Point2D;
+  position?: TextPosition;
 }
