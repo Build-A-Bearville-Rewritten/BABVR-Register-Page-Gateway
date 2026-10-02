@@ -6,7 +6,7 @@ import AnimatedSprite, {
   type AnimatedSpriteOptions
 } from '../animated-sprite.js';
 import Clickable, { MouseCallback } from '../clickable.js';
-import AbstractTextWidget from './abstract-text-widget.ts';
+import TextSprite from './text-sprite.ts';
 
 export interface ButtonAnimatedSpriteOptions extends AnimatedSpriteOptions {
   display: boolean;
@@ -53,7 +53,7 @@ export default class Button {
   private _hoverStartAnimation!: ButtonAnimatedSprite;
   private _hoverEndAnimation!: ButtonAnimatedSprite;
 
-  private _label?: AbstractTextWidget;
+  private _label?: TextSprite;
 
   constructor(options: ButtonOptions) {
     const { textOptions, onClick, ...spriteOptions } = options;
@@ -100,16 +100,13 @@ export default class Button {
     this._hoverEndAnimation.onAnimationEnded(() => this.showIdle());
 
     if (textOptions) {
-      this._label = new AbstractTextWidget({
-        position: () => ({
-          x:
-            this._hoverStartAnimation.getPosition().x +
-            this._hoverStartAnimation.getSize().x / 2,
-          y:
-            this._hoverStartAnimation.getPosition().y +
-            this._hoverStartAnimation.getSize().y / 2
-        }),
-        ...textOptions
+      this._label = new TextSprite({
+        ...textOptions,
+        position: textOptions.position ?? {
+          relativeTo: this._hoverStartAnimation,
+          anchor: { x: 1 / 2, y: 1 / 2 }
+        },
+        zIndex: textOptions.zIndex ?? (spriteOptions.zIndex ?? 10) + 1
       });
     }
 

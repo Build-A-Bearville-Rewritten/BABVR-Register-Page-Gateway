@@ -1,26 +1,13 @@
 import StaticSprite from '../static-sprite.ts';
-import AbstractTextWidget from './abstract-text-widget.ts';
+import TextSprite from './text-sprite.ts';
 
-export default class LoginHUD extends AbstractTextWidget {
+export default class LoginHUD {
   public canvas: HTMLCanvasElement;
 
   private hudSprite!: StaticSprite;
+  private textSprite!: TextSprite;
 
   constructor(canvas: HTMLCanvasElement) {
-    super({
-      canvas,
-      text: 'Character Design',
-      color: '#ffffff',
-      fontFamily: 'Futura',
-      fontSize: 14,
-      textAlign: 'center',
-      textBaseline: 'middle',
-      position: () => ({
-        x: canvas.width / 2,
-        y: canvas.height / 20
-      })
-    });
-
     this.canvas = canvas;
 
     this.createSprites();
@@ -34,9 +21,25 @@ export default class LoginHUD extends AbstractTextWidget {
       sizeScale: { x: 1, y: 1 },
       zIndex: 1000 // always on top
     });
+
+    this.textSprite = new TextSprite({
+      canvas: this.canvas,
+      text: 'Character Design',
+      color: '#ffffff',
+      fontFamily: 'Futura',
+      fontSize: 14,
+      textAlign: 'center',
+      textBaseline: 'middle',
+      zIndex: this.hudSprite.getZIndex() + 1,
+      position: {
+        relativeTo: this.canvas,
+        anchor: { x: 1 / 2, y: 1 / 20 }
+      }
+    });
   }
 
   public destroy(): void {
-    super.destroy();
+    this.hudSprite.destroy();
+    this.textSprite.destroy();
   }
 }
