@@ -40,13 +40,17 @@ Gateway for the registration page of Build-A-Bearville Rewritten.
 Before installing, it's highly recommended to execute the commands
 in this guide from the root directory of the repository.
 
+### Repository hooks
+
+1. Clone the repository.
+2. Run `git config core.hooksPath .hooks` from the root directory to configure the repository hooks to run locally.
+
 ### Using Node.js
 
 #### For development
 
-1. Clone the repository
-2. Run `pnpm install` to install dependencies
-3. Since this project uses workspaces,
+1. Run `pnpm install` to install dependencies
+2. Since this project uses workspaces,
    you can run scripts from the root directory using the command
    `pnpm run --filter babvr-register-page-<package-name> <script>`.
 
