@@ -109,6 +109,8 @@ export default class Animator {
       const image = this.loadImage(url);
       this._animationFrames.push(image);
     }
+
+    this.resetToFirstFrame();
   }
 
   /**
@@ -116,6 +118,10 @@ export default class Animator {
    * Updates frame timing based on frame buffer
    */
   updateFrames(): void {
+    if (!this._isPlaying) {
+      return;
+    }
+
     const isOnLastFrame = this._currentFrame === this._numFrames - 1;
 
     this._elapsedFrames++;
@@ -124,7 +130,7 @@ export default class Animator {
       if (this._animationEndedCB) {
         this._animationEndedCB();
       }
-      this._currentFrame = -1;
+      this._isPlaying = false;
       return;
     }
 
@@ -149,6 +155,32 @@ export default class Animator {
    */
   onAnimationEnded(callback: AnimationEndedCallback): void {
     this._animationEndedCB = callback;
+  }
+
+  /**
+   * Returns a preloaded animation frame by index
+   * @param index - The frame index (0-based)
+   */
+  getFrameImage(index: number): HTMLImageElement | null {
+    if (!this._isFolderAnimation || this._animationFrames.length === 0) {
+      return null;
+    }
+
+    return this._animationFrames[index] ?? null;
+  }
+
+  /**
+   * Resets animation state and shows the first frame
+   */
+  resetToFirstFrame(): void {
+    this._currentFrame = 0;
+    this._elapsedFrames = 0;
+    this._isPlaying = false;
+
+    const firstFrame = this.getFrameImage(0);
+    if (firstFrame) {
+      this._image = firstFrame;
+    }
   }
 
   /**
