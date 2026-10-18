@@ -1,11 +1,11 @@
 import {
   SpriteConstructorOptions,
   TextConstructorOptions
-} from '../../../../types/common.js';
+} from '../../../../types/common.ts';
 import AnimatedSprite, {
   type AnimatedSpriteOptions
-} from '../animated-sprite.js';
-import Clickable, { MouseCallback } from '../clickable.js';
+} from '../animated-sprite.ts';
+import Clickable, { MouseCallback } from '../clickable.ts';
 import TextSprite from './text-sprite.ts';
 
 export interface ButtonAnimatedSpriteOptions extends AnimatedSpriteOptions {

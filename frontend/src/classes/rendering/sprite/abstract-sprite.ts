@@ -4,8 +4,8 @@ import type {
   Scale2D,
   Size2D,
   SpriteConstructorOptions
-} from '../../../types/common.js';
-import type { SpriteParent } from '../../../types/rendering.js';
+} from '../../../types/common.ts';
+import type { SpriteParent } from '../../../types/rendering.ts';
 
 import screenHandlerModule from '../../../modules/screen-handler-module.ts';
 import spriteRendererModule from '../../../modules/sprite-renderer-module.ts';

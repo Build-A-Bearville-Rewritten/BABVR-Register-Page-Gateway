@@ -1,9 +1,9 @@
-import { SpriteConstructorOptions } from '../../../../types/common.js';
+import { SpriteConstructorOptions } from '../../../../types/common.ts';
 import AnimatedSprite, {
   type AnimatedSpriteOptions
-} from '../animated-sprite.js';
-import Clickable, { MouseCallback } from '../clickable.js';
-import StaticSprite from '../static-sprite.js';
+} from '../animated-sprite.ts';
+import Clickable, { MouseCallback } from '../clickable.ts';
+import StaticSprite from '../static-sprite.ts';
 
 export interface ArrowAnimatedSpriteOptions extends AnimatedSpriteOptions {
   display: boolean;

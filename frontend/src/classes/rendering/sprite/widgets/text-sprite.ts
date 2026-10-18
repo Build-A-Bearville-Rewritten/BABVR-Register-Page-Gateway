@@ -1,9 +1,9 @@
-import AbstractSprite from '../abstract-sprite.js';
+import AbstractSprite from '../abstract-sprite.ts';
 import type {
   Point2D,
   TextConstructorOptions,
   TextPosition
-} from '../../../../types/common.js';
+} from '../../../../types/common.ts';
 
 export default class TextSprite extends AbstractSprite {
   private text: string;

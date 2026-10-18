@@ -1,9 +1,9 @@
-import AbstractSprite from './abstract-sprite.js';
-import Animator from './animator.js';
+import AbstractSprite from './abstract-sprite.ts';
+import Animator from './animator.ts';
 import type {
   SpriteConstructorOptions,
   AnimationConfig
-} from '../../../types/common.js';
+} from '../../../types/common.ts';
 
 /**
  * Callback function type for when animation ends

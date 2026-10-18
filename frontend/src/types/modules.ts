@@ -6,7 +6,7 @@ import type {
   ICanvasRenderer,
   ISpriteRenderer,
   IScreenHandler
-} from './rendering.js';
+} from './rendering.ts';
 
 /**
  * Factory function type for getting a canvas renderer
