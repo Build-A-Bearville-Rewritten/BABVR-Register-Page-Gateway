@@ -6,30 +6,17 @@ import { AbstractScreen } from '../../types/rendering.ts';
 import screenHandlerModule from '../../modules/screen-handler-module.ts';
 import AnimatedSprite from '../rendering/sprite/animated-sprite.ts';
 import StaticSprite from '../rendering/sprite/static-sprite.ts';
-import AbstractTextWidget from '../rendering/sprite/widgets/abstract-text-widget.ts';
 import NextButton from '../rendering/sprite/widgets/next-button.ts';
+import TextSprite from '../rendering/sprite/widgets/text-sprite.ts';
 import AppearanceScreen from './appearance-screen.ts';
 
-class ChloeSpeechBox extends AbstractTextWidget {
+class ChloeSpeechBox {
   public canvas: HTMLCanvasElement;
   private _boxSprite!: StaticSprite;
   private _arrowSprite!: StaticSprite;
+  private _textSprite!: TextSprite;
 
   constructor(canvas: HTMLCanvasElement) {
-    super({
-      canvas,
-      text: "Hi, I'm ChloeRocks, and I'll help \nyou get started.",
-      color: '#0e2b59',
-      fontFamily: 'Futura',
-      fontSize: 12,
-      textAlign: 'left',
-      textBaseline: 'middle',
-      position: () => ({
-        x: this._boxSprite.getPosition().x + this._boxSprite.getSize().x / 8,
-        y: this._boxSprite.getPosition().y + this._boxSprite.getSize().y / 2
-      })
-    });
-
     this.canvas = canvas;
     this.createSprites();
   }
@@ -51,10 +38,27 @@ class ChloeSpeechBox extends AbstractTextWidget {
       positionScale: { x: -0.06, y: 0.4 },
       rotation: 180
     });
+
+    this._textSprite = new TextSprite({
+      canvas: this.canvas,
+      text: "Hi, I'm ChloeRocks, and I'll help \nyou get started.",
+      color: '#0e2b59',
+      fontFamily: 'Futura',
+      fontSize: 12,
+      textAlign: 'left',
+      textBaseline: 'middle',
+      zIndex: this._boxSprite.getZIndex() + 1,
+      position: {
+        relativeTo: this._boxSprite,
+        anchor: { x: 1 / 8, y: 1 / 2 }
+      }
+    });
   }
 
   public destroy(): void {
-    super.destroy();
+    this._boxSprite.destroy();
+    this._arrowSprite.destroy();
+    this._textSprite.destroy();
   }
 }
 
@@ -93,6 +97,7 @@ export default class ChloeIntroScreen extends AbstractScreen {
       canvas: this.canvas,
       parent: this.canvas,
       sizeScale: { x: 1, y: 1 },
+      zIndex: 12,
       numFrames: 337, // the number of frames in the animation
       frameBuffer: 3, // the amount of times the canvas should draw before loading the next frames
       animationFolder: 'assets/Register/chloe/talk1/frames/' // folder containing the animations

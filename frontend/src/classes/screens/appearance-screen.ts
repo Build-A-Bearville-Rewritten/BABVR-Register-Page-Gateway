@@ -102,7 +102,8 @@ export default class AppearanceScreen
     this.instructions = new CharacterDesignInstructions(
       this.canvas,
       'Choose "Girl" or "Boy".\n\nClick the arrows to see the cool looks.\n\nUse the color wheel to change your hair\ncolor!\n\nWhen you\'re done, click "Next".',
-      'Appearance'
+      'Appearance',
+      10
     );
 
     this.step1Sprite = new StaticSprite({

@@ -35,6 +35,7 @@ export interface IRenderableSprite extends IDrawableSprite {
   getZIndex(): number;
   update(): void;
   isAnimation?: boolean;
+  draw?(): void;
 }
 
 /**

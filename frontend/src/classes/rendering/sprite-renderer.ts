@@ -127,16 +127,34 @@ export default class SpriteRenderer implements ISpriteRenderer {
       callback();
     }
 
+    const sprites = Object.values(this._sprites)
+      .flatMap(spritesAtZIndex => Object.values(spritesAtZIndex))
+      .filter((sprite): sprite is IRenderableSprite => sprite !== null)
+      .sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+
+    // Update in creation order so parents are positioned before their children.
+    for (const sprite of sprites) {
+      sprite.update();
+    }
+
     // Draw sprites by z-index
-    for (const zIndexStr in this._sprites) {
-      const zIndex = Number(zIndexStr);
+    const zIndexes = Object.keys(this._sprites)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    for (const zIndex of zIndexes) {
       const spritesAtZIndex = this._sprites[zIndex];
 
       for (const spriteKey in spritesAtZIndex) {
         const sprite = spritesAtZIndex[spriteKey];
 
-        if (sprite?.getImage()) {
-          sprite.update();
+        if (!sprite) {
+          continue;
+        }
+
+        if (sprite.draw) {
+          sprite.draw();
+        } else if (sprite.getImage()) {
           this.SpriteDrawer.drawSprite(sprite);
         }
       }

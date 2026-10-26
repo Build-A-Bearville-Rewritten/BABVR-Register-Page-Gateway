@@ -65,7 +65,7 @@ export default class ClothingScreen extends AbstractScreen implements Observer {
       this.canvas,
       'Click the arrows to see the cool looks.\n\nUse the color wheel to change your\nclothing color!\n\nWhen you\'re done, click "Next".',
       'Clothing',
-      10
+      20
     );
 
     this.step1Sprite = new StaticSprite({

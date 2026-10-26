@@ -1,9 +1,10 @@
 import StaticSprite from '../static-sprite';
-import AbstractTextWidget from './abstract-text-widget';
+import TextSprite from './text-sprite';
 
-export default class CharacterDesignInstructions extends AbstractTextWidget {
+export default class CharacterDesignInstructions {
   public canvas: HTMLCanvasElement;
 
+  private textSprite!: TextSprite;
   public top!: StaticSprite;
   public middle!: StaticSprite;
   public bottom!: StaticSprite;
@@ -12,7 +13,7 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
   public rightPaw!: StaticSprite;
 
   public headerText: string;
-  public headerTextWidget!: AbstractTextWidget;
+  public headerTextWidget!: TextSprite;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -20,26 +21,12 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
     headerText: string,
     yOffset = 0
   ) {
-    super({
-      canvas,
-      text: text,
-      color: '#ffffff',
-      fontFamily: 'Futura',
-      fontSize: 12,
-      textAlign: 'left',
-      textBaseline: 'middle',
-      position: () => ({
-        x: 65,
-        y: 240 - yOffset
-      })
-    });
-
     this.canvas = canvas;
     this.headerText = headerText;
-    this.createSprites();
+    this.createSprites(text, yOffset);
   }
 
-  private createSprites(): void {
+  private createSprites(text: string, yOffset: number): void {
     this.top = new StaticSprite({
       canvas: this.canvas,
       imagePath: 'assets/Register/sprites/instructionsTop.png',
@@ -97,7 +84,23 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
       hsl: { h: 216, s: 80, l: 80 }
     });
 
-    this.headerTextWidget = new AbstractTextWidget({
+    this.textSprite = new TextSprite({
+      canvas: this.canvas,
+      text,
+      color: '#ffffff',
+      fontFamily: 'Futura',
+      fontSize: 12,
+      textAlign: 'left',
+      textBaseline: 'middle',
+      zIndex: this.middle.getZIndex() + 1,
+      position: {
+        relativeTo: this.middle,
+        anchor: { x: 1 / 12, y: 1 / 2 },
+        offset: { x: 0, y: -yOffset }
+      }
+    });
+
+    this.headerTextWidget = new TextSprite({
       canvas: this.canvas,
       text: this.headerText,
       color: '#ffffff',
@@ -105,15 +108,22 @@ export default class CharacterDesignInstructions extends AbstractTextWidget {
       fontSize: 12,
       textAlign: 'center',
       textBaseline: 'middle',
-      position: () => ({
-        x: 161,
-        y: 157
-      })
+      zIndex: this.header.getZIndex() + 1,
+      position: {
+        relativeTo: this.header,
+        anchor: { x: 1 / 2, y: 1 / 2 }
+      }
     });
   }
 
   public destroy(): void {
-    super.destroy();
+    this.textSprite.destroy();
     this.headerTextWidget.destroy();
+    this.top.destroy();
+    this.middle.destroy();
+    this.bottom.destroy();
+    this.header.destroy();
+    this.leftPaw.destroy();
+    this.rightPaw.destroy();
   }
 }
